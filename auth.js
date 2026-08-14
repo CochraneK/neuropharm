@@ -48,6 +48,15 @@ const NPAuth = (function () {
 /* ---------- 登录门 + 同步中心 ---------- */
 let _authMode = 'login';
 
+/* 环境判定：Android App 通过 file:///android_asset/... 加载；
+   网页版（GitHub Pages）走 https，不自动弹登录门；
+   本地浏览器直接打开 file:// 也按 App 处理（仅开发者测试时出现）。 */
+function isAndroidApp() {
+  if (location.protocol === 'file:') return true;
+  const ua = navigator.userAgent || '';
+  return /Android/i.test(ua) && /wv|WebView/i.test(ua);
+}
+
 function setAuthMode(m) {
   _authMode = m;
   const btn = document.getElementById('authSubmit');
@@ -148,7 +157,10 @@ function initAuth() {
   if (lr) lr.onclick = () => { const g = document.getElementById('authGate'); if (g) g.style.display = 'flex'; };
 
   if (NPAuth.token()) proceed();
-  else { const g = document.getElementById('authGate'); if (g) g.style.display = 'flex'; }
+  else if (isAndroidApp()) { const g = document.getElementById('authGate'); if (g) g.style.display = 'flex'; }
+  /* 网页版：不自动弹登录门；用户仍可在「个人中心 → 数据同步 → 登录」手动打开。
+     无论哪种环境，都刷新一次同步面板，保证登录态/本地模式显示正确。 */
+  renderSyncStatus();
 }
 
 initAuth();

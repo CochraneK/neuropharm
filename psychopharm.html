@@ -408,7 +408,19 @@
   .dlqr .c{font-size:13px;color:var(--text);margin-top:12px;font-weight:600;}
   .dlqr .rel{font-size:12px;color:var(--text-2);margin-top:10px;}
   .dlqr .rel a{color:var(--accent);text-decoration:none;font-weight:600;}
-  @media (min-width:840px){ .dlqr{display:block;margin-left:30px;} }
+  /* 桌面端：二维码固定在右侧，脱离文档流，手机始终水平居中（不随 QR 偏移）。
+     断点设为 1000px：手机居中占 [vw/2-195, vw/2+195]，QR 固定右侧占 [vw-276, vw-40]，
+     二者在 vw>942 时才不重叠，故用 1000px 留足间距。 */
+  @media (min-width:1000px){
+    .dlqr{
+      display:block;
+      position:fixed;
+      right:40px;
+      top:50%;
+      transform:translateY(-50%);
+      margin-left:0;
+    }
+  }
 </style>
 </head>
 <body>
