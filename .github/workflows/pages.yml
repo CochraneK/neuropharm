@@ -27,6 +27,7 @@ jobs:
           cp psychopharm-app.html site/psychopharm-app.html
           cp auth.js site/auth.js
           cp sync.js site/sync.js
+          cp download-qr.svg site/download-qr.svg
 
       - uses: actions/upload-pages-artifact@v3
         with:
