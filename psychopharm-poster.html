@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>药枢 · NeuroPharm — 精神药理分类速览</title>
+<style>
+  :root{
+    --bg:#EEF1F4;
+    --surface:#FFFFFF;
+    --text:#1B1F24;
+    --text-2:#6B7280;
+    --text-3:#9AA1AC;
+    --border:#E8EAED;
+    --accent:#0E8C7F;
+    --c-anti:#2E7DD1;  --c-anti-soft:#E7F0FB;
+    --c-psy:#4F46B8;    --c-psy-soft:#ECEBF9;
+    --c-mood:#C08A1E;   --c-mood-soft:#F8F0DC;
+    --c-anx:#0E8C7F;    --c-anx-soft:#E3F3F0;
+    --c-sleep:#0E7490;  --c-sleep-soft:#E0F2FE;
+    --c-stim:#C2466B;   --c-stim-soft:#FBE7EE;
+    --c-other:#6B7280;  --c-other-soft:#EEF1F5;
+    --font:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  html,body{background:var(--bg);font-family:var(--font);color:var(--text);}
+  .sheet{
+    width:210mm;min-height:297mm;margin:0 auto;background:var(--surface);
+    padding:18mm 16mm 14mm;display:flex;flex-direction:column;
+  }
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative;overflow:hidden;border-radius:22px;
+    background:linear-gradient(135deg,#0B7C70 0%,#0E8C7F 48%,#14A892 100%);
+    color:#fff;padding:26px 30px;box-shadow:0 12px 30px rgba(14,140,127,.22);
+  }
+  .hero::after{content:"";position:absolute;top:0;left:0;right:0;height:46%;
+    background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,0));pointer-events:none;}
+  .hero .neuron{position:absolute;right:-10px;top:-10px;width:150px;height:150px;opacity:.28;}
+  .hero .kicker{font-size:12px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;opacity:.85;}
+  .hero h1{font-size:38px;font-weight:800;letter-spacing:-.01em;margin-top:6px;line-height:1.05;}
+  .hero .sub{font-size:14px;opacity:.92;margin-top:8px;max-width:62%;line-height:1.5;}
+  /* ---------- Section title ---------- */
+  .sectitle{display:flex;align-items:baseline;gap:10px;margin:22px 2px 12px;}
+  .sectitle b{font-size:16px;font-weight:800;}
+  .sectitle span{font-size:12px;color:var(--text-3);}
+  .sectitle .rule{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+  /* ---------- Class rows ---------- */
+  .rows{display:flex;flex-direction:column;gap:11px;}
+  .row{
+    display:flex;align-items:stretch;gap:14px;background:var(--surface);
+    border:1px solid var(--border);border-radius:14px;overflow:hidden;
+    box-shadow:0 1px 2px rgba(16,24,40,.04),0 6px 18px rgba(16,24,40,.05);
+  }
+  .row .spine{width:7px;flex:0 0 7px;}
+  .row .body{flex:1;padding:13px 16px 13px 12px;display:flex;flex-direction:column;gap:9px;}
+  .row .head{display:flex;align-items:center;gap:10px;}
+  .row .name{font-size:16px;font-weight:800;}
+  .row .count{font-size:11.5px;font-weight:700;color:#fff;padding:2px 9px;border-radius:99px;}
+  .row .examples{display:flex;flex-wrap:wrap;gap:6px;}
+  .row .ex{font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:99px;border:1px solid var(--border);color:var(--text-2);}
+  /* ---------- Footer ---------- */
+  .foot{margin-top:auto;padding-top:16px;display:flex;justify-content:space-between;align-items:flex-end;gap:12px;}
+  .foot .tag{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:var(--accent);}
+  .foot .disc{font-size:10.5px;color:var(--text-3);line-height:1.5;text-align:right;max-width:60%;}
+  @media print{
+    html,body{background:#fff;}
+    .sheet{margin:0;box-shadow:none;border-radius:0;width:auto;min-height:auto;}
+  }
+</style>
+</head>
+<body>
+  <div class="sheet">
+    <!-- HERO -->
+    <div class="hero">
+      <svg class="neuron" viewBox="0 0 100 100" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+        <circle cx="30" cy="34" r="9"/><circle cx="68" cy="26" r="7"/><circle cx="74" cy="62" r="8"/><circle cx="40" cy="72" r="6"/>
+        <path d="M30 34 L68 26 M30 34 L74 62 M30 34 L40 72 M68 26 L74 62 M74 62 L40 72"/>
+        <path d="M68 26 q14 -6 18 6 M74 62 q14 4 10 16"/>
+      </svg>
+      <div class="kicker">NeuroPharm · 精神药理学习</div>
+      <h1>药枢 · 精神药理<br/>分类配色速览</h1>
+      <div class="sub">33 种常用精神药物，按 7 大药理类别以不同配色区分 — 与可打印卡牌一一对应。</div>
+    </div>
+
+    <!-- LEGEND -->
+    <div class="sectitle">
+      <b>七大类 · 配色对照</b><span>每类一种主色，便于快速识别</span><span class="rule"></span>
+    </div>
+    <div class="rows">
+      <!-- 抗抑郁药 -->
+      <div class="row">
+        <div class="spine" style="background:var(--c-anti)"></div>
+        <div class="body">
+          <div class="head"><span class="name">抗抑郁药</span><span class="count" style="background:var(--c-anti)">9 种</span></div>
+          <div class="examples">
+            <span class="ex">舍曲林</span><span class="ex">氟西汀</span><span class="ex">文拉法辛</span><span class="ex">米氮平</span>
+            <span class="ex">草酸艾司西酞普兰</span><span class="ex">阿戈美拉汀</span><span class="ex">伏硫西汀</span><span class="ex">度洛西汀</span><span class="ex">曲唑酮</span>
+          </div>
+        </div>
+      </div>
+      <!-- 抗精神病药 -->
+      <div class="row">
+        <div class="spine" style="background:var(--c-psy)"></div>
+        <div class="body">
+          <div class="head"><span class="name">抗精神病药</span><span class="count" style="background:var(--c-psy)">8 种</span></div>
+          <div class="examples">
+            <span class="ex">氯丙嗪</span><span class="ex">氟哌啶醇</span><span class="ex">奥氮平</span><span class="ex">利培酮</span>
+            <span class="ex">喹硫平</span><span class="ex">氯氮平</span><span class="ex">阿立哌唑</span><span class="ex">帕利哌酮</span>
+          </div>
+        </div>
+      </div>
+      <!-- 心境稳定剂 -->
+      <div class="row">
+        <div class="spine" style="background:var(--c-mood)"></div>
+        <div class="body">
+          <div class="head"><span class="name">心境稳定剂</span><span class="count" style="background:var(--c-mood)">4 种</span></div>
+          <div class="examples">
+            <span class="ex">碳酸锂</span><span class="ex">丙戊酸钠</span><span class="ex">卡马西平</span><span class="ex">拉莫三嗪</span>
+          </div>
+        </div>
+      </div>
+      <!-- 抗焦虑药 -->
+      <div class="row">
+        <div class="spine" style="background:var(--c-anx)"></div>
+        <div class="body">
+          <div class="head"><span class="name">抗焦虑药</span><span class="count" style="background:var(--c-anx)">4 种</span></div>
+          <div class="examples">
+            <span class="ex">地西泮</span><span class="ex">阿普唑仑</span><span class="ex">劳拉西泮</span><span class="ex">艾司唑仑</span>
+          </div>
+        </div>
+      </div>
+      <!-- 催眠药 -->
+      <div class="row">
+        <div class="spine" style="background:var(--c-sleep)"></div>
+        <div class="body">
+          <div class="head"><span class="name">催眠药</span><span class="count" style="background:var(--c-sleep)">3 种</span></div>
+          <div class="examples">
+            <span class="ex">思诺思</span><span class="ex">佐匹克隆</span><span class="ex">莱博雷生</span>
+          </div>
+        </div>
+      </div>
+      <!-- 兴奋剂 -->
+      <div class="row">
+        <div class="spine" style="background:var(--c-stim)"></div>
+        <div class="body">
+          <div class="head"><span class="name">兴奋剂</span><span class="count" style="background:var(--c-stim)">1 种</span></div>
+          <div class="examples">
+            <span class="ex">哌甲酯</span>
+          </div>
+        </div>
+      </div>
+      <!-- 相关药物 -->
+      <div class="row">
+        <div class="spine" style="background:var(--c-other)"></div>
+        <div class="body">
+          <div class="head"><span class="name">相关药物</span><span class="count" style="background:var(--c-other)">4 种</span></div>
+          <div class="examples">
+            <span class="ex">泰诺</span><span class="ex">司美格鲁肽</span><span class="ex">叶酸</span><span class="ex">为力苏</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="foot">
+      <span class="tag">🧠 药枢 NeuroPharm</span>
+      <span class="disc">本速览仅供精神药理学习使用，不构成临床用药建议；用药请遵循指南与医师指导。</span>
+    </div>
+  </div>
+</body>
+</html>

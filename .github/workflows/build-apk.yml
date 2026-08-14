@@ -1,0 +1,63 @@
+name: Build Android APK
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Accept licenses & install SDK packages
+        run: |
+          yes | sdkmanager --licenses || true
+          sdkmanager "platforms;android-34" "build-tools;34.0.0"
+
+      - name: Bundle latest HTML + sync scripts into app assets (offline WebView)
+        run: |
+          mkdir -p psychopharm-android/app/src/main/assets
+          cp psychopharm-app.html psychopharm-android/app/src/main/assets/psychopharm-app.html
+          cp auth.js psychopharm-android/app/src/main/assets/auth.js
+          cp sync.js psychopharm-android/app/src/main/assets/sync.js
+
+      - name: Ensure Gradle wrapper (project has no committed gradlew)
+        uses: gradle/gradle-build-action@v3
+        with:
+          gradle-version: 8.2
+          build-root-directory: psychopharm-android
+          arguments: wrapper --gradle-version 8.2
+
+      - name: Build debug APK
+        uses: gradle/gradle-build-action@v3
+        with:
+          build-root-directory: psychopharm-android
+          arguments: :app:assembleDebug --no-daemon
+
+      - name: Upload APK to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: 药枢 NeuroPharm ${{ github.ref_name }}
+          body: |
+            药枢 NeuroPharm Android 调试版 APK（原生 WebView 壳，离线打包最新 H5 + 账号同步脚本）。
+            - 安装：允许「未知来源」后安装。
+            - 账号与多设备同步：首次需联网（对接 Cloudflare 后端）。
+            - 调试签名，可直接侧载；如需正式签名另行配置 keystore。
+          files: psychopharm-android/app/build/outputs/apk/debug/app-debug.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>药枢 NeuroPharm · 登录与多设备同步</title>
+<style>
+:root{
+  --bg:#F3F6F6; --surface:#FFFFFF; --surface-2:#F7FAFA;
+  --primary:#0F8B8D; --primary-d:#0B6E6E; --primary-soft:#E3F3F1;
+  --text:#1F2A2E; --text-2:#5B6B70; --border:#E2E8EA;
+  --success:#2E9E5B; --danger:#C0463F; --coral:#E07A5F;
+  --radius:16px; --shadow:0 8px 30px rgba(15,60,60,.10);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  background:var(--bg); color:var(--text);
+  display:flex; align-items:center; justify-content:center; padding:20px;
+}
+.phone{
+  width:384px; max-width:100%; height:780px; max-height:94vh;
+  background:var(--surface); border-radius:34px; box-shadow:var(--shadow);
+  border:1px solid var(--border); overflow:hidden; position:relative;
+  display:flex; flex-direction:column;
+}
+.topbar{height:14px;flex:none}
+.view{flex:1;display:none;flex-direction:column;padding:22px 22px 18px;overflow-y:auto}
+.view.active{display:flex}
+
+/* brand */
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.brand .dot{width:30px;height:30px;border-radius:9px;background:var(--primary);
+  display:grid;place-items:center;color:#fff;font-weight:700;font-size:15px;flex:none}
+.brand .name{font-weight:700;font-size:16px;letter-spacing:.3px}
+.brand .name small{display:block;font-weight:500;font-size:10.5px;color:var(--text-2);letter-spacing:1.5px}
+
+h1{font-size:23px;margin:18px 0 6px}
+.sub{color:var(--text-2);font-size:13.5px;line-height:1.55;margin:0 0 22px}
+
+/* form */
+.field{margin-bottom:16px}
+.field label{display:block;font-size:12.5px;color:var(--text-2);margin-bottom:7px;font-weight:600}
+.field input{
+  width:100%;padding:13px 14px;font-size:15px;border:1.5px solid var(--border);
+  border-radius:12px;background:var(--surface-2);color:var(--text);outline:none;
+  transition:border-color .18s,box-shadow .18s;
+}
+.field input:focus-visible{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft);outline:none}
+.pw-wrap{position:relative}
+.pw-wrap .toggle{position:absolute;right:10px;top:50%;transform:translateY(-50%);
+  border:none;background:none;color:var(--primary);font-size:12.5px;cursor:pointer;font-weight:600;padding:6px}
+
+.btn{
+  width:100%;padding:14px;border:none;border-radius:13px;font-size:15.5px;font-weight:700;
+  cursor:pointer;transition:transform .12s,background .18s,opacity .18s;
+}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-d)}
+.btn-primary:active{transform:scale(.985)}
+.btn-primary:disabled{opacity:.7;cursor:default}
+.btn-ghost{background:transparent;color:var(--text-2);font-weight:600;font-size:13px;margin-top:14px}
+.btn-danger{background:#fff;color:var(--danger);border:1.5px solid #F0CFCB;margin-top:auto}
+.btn-danger:hover{background:#FDF3F2}
+
+/* status / messages */
+.msg{font-size:12.5px;border-radius:10px;padding:10px 12px;margin-bottom:14px;display:none}
+.msg.show{display:block}
+.msg.err{background:#FDF3F2;color:var(--danger);border:1px solid #F0CFCB}
+.msg.ok{background:#EAF7EF;color:var(--success);border:1px solid #CDEBD7}
+[aria-live]{min-height:1px}
+
+/* sync center */
+.card{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px}
+.user{display:flex;align-items:center;gap:12px}
+.avatar{width:44px;height:44px;border-radius:13px;background:var(--primary-soft);color:var(--primary-d);
+  display:grid;place-items:center;font-weight:700;font-size:18px;flex:none}
+.user .email{font-weight:700;font-size:15px}
+.user .tag{font-size:11.5px;color:var(--success);font-weight:600}
+.syncrow{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.syncrow .when{font-size:12.5px;color:var(--text-2)}
+.syncbtn{background:var(--primary-soft);color:var(--primary-d);border:none;border-radius:10px;
+  padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:7px}
+.syncbtn:disabled{opacity:.75;cursor:default}
+.sectitle{font-size:13px;font-weight:700;margin:4px 4px 10px;color:var(--text)}
+.device{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--border)}
+.device:first-of-type{border-top:none}
+.dicon{width:38px;height:38px;border-radius:11px;background:#fff;border:1px solid var(--border);
+  display:grid;place-items:center;font-size:18px;flex:none}
+.device .dname{font-weight:600;font-size:14px}
+.device .dmeta{font-size:11.5px;color:var(--text-2);margin-top:2px}
+.device .dname .me{font-size:10.5px;color:var(--primary-d);background:var(--primary-soft);
+  padding:1px 7px;border-radius:6px;margin-left:7px;font-weight:700}
+.device .rm{border:none;background:none;color:var(--text-2);font-size:12px;cursor:pointer;margin-left:auto;padding:6px}
+.device .rm:hover{color:var(--danger)}
+
+.spinner{width:14px;height:14px;border:2px solid var(--primary-d);border-top-color:transparent;
+  border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.float{position:fixed;left:50%;top:42%;transform:translate(-50%,-50%) scale(.8);opacity:0;
+  background:var(--text);color:#fff;padding:14px 20px;border-radius:14px;font-size:14px;font-weight:600;
+  pointer-events:none;transition:opacity .25s,transform .25s;z-index:9}
+.float.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+@media (prefers-reduced-motion: reduce){
+  .spinner{animation:none}
+  .float{transition:none}
+  *{transition:none!important}
+}
+.footer-note{font-size:11px;color:var(--text-2);text-align:center;margin-top:16px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="topbar"></div>
+
+  <!-- ============ LOGIN ============ -->
+  <section class="view active" id="login">
+    <div class="brand">
+      <div class="dot">药</div>
+      <div class="name">药枢<small>NEUROPHARM</small></div>
+    </div>
+    <h1>欢迎回来</h1>
+    <p class="sub">登录后，你的学习进度、连续打卡和徽章会在所有设备间自动同步。换手机也不怕丢。</p>
+
+    <div class="msg err" id="loginErr" role="alert"></div>
+
+    <div class="field">
+      <label for="email">邮箱</label>
+      <input id="email" type="email" autocomplete="email" placeholder="you@example.com" value="lin@study.com">
+    </div>
+    <div class="field">
+      <label for="pw">密码</label>
+      <div class="pw-wrap">
+        <input id="pw" type="password" autocomplete="current-password" placeholder="请输入密码" value="demo1234">
+        <button class="toggle" id="pwToggle" type="button" aria-label="显示密码">显示</button>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" id="loginBtn">登录 / 注册</button>
+    <button class="btn btn-ghost" id="forgotBtn" type="button">遇到问题？用邮箱验证码登录</button>
+  </section>
+
+  <!-- ============ SYNC CENTER ============ -->
+  <section class="view" id="center">
+    <div class="brand">
+      <div class="dot">药</div>
+      <div class="name">我的 · 同步<small>ACCOUNT &amp; SYNC</small></div>
+    </div>
+
+    <div class="card user">
+      <div class="avatar" id="avatar">L</div>
+      <div>
+        <div class="email" id="uEmail">lin@study.com</div>
+        <div class="tag">● 已登录</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="syncrow">
+        <div>
+          <div style="font-weight:700;font-size:14px">云端同步</div>
+          <div class="when" id="lastSync" aria-live="polite">上次同步：刚刚</div>
+        </div>
+        <button class="syncbtn" id="syncBtn">
+          <span id="syncIcon"></span><span id="syncLabel">立即同步</span>
+        </button>
+      </div>
+      <p style="font-size:11.5px;color:var(--text-2);margin:12px 0 0;line-height:1.5">
+        积分 / 连续 / 徽章 已跨设备同步。
+      </p>
+    </div>
+
+    <div class="sectitle">已登录的设备</div>
+    <div class="card" id="deviceList"><!-- devices injected --></div>
+
+    <button class="btn btn-danger" id="logoutBtn">退出登录</button>
+    <p class="footer-note">移除某台设备后，它将无法再拉取你的进度。</p>
+  </section>
+</div>
+
+<div class="float" id="toast"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const login = $('login'), center = $('center');
+
+// ---- password show/hide ----
+$('pwToggle').addEventListener('click', () => {
+  const pw = $('pw');
+  const show = pw.type === 'password';
+  pw.type = show ? 'text' : 'password';
+  $('pwToggle').textContent = show ? '隐藏' : '显示';
+  $('pwToggle').setAttribute('aria-label', show ? '隐藏密码' : '显示密码');
+});
+
+// ---- toast ----
+let toastT;
+function toast(text){
+  const t = $('toast');
+  t.textContent = text; t.classList.add('show');
+  clearTimeout(toastT);
+  toastT = setTimeout(() => t.classList.remove('show'), 1600);
+}
+
+// ---- login (simulated) ----
+$('loginBtn').addEventListener('click', () => {
+  const email = $('email').value.trim();
+  const pw = $('pw').value;
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){
+    $('loginErr').textContent = '邮箱格式好像不太对，核对一下？';
+    $('loginErr').classList.add('show'); return;
+  }
+  if(pw.length < 6){
+    $('loginErr').textContent = '密码至少 6 位，再确认一下？';
+    $('loginErr').classList.add('show'); return;
+  }
+  $('loginErr').classList.remove('show');
+  const btn = $('loginBtn');
+  btn.disabled = true; btn.textContent = '正在为你接通云端…';
+  setTimeout(() => {
+    btn.disabled = false; btn.textContent = '登录 / 注册';
+    $('uEmail').textContent = email;
+    $('avatar').textContent = (email[0] || 'L').toUpperCase();
+    enterCenter();
+  }, 1100);
+});
+
+$('forgotBtn').addEventListener('click', () => toast('已发送验证码到你的邮箱 ✉️'));
+
+// ---- enter sync center ----
+function enterCenter(){
+  login.classList.remove('active');
+  center.classList.add('active');
+  renderDevices();
+}
+
+// ---- devices ----
+const devices = [
+  { id:'d1', icon:'📱', name:'iPhone 15', meta:'此设备 · 刚刚同步', me:true },
+  { id:'d2', icon:'💻', name:'MacBook Air', meta:'2 分钟前同步', me:false },
+  { id:'d3', icon:'📟', name:'iPad mini', meta:'昨天 21:40 同步', me:false },
+];
+function renderDevices(){
+  const box = $('deviceList'); box.innerHTML = '';
+  devices.forEach(d => {
+    const row = document.createElement('div');
+    row.className = 'device';
+    row.innerHTML = `
+      <div class="dicon">${d.icon}</div>
+      <div>
+        <div class="dname">${d.name}${d.me ? '<span class="me">此设备</span>' : ''}</div>
+        <div class="dmeta">${d.meta}</div>
+      </div>
+      ${d.me ? '' : '<button class="rm" data-id="'+d.id+'">移除</button>'}`;
+    box.appendChild(row);
+  });
+  box.querySelectorAll('.rm').forEach(b => {
+    b.addEventListener('click', () => {
+      const id = b.dataset.id;
+      const i = devices.findIndex(x => x.id === id);
+      if(i > -1){ devices.splice(i,1); renderDevices(); toast('已移除该设备'); }
+    });
+  });
+}
+
+// ---- sync (simulated) ----
+$('syncBtn').addEventListener('click', () => {
+  const btn = $('syncBtn');
+  btn.disabled = true;
+  $('syncIcon').innerHTML = '<span class="spinner"></span>';
+  $('syncLabel').textContent = '同步中';
+  $('lastSync').textContent = '正在把你的进度从云端接回来 ✨';
+  setTimeout(() => {
+    btn.disabled = false;
+    $('syncIcon').innerHTML = '';
+    $('syncLabel').textContent = '立即同步';
+    $('lastSync').textContent = '上次同步：刚刚';
+    devices.forEach(d => d.meta = (d.me ? '此设备 · ' : '') + '刚刚同步');
+    renderDevices();
+    toast('同步完成 ✅');
+  }, 1300);
+});
+
+// ---- logout ----
+$('logoutBtn').addEventListener('click', () => {
+  center.classList.remove('active');
+  login.classList.add('active');
+  toast('已退出登录');
+});
+</script>
+</body>
+</html>

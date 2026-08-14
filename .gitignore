@@ -1,0 +1,29 @@
+# ── Node / Cloudflare Worker ──
+node_modules/
+neuropharm-worker/node_modules/
+neuropharm-worker/.wrangler/
+neuropharm-worker/.cf_env
+*.local
+
+# ── Python ──
+__pycache__/
+*.pyc
+venv/
+.env
+
+# ── Android 沙箱环境残留（cmdline-tools 等，147MB，禁止入库）──
+.dl/
+
+# ── Android 工程构建产物 & 本地配置（APK 由 CI 生成并发布到 Release，不入库）──
+psychopharm-android/.gradle/
+psychopharm-android/app/build/
+psychopharm-android/local.properties
+*.apk
+
+# ── OS / editor ──
+.DS_Store
+Thumbs.db
+*.tmp
+
+# ── WorkBuddy 内部（含记忆，禁止提交）──
+.workbuddy/

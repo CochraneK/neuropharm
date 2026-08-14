@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Theme.Psychopharm" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- 让 WebView 内容延伸到状态栏/导航栏之下，配合沉浸式状态栏 -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowFullscreen">false</item>
+    </style>
+
+</resources>

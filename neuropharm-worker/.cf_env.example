@@ -1,0 +1,10 @@
+# 复制本文件为 .cf_env 并填入你的 Cloudflare 凭证（.cf_env 不会被提交）
+# 然后告诉我「部署」，我会运行 node deploy.mjs
+
+# 1) 自定义 API 令牌：Cloudflare 仪表盘 → My Profile → API Tokens → Create Token
+#    模板选 "Edit Cloudflare Workers"，并额外加一条 Account > D1 > Edit
+#    权限需包含：Account > Workers Scripts > Edit  和  Account > D1 > Edit
+CLOUDFLARE_API_TOKEN=粘贴你的令牌到这里
+
+# 2) 账户 ID：Cloudflare 仪表盘首页右侧「Account ID」
+CLOUDFLARE_ACCOUNT_ID=粘贴你的账户ID到这里

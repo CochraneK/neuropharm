@@ -1,0 +1,12 @@
+name = "neuropharm-sync"
+main = "worker.js"
+compatibility_date = "2024-09-23"
+account_id = "ae27d2977eacb9430d01773a28d42c93"
+
+# 独立 Worker + 独立 D1，不复用 BSRI 的 polished-moon
+[[d1_databases]]
+binding = "DB"
+database_name = "neuropharm"
+database_id = "ba30f0fb-96d2-465e-871d-39aff02a03f8"
+
+# JWT_SECRET 由 deploy.mjs 通过 `wrangler secret put` 注入，不写在此文件

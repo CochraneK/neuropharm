@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>药枢 · 精神药理学习</title>
+<style>
+  :root{
+    --bg:#F5F6F8;
+    --surface:#FFFFFF;
+    --surface-2:#F0F2F5;
+    --text:#1B1F24;
+    --text-2:#6B7280;
+    --text-3:#9AA1AC;
+    --border:#E8EAED;
+    --accent:#0E8C7F;
+    --accent-press:#0B756A;
+    --accent-soft:#E3F3F0;
+    --warn:#C2466B;
+    --warn-soft:#FBE7EE;
+    --c-anti:#2E7DD1;
+    --c-anti-soft:#E7F0FB;
+    --c-psy:#4F46B8;
+    --c-psy-soft:#ECEBF9;
+    --c-mood:#C08A1E;
+    --c-mood-soft:#F8F0DC;
+    --c-anx:#0E8C7F;
+    --c-anx-soft:#E3F3F0;
+    --c-stim:#C2466B;
+    --c-stim-soft:#FBE7EE;
+    --c-other:#6B7280;
+    --c-other-soft:#EEF1F5;
+    --radius-card:20px;
+    --radius-sm:12px;
+    --shadow:0 1px 2px rgba(16,24,40,.04), 0 8px 24px rgba(16,24,40,.06);
+    --font:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  body{
+    font-family:var(--font);
+    background:radial-gradient(1200px 600px at 50% -10%,#EDF1F4 0%,#E7EAEE 55%,#DEE2E7 100%);
+    color:var(--text);
+    min-height:100vh;
+    display:flex;align-items:center;justify-content:center;
+    padding:28px 16px;
+  }
+  .phone{
+    position:relative;
+    width:390px;height:844px;
+    background:var(--bg);
+    border-radius:46px;
+    box-shadow:0 0 0 11px #16181C,0 0 0 13px #2A2D33,0 30px 70px rgba(16,24,40,.38);
+    overflow:hidden;
+    display:flex;flex-direction:column;
+  }
+  /* ---------- Status Bar ---------- */
+  .statusbar{
+    height:62px;flex:0 0 62px;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 30px;
+    font-family:"SF Pro",var(--font);
+    font-size:15px;font-weight:600;color:var(--text);
+    z-index:5;
+  }
+  .statusbar .icons{display:flex;align-items:center;gap:6px;}
+  .statusbar svg{display:block;}
+  /* ---------- Screens ---------- */
+  .screens{position:relative;flex:1 1 auto;overflow:hidden;}
+  .screen{
+    position:absolute;top:0;right:0;bottom:0;left:0;
+    overflow-y:auto;
+    padding:8px 20px 120px;
+    display:none;
+    -webkit-overflow-scrolling:touch;
+  }
+  .screen.active{display:block;}
+  .screen::-webkit-scrollbar{width:0;}
+  .sec{margin-top:26px;}
+  .sec:first-child{margin-top:6px;}
+  .seclabel{
+    font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--text-3);margin-bottom:12px;
+  }
+  /* ---------- Home ---------- */
+  .hello{font-size:13px;color:var(--text-2);font-weight:500;}
+  .hello b{color:var(--text);font-weight:700;}
+  .htitle{font-size:25px;font-weight:800;letter-spacing:-.01em;margin-top:4px;}
+  .streak{
+    margin-top:18px;background:linear-gradient(135deg,#0E8C7F,#14A892);
+    border-radius:var(--radius-card);padding:18px;color:#fff;
+    display:flex;align-items:center;justify-content:space-between;
+    box-shadow:0 10px 26px rgba(14,140,127,.30);
+  }
+  .streak .big{font-size:28px;font-weight:800;line-height:1;}
+  .streak .lab{font-size:13px;opacity:.9;margin-top:4px;}
+  .streak .sub{font-size:12.5px;opacity:.85;margin-top:8px;line-height:1.45;}
+  .streak .flame{font-size:34px;}
+  .continue{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-card);
+    padding:16px;box-shadow:var(--shadow);
+  }
+  .continue .row{display:flex;align-items:center;justify-content:space-between;}
+  .continue .ttl{font-size:15px;font-weight:700;}
+  .continue .meta{font-size:12.5px;color:var(--text-2);margin-top:3px;}
+  .bar{height:7px;background:var(--surface-2);border-radius:99px;margin-top:14px;overflow:hidden;}
+  .bar > i{display:block;height:100%;width:64%;background:var(--accent);border-radius:99px;}
+  .btn{
+    border:none;cursor:pointer;font-family:var(--font);
+    background:var(--accent);color:#fff;font-weight:700;font-size:14px;
+    padding:11px 18px;border-radius:12px;margin-top:14px;width:100%;
+  }
+  .btn:active{background:var(--accent-press);}
+  .btn.ghost{background:var(--accent-soft);color:var(--accent);}
+  .pills{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;}
+  .pills::-webkit-scrollbar{height:0;}
+  .pill{
+    flex:0 0 auto;background:var(--surface);border:1px solid var(--border);
+    border-radius:14px;padding:12px 14px;min-width:104px;box-shadow:var(--shadow);
+  }
+  .pill .ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;margin-bottom:8px;}
+  .pill .nm{font-size:13px;font-weight:700;}
+  .pill .ct{font-size:11.5px;color:var(--text-3);margin-top:2px;}
+  .featured{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-card);
+    padding:16px;box-shadow:var(--shadow);display:flex;gap:14px;align-items:center;cursor:pointer;
+  }
+  .featured .medal{
+    flex:0 0 56px;height:56px;border-radius:16px;background:var(--accent-soft);
+    display:flex;align-items:center;justify-content:center;font-size:26px;
+  }
+  .featured .fttl{font-size:16px;font-weight:800;}
+  .featured .fen{font-size:12.5px;color:var(--text-2);margin-top:2px;}
+  .featured .fbadge{display:inline-block;margin-top:7px;font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-soft);padding:3px 8px;border-radius:99px;}
+  .featured .arrow{margin-left:auto;color:var(--text-3);font-size:20px;}
+  .qlinks{display:flex;gap:12px;}
+  .qlink{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;box-shadow:var(--shadow);cursor:pointer;}
+  .qlink .qi{font-size:20px;}
+  .qlink .qt{font-size:12.5px;font-weight:700;margin-top:8px;}
+  .disclaimer{margin-top:22px;font-size:11px;color:var(--text-3);line-height:1.5;text-align:center;}
+  /* ---------- Library ---------- */
+  .search{
+    display:flex;align-items:center;gap:9px;background:var(--surface);
+    border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-top:6px;
+    box-shadow:var(--shadow);
+  }
+  .search input{border:none;outline:none;font-family:var(--font);font-size:14px;flex:1;color:var(--text);background:transparent;}
+  .search svg{flex:0 0 auto;}
+  .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;}
+  .chips::-webkit-scrollbar{height:0;}
+  .chip{
+    flex:0 0 auto;border:1px solid var(--border);background:var(--surface);
+    color:var(--text-2);font-size:12.5px;font-weight:600;padding:8px 13px;border-radius:99px;cursor:pointer;white-space:nowrap;
+  }
+  .chip.on{background:var(--text);color:#fff;border-color:var(--text);}
+  .drug{
+    background:var(--surface);border:1px solid var(--border);border-radius:16px;
+    padding:14px 15px;margin-bottom:12px;display:flex;align-items:center;gap:13px;cursor:pointer;box-shadow:var(--shadow);
+  }
+  .drug:active{transform:scale(.99);}
+  .drug .dot{width:42px;height:42px;border-radius:12px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;}
+  .drug .info{flex:1;min-width:0;}
+  .drug .zh{font-size:15.5px;font-weight:700;}
+  .drug .en{font-size:12px;color:var(--text-3);margin-top:1px;}
+  .drug .cls{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;margin-top:7px;}
+  .drug .chev{color:var(--text-3);font-size:18px;}
+  /* ---------- Detail ---------- */
+  .detail-head{display:flex;align-items:center;gap:12px;margin-top:4px;}
+  .back{
+    width:38px;height:38px;border-radius:11px;background:var(--surface);border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow);font-size:18px;color:var(--text);
+  }
+  .dname{font-size:24px;font-weight:800;letter-spacing:-.01em;}
+  .den{font-size:13px;color:var(--text-3);margin-top:2px;}
+  .dbadge{display:inline-block;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:99px;margin-top:10px;}
+  .facts{display:flex;gap:10px;margin-top:16px;}
+  .fact{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px;text-align:center;box-shadow:var(--shadow);}
+  .fact .fv{font-size:15px;font-weight:800;}
+  .fact .fl{font-size:11px;color:var(--text-3);margin-top:3px;}
+  .block{margin-top:22px;}
+  .block .bt{font-size:14px;font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+  .block .bt .tag{width:6px;height:16px;border-radius:3px;background:var(--accent);}
+  .block .bd{font-size:13.5px;color:var(--text-2);line-height:1.6;}
+  .ul{list-style:none;}
+  .ul li{font-size:13.5px;color:var(--text-2);line-height:1.5;padding:9px 0 9px 20px;position:relative;border-bottom:1px solid var(--border);}
+  .ul li:last-child{border-bottom:none;}
+  .ul li::before{content:"";position:absolute;left:4px;top:16px;width:6px;height:6px;border-radius:99px;background:var(--accent);}
+  .warnbox{background:var(--warn-soft);border:1px solid #F3C9D8;border-radius:14px;padding:13px 14px;}
+  .warnbox .wt{font-size:13px;font-weight:800;color:var(--warn);display:flex;align-items:center;gap:6px;margin-bottom:7px;}
+  .warnbox .wl{font-size:13px;color:#9A3552;line-height:1.55;}
+  /* ---------- Study ---------- */
+  .study-top{display:flex;align-items:center;justify-content:space-between;margin-top:6px;}
+  .study-top .qt{font-size:15px;font-weight:800;}
+  .study-top .qs{font-size:12.5px;color:var(--text-2);}
+  .card{
+    margin-top:20px;border-radius:24px;cursor:pointer;position:relative;
+    width:100%;max-width:330px;margin-left:auto;margin-right:auto;
+    display:flex;flex-direction:column;
+  }
+  .card-inner{position:relative;min-height:260px;flex:1 1 auto;display:flex;flex-direction:column;}
+  .face{
+    position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;
+    border-radius:24px;padding:22px;display:flex;flex-direction:column;box-shadow:var(--shadow);border:1px solid var(--border);
+    transition:opacity .3s ease, transform .3s ease;
+  }
+  .face.front{background:linear-gradient(150deg,#FFFFFF,#F3F7F6);align-items:center;justify-content:center;text-align:center;opacity:1;transform:scale(1);}
+  .card.flip .face.front{opacity:0;transform:scale(.96);}
+  .face.front .fcz{font-size:30px;font-weight:800;letter-spacing:-.01em;}
+  .face.front .fce{font-size:14px;color:var(--text-3);margin-top:6px;}
+  .face.front .fcls{margin-top:16px;font-size:12px;font-weight:700;padding:5px 12px;border-radius:99px;background:var(--accent-soft);color:var(--accent);}
+  .face.front .ftip{margin-top:18px;font-size:12px;color:var(--text-3);}
+  .face.back{background:linear-gradient(150deg,#0A6A60,#0B7C70);color:#FFFFFF;opacity:0;transform:scale(.96);pointer-events:none;overflow-y:auto;}
+  .card.flip .face.back{opacity:1;transform:scale(1);pointer-events:auto;}
+  .face.back .rt{font-size:17px;font-weight:800;margin-top:2px;margin-bottom:2px;color:#FFFFFF;}
+  .face.back .rbd{font-size:12.5px;line-height:1.4;margin-top:10px;display:flex;flex-direction:column;gap:9px;padding-right:2px;}
+  .face.back .rsec{display:flex;flex-direction:row;gap:8px;align-items:flex-start;}
+  .face.back .rl{font-size:10px;font-weight:700;letter-spacing:.03em;color:#BDEEE7;text-transform:uppercase;flex:0 0 66px;padding-top:1px;}
+  .face.back .rv{font-size:12.5px;color:#F4FFFC;opacity:1;flex:1 1 auto;min-width:0;}
+  .face.back .rv.rwarn{background:rgba(255,228,234,.16);border-left:3px solid #FF9DB4;padding:7px 9px;border-radius:0 8px 8px 0;color:#FFFFFF;font-weight:600;}
+  .face.back .chip{display:inline-block;font-size:11px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);padding:1px 7px;border-radius:99px;margin:0 4px 4px 0;color:#FFFFFF;}
+  .face.back .rcls{margin-top:8px;font-size:11.5px;color:#CFEFEA;opacity:1;}
+  .judge{display:flex;gap:12px;margin-top:18px;}
+  .judge button{flex:1;border:none;font-family:var(--font);font-size:14px;font-weight:700;padding:14px;border-radius:14px;cursor:pointer;}
+  .judge .no{background:var(--warn-soft);color:var(--warn);}
+  .judge .yes{background:var(--accent);color:#fff;}
+  .quiz-opt{display:block;width:100%;text-align:left;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 15px;margin-top:12px;font-family:var(--font);font-size:14px;font-weight:600;color:var(--text);cursor:pointer;box-shadow:var(--shadow);transition:border-color .15s ease,background .15s ease;}
+  .quiz-opt:active{border-color:var(--accent);}
+  .quiz-nav{display:flex;align-items:center;gap:10px;margin-top:16px;}
+  .quiz-nav button{flex:1;border:1px solid var(--border);background:var(--surface);font-family:var(--font);font-size:13.5px;font-weight:700;color:var(--text);padding:12px;border-radius:12px;cursor:pointer;box-shadow:var(--shadow);transition:border-color .15s ease,opacity .15s ease;}
+  .quiz-nav button:active{border-color:var(--accent);}
+  .quiz-nav .qprev{color:var(--text-2);}
+  .quiz-nav .qnext{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .quiz-nav .qnext.finish{background:var(--c-mood);border-color:var(--c-mood);}
+  .quiz-nav button.disabled{opacity:.4;pointer-events:none;}
+  .quiz-nav .qprog{flex:0 0 auto;font-size:12.5px;font-weight:700;color:var(--text-2);min-width:80px;text-align:center;}
+  .quiz-result{margin-top:18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-card);padding:24px 18px;text-align:center;box-shadow:var(--shadow);}
+  .quiz-result .qr-emoji{font-size:42px;line-height:1;}
+  .quiz-result .qr-title{font-size:17px;font-weight:800;margin-top:8px;}
+  .quiz-result .qr-score{font-size:13px;color:var(--text-2);margin-top:7px;font-weight:700;}
+  .quiz-result .qr-sub{font-size:12.5px;color:var(--text-3);margin-top:4px;}
+  .quiz-result .btn{margin-top:14px;}
+  .seg{display:flex;background:var(--surface-2);border-radius:12px;padding:4px;margin-top:16px;}
+  .seg button{flex:1;border:none;background:transparent;font-family:var(--font);font-size:13px;font-weight:700;color:var(--text-2);padding:9px;border-radius:9px;cursor:pointer;}
+  .seg button.on{background:var(--surface);color:var(--text);box-shadow:var(--shadow);}
+  /* Study screen: single-screen, no-scroll fit (card fills, judge pinned) */
+  #study.active{display:flex;flex-direction:column;overflow:hidden;height:100%;padding-bottom:96px;}
+  #study .study-top{flex:0 0 auto;margin-top:4px;}
+  #study .seg{flex:0 0 auto;}
+  #cardWrap{flex:1 1 auto;display:flex;flex-direction:column;min-height:0;margin-top:8px;}
+  #cardWrap .card{margin-top:14px;flex:1 1 auto;min-height:0;}
+  .judge{flex:0 0 auto;}
+  #quizWrap{flex:1 1 auto;min-height:0;overflow-y:auto;margin-top:8px;}
+  /* ---------- Interaction ---------- */
+  .sel{
+    width:100%;font-family:var(--font);font-size:14px;font-weight:600;color:var(--text);
+    background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 14px;
+    box-shadow:var(--shadow);-webkit-appearance:none;appearance:none;
+  }
+  .plus{text-align:center;color:var(--text-3);font-size:18px;margin:10px 0;font-weight:700;}
+  .ihead{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .ibadge{font-size:12px;font-weight:800;padding:4px 11px;border-radius:99px;white-space:nowrap;}
+  .ihead .inames{font-size:14px;font-weight:800;}
+  .ibody{font-size:13.5px;color:var(--text-2);line-height:1.6;}
+  .ihint{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:13px 14px;margin-bottom:10px;box-shadow:var(--shadow);}
+  .ihint .iht{font-size:13px;font-weight:800;display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+  .ihint .ihl{font-size:12.5px;color:var(--text-2);line-height:1.5;}
+  /* ---------- Profile ---------- */
+  .profile-head{display:flex;align-items:center;gap:15px;margin-top:8px;}
+  .avatar{width:64px;height:64px;border-radius:20px;background:linear-gradient(135deg,#0E8C7F,#14A892);display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;font-weight:800;}
+  .pname{font-size:20px;font-weight:800;}
+  .prole{font-size:13px;color:var(--text-2);margin-top:3px;}
+  .stats{display:flex;gap:10px;margin-top:18px;}
+  .stat{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px;text-align:center;box-shadow:var(--shadow);}
+  .stat .sv{font-size:22px;font-weight:800;}
+  .stat .sl{font-size:11.5px;color:var(--text-3);margin-top:4px;}
+  .setrow{display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 15px;margin-top:12px;box-shadow:var(--shadow);}
+  .setrow .sl{font-size:14px;font-weight:600;}
+  .setrow .sr{color:var(--text-3);font-size:13px;display:flex;align-items:center;gap:8px;}
+  .toggle{width:42px;height:25px;border-radius:99px;background:var(--accent);position:relative;}
+  .toggle::after{content:"";position:absolute;right:3px;top:3px;width:19px;height:19px;border-radius:99px;background:#fff;}
+  .toggle.off{background:var(--border);}
+  .toggle.off::after{right:auto;left:3px;}
+  /* ---------- Tab Bar (pill) ---------- */
+  .tabbar{
+    position:absolute;left:0;right:0;bottom:0;z-index:6;
+    padding:12px 21px 21px;
+    display:flex;justify-content:center;
+    pointer-events:none;
+  }
+  .pillbar{
+    pointer-events:auto;
+    width:100%;height:62px;background:var(--surface);border:1px solid var(--border);
+    border-radius:36px;padding:4px;display:flex;
+    box-shadow:0 8px 30px rgba(16,24,40,.12);
+  }
+  .tab{
+    flex:1;height:100%;border-radius:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;
+  }
+  .tab svg{width:18px;height:18px;}
+  .tab .tl{font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3);}
+  .tab.on{background:var(--accent);}
+  .tab.on svg{stroke:var(--accent-soft);}
+  .tab.on .tl{color:#fff;}
+  /* ---------- Gamification ---------- */
+  .lvbadge{margin-left:auto;background:linear-gradient(135deg,#0E8C7F,#14A892);color:#fff;font-size:13px;font-weight:800;padding:6px 12px;border-radius:99px;box-shadow:var(--shadow);}
+  .lvbar{height:9px;background:var(--surface-2);border-radius:99px;margin-top:14px;overflow:hidden;border:1px solid var(--border);}
+  .lvbar i{display:block;height:100%;width:0%;background:linear-gradient(90deg,#0E8C7F,#14A892);border-radius:99px;transition:width .4s ease;}
+  .lvtxt{font-size:11.5px;color:var(--text-3);margin-top:6px;}
+  .seclabel-row{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;}
+  .seclabel-row .seclabel{margin-bottom:0;}
+  .expand-btn{
+    border:none;background:none;font-family:var(--font);
+    font-size:13px;font-weight:700;color:var(--accent);cursor:pointer;
+    padding:4px 6px;-webkit-user-select:none;user-select:none;letter-spacing:.02em;
+  }
+  .expand-btn:active{opacity:.6;}
+  /* Collapsed (default): compact horizontal chips, no descriptions — saves space */
+  .badges{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:8px;-webkit-overflow-scrolling:touch;padding-bottom:2px;}
+  .badges::-webkit-scrollbar{height:0;}
+  .badge{flex:0 0 auto;min-width:84px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:12px 8px;text-align:center;box-shadow:var(--shadow);transition:opacity .2s ease;}
+  .badge .bi{font-size:24px;}
+  .badge .bn{font-size:12px;font-weight:700;margin-top:5px;line-height:1.25;}
+  .badge .bd{display:none;}
+  .badge.locked{opacity:.45;}
+  /* Expanded: full 3-column grid with names + descriptions */
+  .badges.expanded{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;overflow:visible;}
+  .badges.expanded .badge{flex:none;min-width:0;padding:14px 10px;}
+  .badges.expanded .badge .bi{font-size:26px;}
+  .badges.expanded .badge .bn{font-size:12.5px;margin-top:6px;}
+  .badges.expanded .badge .bd{display:block;font-size:10.5px;color:var(--text-3);margin-top:3px;line-height:1.4;}
+  .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:rgba(14,140,127,.95);color:#fff;font-size:14px;font-weight:700;padding:9px 18px;border-radius:99px;box-shadow:0 8px 24px rgba(16,24,40,.22);z-index:50;opacity:0;transition:opacity .25s ease, transform .25s ease;pointer-events:none;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
+  .ptag{display:inline-flex;align-items:center;gap:4px;background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:800;padding:3px 10px;border-radius:99px;margin-top:8px;}
+
+  /* ---------- Mature standards: a11y & mobile ---------- */
+  button{font-family:var(--font);touch-action:manipulation;}
+  .btn,.judge button,.quiz-opt,.quiz-nav button,.seg button,.qprev,.qnext,.tab,.pill{cursor:pointer;-webkit-user-select:none;user-select:none;}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:inherit;}
+  .quiz-opt:focus-visible,.quiz-nav button:focus-visible,.btn:focus-visible{outline-offset:3px;}
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;animation:none !important;}
+  }
+  /* ---------- App mode：真机 WebView 全屏（窄屏去掉桌面手机外框） ---------- */
+  @media (max-width:480px){
+    html,body{height:100%;}
+    body{
+      padding:0;min-height:0;
+      align-items:stretch;justify-content:flex-start;
+      background:var(--bg);
+    }
+    .phone{
+      width:100%;height:100%;
+      border-radius:0;box-shadow:none;
+      background:var(--bg);
+    }
+    .statusbar{display:none;}
+    .screen{
+      padding-top:calc(env(safe-area-inset-top,0px) + 8px);
+      padding-left:max(20px,env(safe-area-inset-left,0px));
+      padding-right:max(20px,env(safe-area-inset-right,0px));
+      padding-bottom:calc(env(safe-area-inset-bottom,0px) + 120px);
+    }
+    .toast{bottom:calc(env(safe-area-inset-bottom,0px) + 96px);}
+  }
+
+  /* ---------- Visual polish & micro-interactions (added) ---------- */
+  .drug,.pill,.qlink,.featured,.badge,.continue,.setrow{
+    transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  }
+  .drug:hover,.pill:hover,.qlink:hover,.featured:hover,.continue:hover,.setrow:hover{
+    transform:translateY(-2px);
+    box-shadow:0 2px 4px rgba(16,24,40,.06), 0 14px 32px rgba(16,24,40,.10);
+  }
+  .badge:hover{transform:translateY(-2px);}
+  /* category dot gains a soft inner ring + drop shadow for depth */
+  .drug .dot{box-shadow:inset 0 0 0 1px rgba(255,255,255,.35), 0 2px 6px rgba(16,24,40,.12);}
+  /* streak card sheen for a premium feel */
+  .streak{position:relative;overflow:hidden;}
+  .streak::after{content:"";position:absolute;top:0;left:0;right:0;height:44%;
+    background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,0));
+    pointer-events:none;}
+  /* active tab gets a gentle glow */
+  .tab.on{box-shadow:0 6px 16px rgba(14,140,127,.35);}
+  /* subtle vertical depth on the device surface */
+  .phone{background:linear-gradient(180deg,#F7F8FA 0%,#EEF1F4 100%);}
+  /* ===== 登录门 / 同步 ===== */
+  .authgate{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(160deg,rgba(14,140,127,.16),rgba(20,184,166,.06));
+    -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);padding:24px;box-sizing:border-box;}
+  .authcard{width:100%;max-width:340px;background:var(--surface,#fff);border-radius:22px;padding:26px 22px 22px;
+    box-shadow:0 18px 50px rgba(16,24,40,.18);border:1px solid var(--border,rgba(16,24,40,.08));box-sizing:border-box;}
+  .authcard h2{font-size:20px;margin:0 0 6px;color:var(--text,#0b1220);font-weight:800;}
+  .authcard .asub{font-size:13px;color:var(--text-2,#5b6473);margin:0 0 18px;line-height:1.5;}
+  .afield{margin-bottom:12px;}
+  .afield input{width:100%;padding:13px 14px;border:1px solid var(--border,rgba(16,24,40,.14));border-radius:13px;
+    font-family:var(--font,inherit);font-size:15px;background:#fff;color:var(--text,#0b1220);box-sizing:border-box;}
+  .afield input:focus{outline:none;border-color:var(--accent,#0E8C7F);box-shadow:0 0 0 3px rgba(14,140,127,.14);}
+  .abtn{width:100%;padding:14px;border:none;border-radius:13px;background:var(--accent,#0E8C7F);color:#fff;
+    font-family:var(--font,inherit);font-size:15.5px;font-weight:800;cursor:pointer;margin-top:2px;transition:transform .12s ease,filter .12s ease;}
+  .abtn:active{transform:translateY(1px);filter:brightness(.97);}
+  .aswitch{margin-top:14px;text-align:center;font-size:13.5px;color:var(--accent,#0E8C7F);cursor:pointer;font-weight:700;}
+  .amore{margin-top:8px;text-align:center;font-size:13px;color:var(--text-3,#8b94a3);cursor:pointer;}
+  .amsg{font-size:13px;color:#e5484d;min-height:18px;margin:2px 0 6px;text-align:center;}
+</style>
+</head>
+<body>
+<div class="phone">
+  <!-- Status Bar -->
+  <div class="statusbar">
+    <span>17:00</span>
+    <span class="icons">
+      <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><path d="M8.5 2.5c2.3 0 4.4.9 6 2.4l1.2-1.3C13.8 1.6 11.3.5 8.5.5S3.2 1.6 1.3 3.6L2.5 4.9C4.1 3.4 6.2 2.5 8.5 2.5z"/><path d="M8.5 6c1.2 0 2.4.5 3.2 1.3l1.2-1.3C11.9 5.1 10.3 4.3 8.5 4.3S5.1 5.1 4.1 6l1.2 1.3C6.1 6.5 7.3 6 8.5 6z"/><circle cx="8.5" cy="10" r="1.6"/></svg>
+      <svg width="26" height="13" viewBox="0 0 26 13" fill="none"><rect x="1" y="1" width="21" height="11" rx="3" stroke="currentColor" stroke-width="1.2" opacity=".5"/><rect x="2.5" y="2.5" width="16" height="8" rx="1.6" fill="currentColor"/><rect x="23.5" y="4" width="1.6" height="5" rx="1" fill="currentColor" opacity=".5"/></svg>
+    </span>
+  </div>
+
+  <div class="screens">
+    <!-- ===== HOME ===== -->
+    <section class="screen active" id="home">
+      <div class="hello">下午好，<b>未来精神科医师</b></div>
+      <div class="htitle">今天想从哪一类药起步？</div>
+
+      <div class="streak">
+        <div>
+          <div class="big" id="homeStreakBig">开始</div>
+          <div class="lab" id="homeStreakLab">你的精神药理学习</div>
+          <div class="sub" id="homeStreakSub">还没有学习记录 · 从「今日药物」或药库起步</div>
+          <div class="ptag" id="homePtag" style="display:none;">🪙 <span id="homePts">0</span> 今日积分</div>
+        </div>
+        <div class="flame" id="homeFlame">🌱</div>
+      </div>
+
+      <div class="sec">
+        <div class="seclabel">第一步</div>
+        <div class="continue">
+          <div class="row">
+            <div>
+              <div class="ttl" id="contTtl">还没有学习记录</div>
+              <div class="meta" id="contMeta">选一个药物类别，开始你的第一天</div>
+            </div>
+          </div>
+          <div class="bar"><i id="contBar" style="width:0%"></i></div>
+          <button class="btn" onclick="showScreen('library')">浏览药库开始</button>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="seclabel">按类别浏览</div>
+        <div class="pills" id="homePills"></div>
+      </div>
+
+      <div class="sec">
+        <div class="seclabel">今日药物 · 推荐起步</div>
+        <div class="featured" onclick="openDrug('舍曲林')">
+          <div class="medal">💊</div>
+          <div>
+            <div class="fttl">舍曲林 Sertraline</div>
+            <div class="fen">最常用 SSRI 之一 · 抑郁 / 强迫 / 惊恐</div>
+            <span class="fbadge">抗抑郁药 · SSRI</span>
+          </div>
+          <div class="arrow">›</div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="seclabel">工具</div>
+        <div class="qlinks">
+          <div class="qlink" onclick="showScreen('study')"><div class="qi">🃏</div><div class="qt">记忆卡片</div></div>
+          <div class="qlink" onclick="showScreen('study')"><div class="qi">🧪</div><div class="qt">自测小考</div></div>
+          <div class="qlink" onclick="showScreen('interact')"><div class="qi">🔗</div><div class="qt">相互作用</div></div>
+        </div>
+      </div>
+
+      <div class="disclaimer">本应用仅供精神药理学习使用，不构成任何临床用药建议。用药请遵循指南与医师指导。</div>
+    </section>
+
+    <!-- ===== LIBRARY ===== -->
+    <section class="screen" id="library">
+      <div class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#9AA1AC" stroke-width="2"/><path d="M16 16L20 20" stroke="#9AA1AC" stroke-width="2" stroke-linecap="round"/></svg>
+        <input id="searchInput" placeholder="搜索药物、类别或适应症…" oninput="renderLibrary()" />
+      </div>
+
+      <div class="sec" style="margin-top:16px;">
+        <div class="chips" id="chips"></div>
+      </div>
+
+      <div class="sec" style="margin-top:18px;">
+        <div id="drugList"></div>
+      </div>
+      <div class="disclaimer">数据用于学习，实际临床请以药品说明书与权威指南为准。</div>
+    </section>
+
+    <!-- ===== STUDY ===== -->
+    <section class="screen" id="study">
+      <div class="study-top">
+        <div class="qt" id="studyModeLabel">记忆卡片</div>
+        <div class="qs" id="studyProgress">1 / 18</div>
+      </div>
+
+      <div class="seg" id="studySeg">
+        <button class="on" onclick="setStudyMode('cards')">闪卡</button>
+        <button onclick="setStudyMode('quiz')">自测</button>
+      </div>
+
+      <div id="cardWrap">
+        <div class="card" id="flashcard" onclick="flipCard()">
+          <div class="card-inner">
+            <div class="face front">
+              <div class="fcz" id="fcZh">舍曲林</div>
+              <div class="fce" id="fcEn">Sertraline</div>
+              <div class="fcls" id="fcCls">抗抑郁药 · SSRI</div>
+              <div class="ftip">点击卡片查看药理要点 ↻</div>
+            </div>
+            <div class="face back">
+              <div class="rt" id="fcName">舍曲林 Sertraline</div>
+              <div class="rbd" id="fcBody">
+                <div class="rsec"><div class="rl">作用机制</div><div class="rv" id="fcMech">—</div></div>
+                <div class="rsec"><div class="rl">适应症</div><div class="rv" id="fcInd">—</div></div>
+                <div class="rsec"><div class="rl">常见不良反应</div><div class="rv" id="fcSide">—</div></div>
+                <div class="rsec"><div class="rl">关键警示</div><div class="rv rwarn" id="fcWarn">—</div></div>
+                <div class="rsec"><div class="rl">用法用量</div><div class="rv" id="fcDose">—</div></div>
+              </div>
+              <div class="rcls" id="fcCls2">抗抑郁药 · SSRI</div>
+            </div>
+          </div>
+        </div>
+        <div class="judge">
+          <button class="no" onclick="nextCard(false)">还没记住</button>
+          <button class="yes" onclick="nextCard(true)">记住了</button>
+        </div>
+      </div>
+
+      <div id="quizWrap" style="display:none;">
+        <div class="block" style="margin-top:18px;">
+          <div class="bt"><span class="tag"></span><span id="quizQ">下列哪种药物属于苯二氮䓬类抗焦虑药？</span></div>
+          <div id="quizOpts"></div>
+        </div>
+        <div class="quiz-nav">
+          <button class="qprev" id="quizPrev" onclick="quizPrev()">‹ 上一题</button>
+          <div class="qprog" id="quizProg">第 1 / 15 题</div>
+          <button class="qnext" id="quizNext" onclick="quizNext()">下一题 ›</button>
+        </div>
+        <div class="quiz-result" id="quizResult" style="display:none;">
+          <div class="qr-emoji" id="qrEmoji">🎉</div>
+          <div class="qr-title" id="qrTitle">自测完成</div>
+          <div class="qr-score" id="qrScore">0 / 7</div>
+          <div class="qr-sub" id="qrSub">正确率 0% · 本次 +0 🪙</div>
+          <button class="btn" onclick="startQuiz()">再来一组</button>
+          <button class="btn ghost" onclick="setStudyMode('cards')">返回卡片</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== INTERACTION ===== -->
+    <section class="screen" id="interact">
+      <div class="detail-head">
+        <div class="back" onclick="showScreen('home')">‹</div>
+        <div>
+          <div class="dname">药物相互作用</div>
+          <div class="den">选择两种药物查询分级警示</div>
+        </div>
+      </div>
+
+      <div class="sec" style="margin-top:18px;">
+        <div class="seclabel">选择药物</div>
+        <select id="ia" class="sel"></select>
+        <div class="plus">＋</div>
+        <select id="ib" class="sel"></select>
+        <button class="btn" style="margin-top:14px;" onclick="queryInteraction()">查询相互作用</button>
+        <div id="interactResult"></div>
+      </div>
+
+      <div class="sec">
+        <div class="seclabel">高危组合 · 学习提示</div>
+        <div class="ihint">
+          <div class="iht">⛔ 禁忌级</div>
+          <div class="ihl">SSRI（如舍曲林/氟西汀）× MAOI：5-羟色胺综合征。氯氮平 × 卡马西平：粒细胞缺乏风险叠加。</div>
+        </div>
+        <div class="ihint">
+          <div class="iht">⚠ 严重</div>
+          <div class="ihl">SSRI × 碳酸锂：5-羟色胺综合征与血锂升高；文拉法辛 × 另一 SSRI/SNRI：避免联用。</div>
+        </div>
+        <div class="ihint">
+          <div class="iht">🌙 镇静叠加</div>
+          <div class="ihl">苯二氮䓬类（地西泮/阿普唑仑）× 镇静性抗精神病药（奥氮平/喹硫平）：呼吸抑制、跌倒风险。</div>
+        </div>
+      </div>
+      <div class="disclaimer">相互作用仅供参考，临床决策以说明书、指南与药师核对为准。</div>
+    </section>
+
+    <!-- ===== PROFILE ===== -->
+    <section class="screen" id="profile">
+      <div class="profile-head">
+        <div class="avatar">药</div>
+        <div>
+          <div class="pname">新手学员 <span class="lvbadge" id="pLvBadge">Lv.1 萌新</span></div>
+          <div class="prole" id="pRole">刚注册 · 准备出发</div>
+        </div>
+      </div>
+      <div class="lvbar"><i id="pLvBar"></i></div>
+      <div class="lvtxt" id="pLvTxt">距离 Lv.2 还需 100 积分</div>
+      <div class="stats">
+        <div class="stat"><div class="sv" id="pPts">0</div><div class="sl">总积分</div></div>
+        <div class="stat"><div class="sv" id="pStreak">0</div><div class="sl">连续天数</div></div>
+        <div class="stat"><div class="sv" id="pLearned">0</div><div class="sl">已学药物</div></div>
+      </div>
+      <div class="sec">
+        <div class="seclabel-row">
+          <div class="seclabel">成就徽章</div>
+          <button class="expand-btn" id="badgeExpand" onclick="toggleBadges()" aria-expanded="false">展开 ›</button>
+        </div>
+        <div class="badges" id="pBadges"></div>
+      </div>
+      <div class="sec">
+        <div class="seclabel">学习设置</div>
+        <div class="setrow"><div class="sl">每日学习提醒</div><div class="sr"><div class="toggle on"></div></div></div>
+        <div class="setrow"><div class="sl">间隔重复背诵</div><div class="sr"><div class="toggle on"></div></div></div>
+        <div class="setrow"><div class="sl">仅显示通用名</div><div class="sr"><div class="toggle off"></div></div></div>
+        <div class="setrow"><div class="sl">数据导出</div><div class="sr">›</div></div>
+        <div class="setrow"><div class="sl">关于 · 资料来源</div><div class="sr">›</div></div>
+      </div>
+      <div class="sec">
+        <div class="seclabel">数据同步</div>
+        <div class="setrow"><div class="sl">同步状态</div><div class="sr" id="syncStatus">本地模式（不同步）</div></div>
+        <div class="setrow" id="syncNowRow"><div class="sl">立即同步</div><div class="sr">›</div></div>
+        <div class="setrow" id="syncDevicesRow"><div class="sl">已登录设备</div><div class="sr" id="syncDevCount">—</div></div>
+        <div class="setrow" id="logoutRow"><div class="sl">退出登录</div><div class="sr">›</div></div>
+        <div class="setrow" id="syncLoginRow"><div class="sl">登录 / 注册</div><div class="sr">›</div></div>
+      </div>
+      <div class="disclaimer">药枢 NeuroPharm · 学习助手原型 · 内容需结合教材与指南核实</div>
+    </section>
+
+    <!-- ===== DETAIL (overlay) ===== -->
+    <section class="screen" id="detail">
+      <div class="detail-head">
+        <div class="back" onclick="historyBack()">‹</div>
+        <div>
+          <div class="dname" id="dName">舍曲林</div>
+          <div class="den" id="dEn">Sertraline</div>
+        </div>
+      </div>
+      <span class="dbadge" id="dBadge">抗抑郁药 · SSRI</span>
+
+      <div class="facts">
+        <div class="fact"><div class="fv" id="fCat">SSRI</div><div class="fl">药物类别</div></div>
+        <div class="fact"><div class="fv" id="fHalf">~26h</div><div class="fl">半衰期</div></div>
+        <div class="fact"><div class="fv" id="fPreg">C</div><div class="fl">妊娠分级</div></div>
+      </div>
+
+      <div class="block">
+        <div class="bt"><span class="tag"></span>作用机制</div>
+        <div class="bd" id="dMech"></div>
+      </div>
+
+      <div class="block">
+        <div class="bt"><span class="tag"></span>适应症</div>
+        <ul class="ul" id="dInd"></ul>
+      </div>
+
+      <div class="block">
+        <div class="bt"><span class="tag"></span>常见不良反应</div>
+        <ul class="ul" id="dSide"></ul>
+      </div>
+
+      <div class="block">
+        <div class="bt"><span class="tag"></span>用法用量</div>
+        <div class="bd" id="dDose"></div>
+      </div>
+
+      <div class="block">
+        <div class="warnbox">
+          <div class="wt">⚠ 重要警示</div>
+          <div class="wl" id="dWarn"></div>
+        </div>
+      </div>
+
+      <div class="block" id="noteBlock" style="display:none;">
+        <div class="bt"><span class="tag"></span>临床经验</div>
+        <div class="bd" id="dNote"></div>
+      </div>
+
+      <button class="btn ghost" style="margin-top:10px;" onclick="openInteract(document.getElementById('dName').textContent)">查看相互作用</button>
+      <button class="btn" style="margin-top:12px;" onclick="showScreen('study')">加入记忆卡片</button>
+      <div class="disclaimer">仅供学习，临床用药请遵循说明书与指南。</div>
+    </section>
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="tabbar">
+    <div class="pillbar">
+      <div class="tab on" data-tab="home" onclick="showScreen('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#9AA1AC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+        <span class="tl">首页</span>
+      </div>
+      <div class="tab" data-tab="library" onclick="showScreen('library')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#9AA1AC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 012-2h5v16H6a2 2 0 00-2 2z"/><path d="M20 5a2 2 0 00-2-2h-5v16h5a2 2 0 012 2z"/></svg>
+        <span class="tl">药库</span>
+      </div>
+      <div class="tab" data-tab="study" onclick="showScreen('study')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#9AA1AC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="13" height="16" rx="2"/><path d="M8 4v16"/><path d="M16 8l5-3v14l-5-3"/></svg>
+        <span class="tl">复习</span>
+      </div>
+      <div class="tab" data-tab="profile" onclick="showScreen('profile')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#9AA1AC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+        <span class="tl">我的</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const DRUGS = [
+  {zh:"舍曲林",en:"Sertraline",cls:"抗抑郁药",sub:"SSRI",tag:"抗抑郁药",color:"var(--c-anti)",soft:"var(--c-anti-soft)",emoji:"🟦",
+   mech:"选择性抑制突触前膜 5-羟色胺（5-HT）再摄取，增强中枢 5-HT 能神经传递。",
+   ind:["抑郁症","强迫症（OCD）","惊恐障碍","创伤后应激障碍（PTSD）","经前烦躁障碍"],
+   side:["恶心、腹泻等胃肠反应","失眠或嗜睡","性功能障碍","初期激越、焦虑","多汗"],
+   dose:"起始 50 mg/日，每周递增 50 mg，最大 200 mg/日；进食不影响吸收。",
+   warn:"与 MAOI 合用可致 5-羟色胺综合征（禁忌）；骤停可能出现停药反应；哺乳期慎用。",
+   half:"~26h",preg:"C",note:"部分患者服药后嗜睡，可改为晚间服用。"},
+  {zh:"氟西汀",en:"Fluoxetine",cls:"抗抑郁药",sub:"SSRI",tag:"抗抑郁药",color:"var(--c-anti)",soft:"var(--c-anti-soft)",emoji:"🟦",
+   mech:"强效选择性 5-HT 再摄取抑制剂，半衰期长（约 2–7 天，活性代谢物更长）。",
+   ind:["抑郁症","强迫症","神经性贪食","双相抑郁（联用心境稳定剂）"],
+   side:["激越、失眠","食欲下降、体重减轻","性功能障碍","焦虑（初期）"],
+   dose:"起始 20 mg/日，可增至 60 mg/日；因半衰期长，换药间隔较短。",
+   warn:"与 MAOI 禁忌（需洗脱期）；可能激活（尤其青少年）。",
+   half:"2–7天",preg:"C"},
+  {zh:"文拉法辛",en:"Venlafaxine",cls:"抗抑郁药",sub:"SNRI",tag:"抗抑郁药",color:"var(--c-anti)",soft:"var(--c-anti-soft)",emoji:"🟦",
+   mech:"抑制 5-HT 与去甲肾上腺素（NE）再摄取，高剂量兼抑多巴胺再摄取；剂量依赖。",
+   ind:["抑郁症","广泛性焦虑障碍","社交焦虑障碍","惊恐障碍"],
+   side:["恶心、口干","血压升高（高剂量）","出汗","停用综合征明显","性功能障碍"],
+   dose:"速释 75–225 mg/日分次；缓释 75–225 mg/日一次。",
+   warn:"避免与 SSRI/MAOI 联用（5-羟色胺综合征）；停药需逐渐减量。",
+   half:"~5h",preg:"C"},
+  {zh:"米氮平",en:"Mirtazapine",cls:"抗抑郁药",sub:"NaSSA",tag:"抗抑郁药",color:"var(--c-anti)",soft:"var(--c-anti-soft)",emoji:"🟦",
+   mech:"阻断 α2 自身受体增强 NE/5-HT 释放，并拮抗 5-HT2/5-HT3 与 H1 受体。",
+   ind:["抑郁症（伴失眠、食欲下降）","难治性抑郁增效"],
+   side:["显著镇静、体重增加","口干","食欲增加","粒细胞减少（罕见）"],
+   dose:"15–45 mg/日，通常睡前一次；起始 15 mg。",
+   warn:"镇静明显，注意跌倒；罕见粒细胞缺乏需监测。",
+   half:"~20h",preg:"C"},
+  {zh:"氯丙嗪",en:"Chlorpromazine",cls:"抗精神病药",sub:"典型",tag:"典型抗精神病药",color:"var(--c-psy)",soft:"var(--c-psy-soft)",emoji:"🟪",
+   mech:"典型（第一代）抗精神病药，强效 D2 受体拮抗，兼抗胆碱、抗组胺与 α 受体阻断。",
+   ind:["精神分裂症（阳性症状）","躁狂发作","恶心呕吐","顽固性呃逆","术前镇静"],
+   side:["锥体外系反应（EPS）显著","镇静","抗胆碱作用（口干、便秘、视物模糊）","体位性低血压","催乳素升高"],
+   dose:"口服 25–100 mg 2–3 次/日，按疗效滴定。",
+   warn:"EPS 明显；老年与痴呆患者慎用；注意 QT 延长与恶性综合征（NMS）。",
+   half:"~30h",preg:"C"},
+  {zh:"氟哌啶醇",en:"Haloperidol",cls:"抗精神病药",sub:"典型",tag:"典型抗精神病药",color:"var(--c-psy)",soft:"var(--c-psy-soft)",emoji:"🟪",
+   mech:"高亲和力 D2 受体拮抗，锥体外系风险高，镇静弱于氯丙嗪。",
+   ind:["精神分裂症（阳性症状）","抽动症（Tourette）","急性躁动 / 谵妄","止吐"],
+   side:["显著 EPS（肌张力障碍、静坐不能）","催乳素升高","QT 延长","镇静较轻"],
+   dose:"口服 0.5–5 mg 2 次/日；长效针剂用于维持治疗。",
+   warn:"EPS 与 NMS 风险；监测 QTc；避免与延长 QT 药物联用。",
+   half:"~21h",preg:"C"},
+  {zh:"奥氮平",en:"Olanzapine",cls:"抗精神病药",sub:"非典型",tag:"非典型抗精神病药",color:"var(--c-psy)",soft:"var(--c-psy-soft)",emoji:"🟪",
+   mech:"阻断 D2 与 5-HT2A 受体，具多重受体作用（5-HT、D、H1、α1、M1）。",
+   ind:["精神分裂症","双相躁狂 / 混合发作","难治性抑郁增效","化疗相关恶心呕吐"],
+   side:["显著体重增加、代谢综合征","镇静、嗜睡","血糖、血脂升高","口干、便秘","直立性低血压"],
+   dose:"精神分裂症 5–20 mg/日，通常 10 mg/日起始；可每日一次睡前。",
+   warn:"需监测体重、血糖、血脂；老年痴呆患者慎用（死亡率升高）。",
+   half:"~33h",preg:"C",note:"体重增加、代谢异常常见；建议增加膳食纤维摄入；注意肝功能。"},
+  {zh:"利培酮",en:"Risperidone",cls:"抗精神病药",sub:"非典型",tag:"非典型抗精神病药",color:"var(--c-psy)",soft:"var(--c-psy-soft)",emoji:"🟪",
+   mech:"高亲和力 D2 与 5-HT2A 受体拮抗，锥体外系风险介于典型与非典型之间。",
+   ind:["精神分裂症","双相躁狂","儿童孤独症易激惹","抽动障碍"],
+   side:["高催乳素血症（溢乳、性功能障碍）","锥体外系反应（剂量相关）","体重增加（轻于奥氮平）","嗜睡"],
+   dose:"精神分裂症 2–6 mg/日，分 1–2 次；起始 1–2 mg/日。",
+   warn:"监测催乳素与锥体外系；剂量 >6 mg 锥体外系风险升高。",
+   half:"~20h",preg:"C",note:"可升高催乳素（PRL），出现溢乳/性功能障碍。"},
+  {zh:"喹硫平",en:"Quetiapine",cls:"抗精神病药",sub:"非典型",tag:"非典型抗精神病药",color:"var(--c-psy)",soft:"var(--c-psy-soft)",emoji:"🟪",
+   mech:"拮抗 5-HT2A、H1、D2 受体；低剂量以抗组胺 / 镇静为主。",
+   ind:["精神分裂症","双相躁狂与抑郁","难治性失眠（低剂量）","广泛性焦虑（辅助）"],
+   side:["嗜睡、镇静","体重增加、代谢异常","体位性低血压（起始）","头晕"],
+   dose:"精神分裂症 150–750 mg/日；双相抑郁 300 mg/日；失眠低剂量 25–100 mg。",
+   warn:"老年人心血管监测；长期白内障风险。",
+   half:"~7h",preg:"C"},
+  {zh:"氯氮平",en:"Clozapine",cls:"抗精神病药",sub:"非典型",tag:"非典型抗精神病药",color:"var(--c-psy)",soft:"var(--c-psy-soft)",emoji:"🟪",
+   mech:"多受体作用（D4/5-HT2A 等），对难治性精神分裂症有效，EPS 低。",
+   ind:["难治性精神分裂症","降低精神分裂症自杀风险"],
+   side:["粒细胞缺乏（须血常规监测）","镇静、流涎","体重增加、代谢异常","心肌炎","癫痫发作"],
+   dose:"12.5–900 mg/日，缓慢滴定；起始 12.5–25 mg。",
+   warn:"粒细胞缺乏（致命）；须注册随访血常规；禁与卡马西平联用。",
+   half:"~12h",preg:"B",note:"抑制肠道蠕动，易出现便秘。"},
+  {zh:"阿立哌唑",en:"Aripiprazole",cls:"抗精神病药",sub:"非典型(部分激动)",tag:"非典型抗精神病药",color:"var(--c-psy)",soft:"var(--c-psy-soft)",emoji:"🟪",
+   mech:"D2 与 5-HT1A 部分激动剂（常称第三代概念），EPS 与催乳素影响较小。",
+   ind:["精神分裂症","双相躁狂","抑郁症增效","抽动 / 易激惹（儿童）"],
+   side:["静坐不能、焦虑","轻 EPS","体重增加较轻","失眠"],
+   dose:"10–30 mg/日，每日一次；起始 10–15 mg。",
+   warn:"静坐不能常见；与强 CYP3A4 诱导剂（如卡马西平）合用药浓度下降。",
+   half:"~75h",preg:"C"},
+  {zh:"碳酸锂",en:"Lithium",cls:"心境稳定剂",sub:"盐类",tag:"心境稳定剂",color:"var(--c-mood)",soft:"var(--c-mood-soft)",emoji:"🟧",
+   mech:"机制未完全阐明；调节第二信使（抑制 GSK-3、肌醇代谢），稳定情绪并降低自杀风险。",
+   ind:["双相障碍躁狂 / 维持期","难治性抑郁增效","降低自杀风险"],
+   side:["手抖（震颤）","多尿、烦渴（肾性尿崩）","甲状腺功能抑制","体重增加","恶心呕吐（中毒早期）"],
+   dose:"维持血锂 0.6–1.2 mmol/L；起始 300 mg 2–3 次/日，缓慢滴定。",
+   warn:"治疗窗窄，须定期监测血锂与肾功能 / 甲状腺；中毒：嗜睡、共济失调、抽搐；脱水、NSAIDs 升高血锂。",
+   half:"~24h",preg:"D"},
+  {zh:"丙戊酸钠",en:"Valproate",cls:"心境稳定剂",sub:"抗惊厥",tag:"心境稳定剂",color:"var(--c-mood)",soft:"var(--c-mood-soft)",emoji:"🟧",
+   mech:"增强 GABA 能传递、阻断电压门控钠通道；广义抗惊厥兼心境稳定。",
+   ind:["双相障碍维持期","快速循环型","混合发作","癫痫","偏头痛预防"],
+   side:["体重增加","脱发","震颤","肝毒性（罕见但严重）","多囊卵巢（女性）"],
+   dose:"500–2000 mg/日，分次或缓释；监测血浓度 50–100 mg/L。",
+   warn:"育龄女性致畸（神经管缺陷）；肝功能监测；胰腺炎罕见。",
+   half:"~16h",preg:"X"},
+  {zh:"卡马西平",en:"Carbamazepine",cls:"心境稳定剂",sub:"抗惊厥",tag:"心境稳定剂",color:"var(--c-mood)",soft:"var(--c-mood-soft)",emoji:"🟧",
+   mech:"阻断电压门控钠通道，肝酶强诱导剂；用于躁狂与双相维持（尤其混合/快速循环）。",
+   ind:["双相障碍（混合/快速循环）","癫痫","三叉神经痛"],
+   side:["头晕、复视","粒细胞减少/再生障碍贫血","皮疹（SJS 风险）","肝酶诱导相互作用"],
+   dose:"200–1200 mg/日分次；缓慢滴定，监测血浓度 4–12 mg/L。",
+   warn:"可显著降低多种药浓度（氯氮平、奥氮平、阿立哌唑等）；SJS 风险；定期血常规。",
+   half:"~16h",preg:"D"},
+  {zh:"拉莫三嗪",en:"Lamotrigine",cls:"心境稳定剂",sub:"抗惊厥",tag:"心境稳定剂",color:"var(--c-mood)",soft:"var(--c-mood-soft)",emoji:"🟧",
+   mech:"抑制谷氨酸释放，稳定神经元；对双相抑郁与维持期证据较强。",
+   ind:["双相障碍抑郁 / 维持期","癫痫（部分性发作）"],
+   side:["皮疹（剂量相关，SJS 风险）","头痛","失眠","头晕"],
+   dose:"起始 25 mg/日，极缓慢滴定至 100–200 mg/日（与诱导剂/抑制剂联用调整）。",
+   warn:"皮疹可进展为 SJS/TEN；必须缓慢加量；联用卡马西平（诱导）需更快滴定。",
+   half:"~29h",preg:"C"},
+  {zh:"地西泮",en:"Diazepam",cls:"抗焦虑药",sub:"苯二氮䓬类",tag:"抗焦虑药",color:"var(--c-anx)",soft:"var(--c-anx-soft)",emoji:"🟩",
+   mech:"增强 GABA_A 受体氯离子内流，抑制中枢兴奋性；长效苯二氮䓬。",
+   ind:["焦虑障碍","酒精戒断","肌肉痉挛","惊厥（辅助）","术前镇静"],
+   side:["嗜睡、注意力下降","依赖与耐受","跌倒（老年）","记忆损害"],
+   dose:"抗焦虑 2–10 mg 2–3 次/日；戒断按方案递减。",
+   warn:"依赖性强，避免长期连续使用；与阿片 / 酒精合用抑制呼吸；老年慎用。",
+   half:"~40h",preg:"D"},
+  {zh:"阿普唑仑",en:"Alprazolam",cls:"抗焦虑药",sub:"苯二氮䓬类",tag:"抗焦虑药",color:"var(--c-anx)",soft:"var(--c-anx-soft)",emoji:"🟩",
+   mech:"中效苯二氮䓬，强效 GABA 能抑制，抗焦虑与镇静。",
+   ind:["广泛性焦虑障碍","惊恐障碍"],
+   side:["嗜睡、头晕","依赖与戒断（焦虑反跳）","记忆损害","共济失调"],
+   dose:"0.25–0.5 mg 2–3 次/日，惊恐可至 4–6 mg/日；缓慢递减。",
+   warn:"戒断可出现癫痫发作（尤其高剂量）；与阿片合用为高危。",
+   half:"~12h",preg:"D"},
+  {zh:"哌甲酯",en:"Methylphenidate",cls:"兴奋剂",sub:"中枢兴奋",tag:"兴奋剂",color:"var(--c-stim)",soft:"var(--c-stim-soft)",emoji:"🟥",
+   mech:"阻断多巴胺与去甲肾上腺素再摄取，增强前额叶 catecholamine 能传导。",
+   ind:["注意缺陷多动障碍（ADHD）","发作性睡病"],
+   side:["食欲下降、体重减轻","失眠","心率 / 血压升高","腹痛","罕见人格改变"],
+   dose:"儿童 ADHD 起始 5 mg 2 次/日，可增至所需；缓释制剂每日一次。",
+   warn:"监测生长发育与心血管；有滥用潜力（列管）；精神病性症状罕见。",
+   half:"~3h",preg:"C"},
+  {zh:"草酸艾司西酞普兰",en:"Escitalopram",cls:"抗抑郁药",sub:"SSRI",tag:"抗抑郁药",color:"var(--c-anti)",soft:"var(--c-anti-soft)",emoji:"🟦",
+   mech:"高选择性 5-HT 再摄取抑制剂（S-对映体），活性强于西酞普兰，对 NE/DA 影响小。",
+   ind:["抑郁症","广泛性焦虑障碍","强迫症","惊恐障碍","社交焦虑障碍"],
+   side:["恶心、嗜睡","性功能障碍","出汗","失眠","体重轻微变化"],
+   dose:"起始 10 mg/日，可增至 20 mg/日；老年 10 mg/日。",
+   warn:"与 MAOI 禁忌；联用 SSRI 警惕 5-羟色胺综合征；骤停有停药反应。",
+   half:"~27–32h",preg:"C"},
+  {zh:"阿戈美拉汀",en:"Agomelatine",cls:"抗抑郁药",sub:"褪黑素受体激动",tag:"抗抑郁药",color:"var(--c-anti)",soft:"var(--c-anti-soft)",emoji:"🟦",
+   mech:"激动 MT1/MT2 褪黑素受体并拮抗 5-HT2C，改善睡眠节律与抑郁。",
+   ind:["抑郁症（伴睡眠节律紊乱）","难治性抑郁"],
+   side:["头晕、嗜睡","头痛","恶心","转氨酶升高"],
+   dose:"25–50 mg/日，晚间一次。",
+   warn:"须监测肝功能（ALT/AST），用药前及第 3/6/12/24 周复查；肝损禁用。",
+   half:"~1–2h",preg:"C"},
+  {zh:"伏硫西汀",en:"Vortioxetine",cls:"抗抑郁药",sub:"SMS",tag:"抗抑郁药",color:"var(--c-anti)",soft:"var(--c-anti-soft)",emoji:"🟦",
+   mech:"抑制 5-HT 再摄取，并调节 5-HT1A/1B/1D/7 与 5-HT3 受体，可能改善认知。",
+   ind:["抑郁症","认知症状（注意力/记忆）伴抑郁"],
+   side:["恶心","便秘","呕吐","头晕","性功能障碍较轻"],
+   dose:"起始 10 mg/日，可 5–20 mg/日。",
+   warn:"与 MAOI 禁忌；既往出血史或联用抗凝药注意出血风险。",
+   half:"~66h",preg:"C"},
+  {zh:"度洛西汀",en:"Duloxetine",cls:"抗抑郁药",sub:"SNRI",tag:"抗抑郁药",color:"var(--c-anti)",soft:"var(--c-anti-soft)",emoji:"🟦",
+   mech:"抑制 5-HT 与 NE 再摄取，亦用于糖尿病周围神经痛（阻断痛觉传导）。",
+   ind:["抑郁症","广泛性焦虑障碍","糖尿病周围神经痛","纤维肌痛","压力性尿失禁"],
+   side:["恶心、口干","便秘","出汗","血压升高","嗜睡/失眠","性功能障碍"],
+   dose:"抑郁 40–60 mg/日（起始 30–40 mg）；神经痛 60 mg/日。",
+   warn:"不可与 MAOI 联用；撤药综合征；肝损、闭角青光眼慎用。",
+   half:"~12h",preg:"C"},
+  {zh:"曲唑酮",en:"Trazodone",cls:"抗抑郁药",sub:"SARI",tag:"抗抑郁药",color:"var(--c-anti)",soft:"var(--c-anti-soft)",emoji:"🟦",
+   mech:"拮抗 5-HT2A 并抑制 5-HT 再摄取，镇静强、抗焦虑，无明显激活。",
+   ind:["抑郁症（伴失眠）","失眠（低剂量）","焦虑障碍辅助"],
+   side:["显著镇静","体位性低血压","头晕","阴茎异常勃起（罕见）","口干"],
+   dose:"抑郁 150–400 mg/日分次；失眠 25–100 mg 睡前。",
+   warn:"老年防低血压/跌倒；阴茎异常勃起须急诊处理。",
+   half:"~5–9h",preg:"C"},
+  {zh:"帕利哌酮",en:"Paliperidone",cls:"抗精神病药",sub:"非典型",tag:"非典型抗精神病药",color:"var(--c-psy)",soft:"var(--c-psy-soft)",emoji:"🟪",
+   mech:"利培酮的活性代谢物（9-羟基利培酮），D2/5-HT2A 拮抗，缓释长效。",
+   ind:["精神分裂症","分裂情感障碍"],
+   side:["锥体外系反应","高催乳素血症","体重增加","嗜睡","静坐不能"],
+   dose:"缓释片 3–12 mg/日一次（起始 6 mg）；另有每月长效针剂。",
+   warn:"监测催乳素、锥体外系与代谢；缓释制剂不可掰开或咀嚼。",
+   half:"~23h",preg:"C"},
+  {zh:"劳拉西泮",en:"Lorazepam",cls:"抗焦虑药",sub:"苯二氮䓬类",tag:"抗焦虑药",color:"var(--c-anx)",soft:"var(--c-anx-soft)",emoji:"🟩",
+   mech:"中效苯二氮䓬，增强 GABA 能抑制，抗焦虑、镇静、抗惊厥。",
+   ind:["焦虑障碍","失眠（短期）","癫痫持续状态","酒精戒断","术前镇静"],
+   side:["嗜睡、共济失调","依赖与耐受","记忆损害","跌倒（老年）"],
+   dose:"抗焦虑 1–2 mg 2–3 次/日；失眠 2–4 mg 睡前；戒断按方案。",
+   warn:"依赖性强，避免长期使用；与阿片/酒精合用呼吸抑制高危。",
+   half:"~10–20h",preg:"D"},
+  {zh:"艾司唑仑",en:"Estazolam",cls:"抗焦虑药",sub:"苯二氮䓬类",tag:"抗焦虑药",color:"var(--c-anx)",soft:"var(--c-anx-soft)",emoji:"🟩",
+   mech:"中效苯二氮䓬，GABA 能抑制，催眠与抗焦虑。",
+   ind:["失眠","焦虑障碍","紧张性头痛辅助"],
+   side:["嗜睡、头晕","依赖与戒断","记忆损害","共济失调"],
+   dose:"失眠 1–2 mg 睡前；焦虑 1–2 mg 2–3 次/日。",
+   warn:"依赖与反跳性失眠；老年防跌倒；与阿片/酒精避免合用。",
+   half:"~10–24h",preg:"X"},
+  {zh:"思诺思",en:"Zolpidem",cls:"催眠药",sub:"非苯二氮䓬类(Z)",tag:"催眠药",color:"var(--c-anx)",soft:"var(--c-anx-soft)",emoji:"🟩",
+   mech:"选择性结合 GABA_A ω1 亚基，催眠强、抗焦虑/肌松弱。",
+   ind:["失眠（入睡困难）"],
+   side:["嗜睡、眩晕","梦游/睡行（罕见）","记忆缺失","次日困倦"],
+   dose:"成人 5–10 mg 睡前（女/老年 5 mg）。",
+   warn:"短期使用；梦游等复杂睡眠行为风险；与酒精/阿片避免合用。",
+   half:"~2.5h",preg:"C"},
+  {zh:"佐匹克隆",en:"Zopiclone",cls:"催眠药",sub:"非苯二氮䓬类(Z)",tag:"催眠药",color:"var(--c-anx)",soft:"var(--c-anx-soft)",emoji:"🟩",
+   mech:"环吡咯酮类，作用于 GABA_A 受体（ω1 为主），催眠。",
+   ind:["失眠"],
+   side:["口苦（金属味）","嗜睡、头晕","次日困倦","记忆损害"],
+   dose:"3.75–7.5 mg 睡前（老年 3.75 mg）。",
+   warn:"短期使用；有依赖性；与酒精/中枢抑制药避免合用。",
+   half:"~5h",preg:"C"},
+  {zh:"莱博雷生",en:"Lemborexant",cls:"催眠药",sub:"双重食欲素受体拮抗",tag:"催眠药",color:"var(--c-anx)",soft:"var(--c-anx-soft)",emoji:"🟩",
+   mech:"拮抗 OX1R/OX2R 食欲素受体，抑制觉醒、促进入睡与维持睡眠。",
+   ind:["失眠（入睡与维持困难）"],
+   side:["嗜睡、疲乏","梦境异常","头痛","次日困倦（宿醉感）"],
+   dose:"5–10 mg 睡前，每周≥3 晚规律使用。",
+   warn:"昂贵；次日宿醉、驾驶注意；与强 CYP3A4 抑制剂/诱导剂避免；重度肝损慎用。",
+   half:"~17–19h",preg:"C"},
+  {zh:"泰诺",en:"Paracetamol",cls:"相关药物",sub:"解热镇痛",tag:"相关药物",color:"var(--c-other)",soft:"var(--c-other-soft)",emoji:"⬜",
+   mech:"抑制中枢 COX，解热镇痛，外周抗炎弱。",
+   ind:["发热","轻中度疼痛（头痛/牙痛/肌肉痛）"],
+   side:["恶心","长期或过量肝毒性（严重）","皮疹（罕见）"],
+   dose:"成人 500–1000 mg/次，日≤4000 mg；儿童按体重。",
+   warn:"过量致致命肝坏死须及时就医；避免与含对乙酰氨基酚复方药叠加。",
+   half:"~2–3h",preg:"B",note:"部分患者反映对肠道有刺激性。"},
+  {zh:"司美格鲁肽",en:"Semaglutide",cls:"相关药物",sub:"GLP-1 受体激动",tag:"相关药物",color:"var(--c-other)",soft:"var(--c-other-soft)",emoji:"⬜",
+   mech:"GLP-1 受体激动剂，延缓胃排空、抑制食欲，降糖并减重。",
+   ind:["2 型糖尿病","肥胖/超重（减重适应症）"],
+   side:["恶心、呕吐","腹泻/便秘","食欲下降","胰腺炎风险（罕见）","甲状腺 C 细胞肿瘤警示"],
+   dose:"皮下注射 0.25–2.4 mg/周（减重），逐步递增。",
+   warn:"甲状腺髓样癌个人/家族史禁忌；胰腺炎史慎用；减重需配合生活方式。",
+   half:"~1 周",preg:"C",note:"常用于减重；精神科联用注意恶心影响服药依从。"},
+  {zh:"叶酸",en:"Folic acid",cls:"相关药物",sub:"维生素 B9",tag:"相关药物",color:"var(--c-other)",soft:"var(--c-other-soft)",emoji:"⬜",
+   mech:"参与一碳代谢与核酸合成，缺乏与抑郁、高同型半胱氨酸相关。",
+   ind:["叶酸缺乏","妊娠预防神经管缺陷","抑郁辅助（联合治疗）"],
+   side:["少见","大剂量掩盖维生素 B12 缺乏"],
+   dose:"0.4–5 mg/日（补充/治疗剂量不同）。",
+   warn:"大剂量可掩盖维生素 B12 缺乏致神经损害；常作为抑郁增效辅助。",
+   half:"—",preg:"A"},
+  {zh:"为力苏",en:"Itopride",cls:"相关药物",sub:"胃肠促动力",tag:"相关药物",color:"var(--c-other)",soft:"var(--c-other-soft)",emoji:"⬜",
+   mech:"盐酸伊托必利：D2 受体拮抗 + 乙酰胆碱酯酶抑制，促进胃肠蠕动。",
+   ind:["功能性消化不良","胃轻瘫","餐后饱胀、恶心"],
+   side:["腹痛、腹泻","口干","头痛","罕见心律失常"],
+   dose:"50 mg 3 次/日饭前。",
+   warn:"胃肠道出血/梗阻/穿孔禁忌；心律失常者慎用。",
+   half:"~6h",preg:"B",note:"用于改善肠胃不适。"}
+];
+
+const CHIPS = ["全部","抗抑郁药","典型抗精神病药","非典型抗精神病药","心境稳定剂","抗焦虑药","催眠药","相关药物","兴奋剂"];
+let activeChip = "全部";
+let detailFrom = "library";
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on', t.dataset.tab===id));
+  if(id==='library'){ GAM.visitedLib=true; saveGam(); renderLibrary(); renderChips(); checkBadges(); }
+  if(id==='home'){ renderHomePills(); }
+  if(id==='study'){ renderStudy(); }
+  if(id==='interact'){ ensureInteractOptions(); }
+  updateGamUI();
+  document.getElementById(id).scrollTop = 0;
+}
+
+function renderHomePills(){
+  const counts = {};
+  DRUGS.forEach(d=>counts[d.cls]=(counts[d.cls]||0)+1);
+  const map = {
+    "抗抑郁药":{e:"🟦",c:"var(--c-anti-soft)"},
+    "抗精神病药":{e:"🟪",c:"var(--c-psy-soft)"},
+    "心境稳定剂":{e:"🟧",c:"var(--c-mood-soft)"},
+    "抗焦虑药":{e:"🟩",c:"var(--c-anx-soft)"},
+    "兴奋剂":{e:"🟥",c:"var(--c-stim-soft)"}
+  };
+  const wrap = document.getElementById('homePills');
+  wrap.innerHTML='';
+  Object.keys(map).forEach(k=>{
+    const d=map[k];
+    const el=document.createElement('div');
+    el.className='pill';
+    el.innerHTML=`<div class="ic" style="background:${d.c}">${d.e}</div><div class="nm">${k.replace('药','')}</div><div class="ct">${counts[k]||0} 种</div>`;
+    el.onclick=()=>{activeChip='全部';showScreen('library');};
+    wrap.appendChild(el);
+  });
+}
+
+function renderChips(){
+  const wrap=document.getElementById('chips');
+  wrap.innerHTML='';
+  CHIPS.forEach(c=>{
+    const el=document.createElement('div');
+    el.className='chip'+(c===activeChip?' on':'');
+    el.textContent=c;
+    el.onclick=()=>{activeChip=c;renderChips();renderLibrary();};
+    wrap.appendChild(el);
+  });
+}
+
+function renderLibrary(){
+  const q=(document.getElementById('searchInput').value||'').toLowerCase();
+  const list=document.getElementById('drugList');
+  list.innerHTML='';
+  const filtered=DRUGS.filter(d=>{
+    const matchChip = activeChip==='全部' || d.tag===activeChip;
+    const matchQ = !q || (d.zh+d.en+d.cls+d.sub+d.ind.join('')).toLowerCase().includes(q);
+    return matchChip && matchQ;
+  });
+  if(filtered.length===0){
+    list.innerHTML='<div style="text-align:center;color:var(--text-3);padding:40px 0;font-size:13px;">未找到匹配的药物</div>';
+    return;
+  }
+  filtered.forEach(d=>{
+    const el=document.createElement('div');
+    el.className='drug';
+    el.innerHTML=`
+      <div class="dot" style="background:${d.color}">${d.emoji}</div>
+      <div class="info">
+        <div class="zh">${d.zh}</div>
+        <div class="en">${d.en}</div>
+        <span class="cls" style="background:${d.soft};color:${d.color}">${d.cls} · ${d.sub}</span>
+      </div>
+      <div class="chev">›</div>`;
+    el.onclick=()=>openDrug(d.zh);
+    list.appendChild(el);
+  });
+}
+
+function openDrug(zh){
+  const d=DRUGS.find(x=>x.zh===zh);
+  if(!d) return;
+  detailFrom='library';
+  document.getElementById('dName').textContent=d.zh;
+  document.getElementById('dEn').textContent=d.en;
+  const badge=document.getElementById('dBadge');
+  badge.textContent=`${d.cls} · ${d.sub}`;
+  badge.style.background=d.soft; badge.style.color=d.color;
+  document.getElementById('fCat').textContent=d.sub;
+  document.getElementById('fHalf').textContent=d.half;
+  document.getElementById('fPreg').textContent=d.preg;
+  document.getElementById('dMech').textContent=d.mech;
+  document.getElementById('dInd').innerHTML=d.ind.map(i=>`<li>${i}</li>`).join('');
+  document.getElementById('dSide').innerHTML=d.side.map(i=>`<li>${i}</li>`).join('');
+  document.getElementById('dDose').textContent=d.dose;
+  document.getElementById('dWarn').textContent=d.warn;
+  const nb=document.getElementById('noteBlock');
+  if(d.note){ nb.style.display='block'; document.getElementById('dNote').textContent=d.note; } else { nb.style.display='none'; }
+  showScreen('detail');
+}
+
+function historyBack(){ showScreen(detailFrom); }
+
+/* Interaction */
+const SEV = {
+  "禁忌":{bg:"var(--warn-soft)",color:"var(--warn)"},
+  "严重":{bg:"#FCE9D9",color:"#B5611E"},
+  "中等":{bg:"#F8F0DC",color:"#8A6212"},
+  "轻微":{bg:"var(--surface-2)",color:"var(--text-2)"},
+  "无明显":{bg:"var(--accent-soft)",color:"var(--accent)"}
+};
+const PAIRS = {
+  "阿普唑仑|舍曲林":["中等","SSRI 与苯二氮䓬类联用较常见，注意叠加镇静及 5-HT 相关风险，老年尤须防跌倒。"],
+  "地西泮|舍曲林":["中等","同上，联用关注镇静叠加与跌倒风险。"],
+  "氟西汀|碳酸锂":["严重","SSRI 可升高血锂并增加 5-羟色胺综合征风险，联用须监测血锂与神经毒性。"],
+  "舍曲林|碳酸锂":["中等","联用监测 5-羟色胺综合征与血锂浓度。"],
+  "碳酸锂|丙戊酸钠":["中等","联用常见但需监测神经毒性、甲状腺功能与肾功能。"],
+  "碳酸锂|卡马西平":["中等","均影响认知/肾脏，联用监测毒性。"],
+  "丙戊酸钠|卡马西平":["中等","酶诱导相互降低血药浓度，且叠加肝毒性，监测肝功能与浓度。"],
+  "卡马西平|奥氮平":["中等","卡马西平诱导肝酶，降低奥氮平血药浓度。"],
+  "卡马西平|舍曲林":["轻微","卡马西平可能轻度降低 SSRI 血药浓度。"],
+  "卡马西平|氯氮平":["禁忌","卡马西平显著降低氯氮平浓度并增加粒细胞缺乏风险，避免联用。"],
+  "卡马西平|阿立哌唑":["中等","降低阿立哌唑血药浓度，需调整剂量。"],
+  "地西泮|奥氮平":["中等","叠加镇静、呼吸抑制与跌倒风险。"],
+  "地西泮|喹硫平":["中等","同上，镇静与呼吸抑制风险叠加。"],
+  "阿普唑仑|奥氮平":["中等","同上。"],
+  "阿普唑仑|喹硫平":["中等","同上。"],
+  "氟西汀|奥氮平":["轻微","常联用增效，监测代谢与体重。"],
+  "舍曲林|奥氮平":["轻微","常联用，监测代谢。"],
+  "阿立哌唑|奥氮平":["轻微","可联用，注意叠加代谢风险。"],
+  "米氮平|地西泮":["中等","叠加镇静，注意跌倒。"],
+  "文拉法辛|舍曲林":["严重","两药均作用于 5-HT，避免联用以免 5-羟色胺综合征。"],
+  "文拉法辛|氟西汀":["严重","同上，SSRI 与 SNRI 避免联用。"],
+  "文拉法辛|碳酸锂":["中等","监测 5-羟色胺综合征与神经毒性。"]
+};
+function keyOf(a,b){return [a,b].sort().join('|');}
+function getInteraction(a,b){
+  if(a===b) return ["轻微","选择了同一种药物，无需评估相互作用；但注意单药过量与停药反应。"];
+  const k=keyOf(a,b);
+  if(PAIRS[k]) return PAIRS[k];
+  return ["无明显","当前库内未记录两药明确严重相互作用；但联用仍须以说明书与指南为准，注意个体差异与酶诱导/抑制。"];
+}
+function ensureInteractOptions(){
+  const ia=document.getElementById('ia'), ib=document.getElementById('ib');
+  if(ia.options.length) return;
+  DRUGS.forEach(d=>{
+    ia.add(new Option(d.zh,d.zh));
+    ib.add(new Option(d.zh,d.zh));
+  });
+  ia.value="舍曲林"; ib.value="碳酸锂";
+}
+function queryInteraction(){
+  ensureInteractOptions();
+  const a=document.getElementById('ia').value, b=document.getElementById('ib').value;
+  const [lvl,txt]=getInteraction(a,b);
+  const s=SEV[lvl];
+  const box=document.getElementById('interactResult');
+  box.innerHTML=`<div class="continue" style="margin-top:16px;">
+      <div class="ihead">
+        <span class="ibadge" style="background:${s.bg};color:${s.color}">${lvl}</span>
+        <span class="inames">${a} × ${b}</span>
+      </div>
+      <div class="ibody">${txt}</div>
+    </div>`;
+}
+function openInteract(zh){
+  ensureInteractOptions();
+  document.getElementById('ia').value = DRUGS.some(d=>d.zh===zh)?zh:"舍曲林";
+  document.getElementById('interactResult').innerHTML='';
+  showScreen('interact');
+}
+
+/* Study */
+let studyMode='cards';
+let cardIdx=0;
+function renderStudy(){
+  if(studyMode==='cards') renderCard();
+  else { if(quizQueue.length) renderQuiz(); else startQuiz(); }
+}
+function renderCard(){
+  document.getElementById('cardWrap').style.display='';
+  document.getElementById('quizWrap').style.display='none';
+  const sp=document.getElementById('studyProgress'); if(sp) sp.style.display='';
+  document.getElementById('studyModeLabel').textContent='记忆卡片';
+  const d=DRUGS[cardIdx%DRUGS.length];
+  const fc=document.getElementById('flashcard');
+  fc.classList.remove('flip');
+  document.getElementById('fcZh').textContent=d.zh;
+  document.getElementById('fcEn').textContent=d.en;
+  document.getElementById('fcCls').textContent=`${d.cls} · ${d.sub}`;
+  document.getElementById('fcName').textContent=`${d.zh} ${d.en}`;
+  document.getElementById('fcMech').textContent=d.mech;
+  document.getElementById('fcInd').innerHTML=d.ind.map(x=>`<span class="chip">${x}</span>`).join('');
+  document.getElementById('fcSide').innerHTML=d.side.map(x=>`<span class="chip">${x}</span>`).join('');
+  document.getElementById('fcWarn').textContent=d.warn;
+  document.getElementById('fcDose').textContent=d.dose;
+  document.getElementById('fcCls2').textContent=`${d.cls} · ${d.sub}`;
+  document.getElementById('studyProgress').textContent=`${cardIdx%DRUGS.length+1} / ${DRUGS.length}`;
+  fitCardHeight();
+}
+function fitCardHeight(){
+  // Card height is now driven by the study screen's flex layout;
+  // just clear any stale inline heights so CSS (flex:1) takes over.
+  const fc=document.getElementById('flashcard'); if(!fc) return;
+  const inner=fc.querySelector('.card-inner');
+  const front=fc.querySelector('.face.front');
+  const back=fc.querySelector('.face.back');
+  if(inner) inner.style.height='';
+  if(front) front.style.height='';
+  if(back) back.style.height='';
+}
+function flipCard(){ document.getElementById('flashcard').classList.toggle('flip'); }
+function nextCard(remembered){
+  const jb=document.querySelectorAll('.judge button');
+  if(jb[0] && jb[0].dataset.locked) return;
+  jb.forEach(x=>x.dataset.locked='1');
+  const d=DRUGS[cardIdx%DRUGS.length];
+  GAM.seen[d.zh]=true;
+  touchStreak();
+  if(remembered){ GAM.remembered=(GAM.remembered||0)+1; addPoints(10); showToast('记住了 · +10 🪙'); }
+  else { addPoints(3); showToast('再看看 · +3 🪙'); }
+  saveGam(); checkBadges(); updateGamUI();
+  cardIdx++; renderCard();
+  jb.forEach(x=>delete x.dataset.locked);
+}
+function setStudyMode(m){
+  studyMode=m;
+  document.querySelectorAll('#studySeg button').forEach(b=>b.classList.toggle('on', b.textContent===(m==='cards'?'闪卡':'自测')));
+  if(m==='quiz'){ startQuiz(); } else { renderStudy(); }
+}
+/* 自测小考：稳定题库 + 上一题/下一题 + 结果页 */
+let quizQueue=[], quizPos=0, quizResult=[];
+const QUIZ_SIZE=15;
+const CURATED=[
+  {q:"下列哪种药物属于苯二氮䓬类抗焦虑药？",opts:["舍曲林","地西泮","奥氮平","碳酸锂"],ans:1},
+  {q:"舍曲林（Sertraline）的主要作用机制是？",opts:["阻断 D2 受体","抑制 5-HT 再摄取","增强 GABA 能","阻断钠通道"],ans:1},
+  {q:"需要定期监测血锂浓度的药物是？",opts:["丙戊酸钠","氟西汀","碳酸锂","哌甲酯"],ans:2},
+  {q:"下列哪种属于第一代（典型）抗精神病药？",opts:["氯丙嗪","利培酮","地西泮","舍曲林"],ans:0},
+  {q:"哌甲酯（Methylphenidate）主要用于？",opts:["抑郁症","ADHD","双相躁狂","强迫症"],ans:1},
+  {q:"氯氮平（Clozapine）最需警惕的严重不良反应是？",opts:["体重增加","粒细胞缺乏","流涎","镇静"],ans:1},
+  {q:"阿立哌唑的作用特点更接近？",opts:["D2 完全阻断","D2 部分激动","纯抗组胺","MAOI"],ans:1}
+];
+function sampleExcept(pool, exclude, n){
+  const cand=[...new Set(pool.filter(x=>x!==exclude))];
+  shuffle(cand);
+  return cand.slice(0,n);
+}
+function makeQ(qText, correct, pool){
+  const opts=shuffle([correct, ...sampleExcept(pool, correct, 3)]);
+  return {q:qText, opts, ans:opts.indexOf(correct)};
+}
+function buildQuizBank(){
+  const bank=[];
+  const classLabels=[...new Set(DRUGS.map(d=>d.cls+(d.sub?'·'+d.sub:'')))];
+  const names=DRUGS.map(d=>d.zh);
+  const inds=DRUGS.flatMap(d=>d.ind||[]);
+  DRUGS.forEach(d=>{
+    const cls=d.cls+(d.sub?'·'+d.sub:'');
+    bank.push(makeQ(`「${d.zh}」属于哪一类精神药物？`, cls, classLabels));
+    if(d.ind && d.ind.length){ bank.push(makeQ(`「${d.zh}」常用于治疗下列哪种情况？`, d.ind[0], inds)); }
+    bank.push(makeQ(`下列哪种药物属于「${cls}」？`, d.zh, names));
+  });
+  CURATED.forEach(q=>bank.push(q));
+  return bank;
+}
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i];a[i]=a[j];a[j]=t; } return a; }
+function startQuiz(){
+  const bank=buildQuizBank();
+  shuffle(bank);
+  quizQueue=bank.slice(0, Math.min(QUIZ_SIZE, bank.length));
+  quizPos=0; quizResult=new Array(quizQueue.length).fill(null);
+  const r=document.getElementById('quizResult'); if(r) r.style.display='none';
+  const opts=document.getElementById('quizOpts'); if(opts) opts.style.opacity='1';
+  renderQuiz();
+}
+function renderQuiz(){
+  document.getElementById('cardWrap').style.display='none';
+  document.getElementById('quizWrap').style.display='';
+  const sp=document.getElementById('studyProgress'); if(sp) sp.style.display='none';
+  document.getElementById('studyModeLabel').textContent='自测小考';
+  const optsBox=document.getElementById('quizOpts'); if(optsBox) optsBox.style.opacity='1';
+  const item=quizQueue[quizPos];
+  document.getElementById('quizQ').textContent=item.q;
+  const wrap=document.getElementById('quizOpts');
+  wrap.innerHTML='';
+  const rec=quizResult[quizPos];
+  item.opts.forEach((o,i)=>{
+    const b=document.createElement('button');
+    b.className='quiz-opt';
+    b.textContent=o;
+    if(rec){
+      b.dataset.done='1';
+      if(i===item.ans){ b.style.borderColor='var(--accent)'; b.style.background='var(--accent-soft)'; }
+      else if(i===rec.picked){ b.style.borderColor='var(--warn)'; b.style.background='var(--warn-soft)'; }
+    }
+    b.onclick=()=>{
+      if(b.dataset.done) return;
+      Array.from(wrap.children).forEach(c=>c.dataset.done='1');
+      const correct=i===item.ans;
+      GAM.quizTotal=(GAM.quizTotal||0)+1;
+      if(correct){
+        GAM.quizCorrect=(GAM.quizCorrect||0)+1;
+        GAM.quizStreak=(GAM.quizStreak||0)+1;
+        GAM.quizMax=Math.max(GAM.quizMax||0,GAM.quizStreak);
+        b.style.borderColor='var(--accent)'; b.style.background='var(--accent-soft)';
+        addPoints(15); showToast('答对了 · +15 🪙');
+      } else {
+        GAM.quizStreak=0;
+        b.style.borderColor='var(--warn)'; b.style.background='var(--warn-soft)';
+        const cb=wrap.children[item.ans];
+        if(cb){ cb.style.borderColor='var(--accent)'; cb.style.background='var(--accent-soft)'; }
+        addPoints(5); showToast('再想想 · +5 🪙');
+      }
+      quizResult[quizPos]={picked:i,correct:correct,earned:correct?15:5};
+      saveGam(); checkBadges(); updateGamUI();
+    };
+    wrap.appendChild(b);
+  });
+  const prev=document.getElementById('quizPrev');
+  const next=document.getElementById('quizNext');
+  const last=quizPos===quizQueue.length-1;
+  prev.classList.toggle('disabled', quizPos===0);
+  prev.disabled=quizPos===0;
+  next.textContent= last ? '查看结果 ›' : '下一题 ›';
+  next.classList.toggle('finish', last);
+  document.getElementById('quizProg').textContent=`第 ${quizPos+1} / ${quizQueue.length} 题`;
+  const res=document.getElementById('quizResult'); if(res) res.style.display='none';
+}
+function quizPrev(){ if(quizPos>0){ quizPos--; renderQuiz(); } }
+function quizNext(){
+  if(quizPos<quizQueue.length-1){ quizPos++; renderQuiz(); }
+  else { showQuizResult(); }
+}
+function showQuizResult(){
+  const total=quizQueue.length;
+  const answered=quizResult.filter(Boolean).length;
+  const correct=quizResult.filter(r=>r&&r.correct).length;
+  const earned=quizResult.reduce((s,r)=>s+(r?r.earned:0),0);
+  const acc= answered ? Math.round(correct/answered*100) : 0;
+  const opts=document.getElementById('quizOpts'); if(opts) opts.style.opacity='0.35';
+  const r=document.getElementById('quizResult'); if(r) r.style.display='block';
+  document.getElementById('qrEmoji').textContent= answered<total ? '📝' : (acc>=80?'🏆':acc>=60?'🎉':'💪');
+  document.getElementById('qrTitle').textContent= answered<total ? `已答 ${answered} / ${total} 题` : '自测完成';
+  document.getElementById('qrScore').textContent=`${correct} / ${total} 正确`;
+  document.getElementById('qrSub').textContent=`正确率 ${acc}% · 本次 +${earned} 🪙`;
+  if(r) r.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+/* ===== Gamification (参考「不背单词」) ===== */
+const LS_KEY='neuropharm_gam_v1';
+const LEVELS=[0,100,250,450,700,1000,1400,1900,2500,3300];
+const LEVEL_NAMES=['萌新','学徒','药童','药师','药剂师','临床药师','药理专家','资深专家','主任医师','药枢大师'];
+const BADGES=[
+  {id:'first',  icon:'🌱', name:'初出茅庐', desc:'完成第一次学习'},
+  {id:'rem10',  icon:'📖', name:'小有心得', desc:'累计记住 10 次'},
+  {id:'rem50',  icon:'🧠', name:'药理学徒', desc:'累计记住 50 次'},
+  {id:'rem100', icon:'🏆', name:'药理学徒毕业', desc:'累计记住 100 次'},
+  {id:'streak3',icon:'🔥', name:'坚持不懈', desc:'连续学习 3 天'},
+  {id:'streak7',icon:'⚡', name:'一周不辍', desc:'连续学习 7 天'},
+  {id:'streak30',icon:'💎',name:'初心如磐', desc:'连续学习 30 天'},
+  {id:'quiz10', icon:'✅', name:'自测达人', desc:'完成 10 道自测'},
+  {id:'quiz5',  icon:'🎯', name:'满分学霸', desc:'自测连对 5 题'},
+  {id:'lib',    icon:'🗂️',name:'百宝箱', desc:'浏览全部药库'}
+];
+function defaultGam(){return{points:0,todayPts:0,streak:0,lastDate:'',remembered:0,seen:{},quizTotal:0,quizCorrect:0,quizStreak:0,quizMax:0,visitedLib:false,badges:{}};}
+function loadGam(){ try{const raw=localStorage.getItem(LS_KEY);if(raw){const o=JSON.parse(raw);return Object.assign(defaultGam(),o);}}catch(e){} return defaultGam(); }
+function saveGam(){ try{localStorage.setItem(LS_KEY,JSON.stringify(GAM));}catch(e){} }
+let GAM=loadGam();
+function todayStr(){ const d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+function dayDiffFromLast(){ if(!GAM.lastDate) return null; const a=new Date(GAM.lastDate),b=new Date(todayStr()); return Math.round((b-a)/86400000); }
+function touchStreak(){
+  const t=todayStr();
+  if(GAM.lastDate===t) return;
+  if(GAM.lastDate){ GAM.streak = dayDiffFromLast()===1 ? (GAM.streak||0)+1 : 1; }
+  else { GAM.streak=1; }
+  GAM.lastDate=t; GAM.todayPts=0;
+}
+function levelInfo(){
+  let lv=1;
+  for(let i=0;i<LEVELS.length;i++){ if(GAM.points>=LEVELS[i]) lv=i+1; }
+  const cur=LEVELS[lv-1];
+  const next=LEVELS[lv]!==undefined?LEVELS[lv]:null;
+  const span=next!==null?next-cur:1;
+  const prog=next!==null?Math.min(100,Math.round((GAM.points-cur)/span*100)):100;
+  const name=LEVEL_NAMES[lv-1]||'药枢大师';
+  const need=next!==null?next-GAM.points:0;
+  return {lv,name,prog,need};
+}
+function addPoints(n){ GAM.points+=n; GAM.todayPts=(GAM.todayPts||0)+n; }
+function checkBadges(){
+  const u=[];
+  const unlock=id=>{ if(!GAM.badges[id]){ GAM.badges[id]=true; u.push(id); } };
+  if((GAM.remembered||0)>=1||(GAM.quizTotal||0)>=1) unlock('first');
+  if((GAM.remembered||0)>=10) unlock('rem10');
+  if((GAM.remembered||0)>=50) unlock('rem50');
+  if((GAM.remembered||0)>=100) unlock('rem100');
+  if((GAM.streak||0)>=3) unlock('streak3');
+  if((GAM.streak||0)>=7) unlock('streak7');
+  if((GAM.streak||0)>=30) unlock('streak30');
+  if((GAM.quizTotal||0)>=10) unlock('quiz10');
+  if((GAM.quizMax||0)>=5) unlock('quiz5');
+  if(GAM.visitedLib) unlock('lib');
+  if(u.length){
+    saveGam();
+    u.forEach((id,i)=>{ const b=BADGES.find(x=>x.id===id); if(b) setTimeout(()=>showToast('🎉 解锁徽章 · '+b.name),600+i*900); });
+  }
+}
+function showToast(msg){
+  let t=document.getElementById('toast');
+  if(!t){ t=document.createElement('div'); t.id='toast'; t.className='toast'; document.body.appendChild(t); }
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._timer); t._timer=setTimeout(()=>t.classList.remove('show'),1800);
+}
+function renderBadges(){
+  const wrap=document.getElementById('pBadges'); if(!wrap) return;
+  wrap.innerHTML='';
+  BADGES.forEach(b=>{
+    const got=!!GAM.badges[b.id];
+    const el=document.createElement('div');
+    el.className='badge'+(got?'':' locked');
+    el.innerHTML='<div class="bi">'+(got?b.icon:'🔒')+'</div><div class="bn">'+b.name+'</div><div class="bd">'+b.desc+'</div>';
+    wrap.appendChild(el);
+  });
+  syncBadgeBtn();
+}
+function toggleBadges(){
+  const wrap=document.getElementById('pBadges');
+  const btn=document.getElementById('badgeExpand');
+  if(!wrap||!btn) return;
+  const expanded=wrap.classList.toggle('expanded');
+  btn.setAttribute('aria-expanded', expanded?'true':'false');
+  syncBadgeBtn();
+}
+function syncBadgeBtn(){
+  const wrap=document.getElementById('pBadges');
+  const btn=document.getElementById('badgeExpand');
+  if(!wrap||!btn) return;
+  const expanded=wrap.classList.contains('expanded');
+  btn.textContent=expanded?'收起 ‹':'展开 ›';
+  btn.setAttribute('aria-expanded', expanded?'true':'false');
+}
+function renderProfileGam(li){
+  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  set('pLvBadge','Lv.'+li.lv+' '+li.name);
+  const bar=document.getElementById('pLvBar'); if(bar) bar.style.width=li.prog+'%';
+  set('pLvTxt', li.need>0 ? '距离 Lv.'+(li.lv+1)+' 还需 '+li.need+' 积分' : '已达最高等级 · 药枢大师');
+  set('pPts', GAM.points||0);
+  set('pStreak',(GAM.streak||0)+' 天');
+  set('pLearned', Object.keys(GAM.seen||{}).length);
+  set('pRole',(GAM.points||0)>0 ? '已学习 · 累计 '+GAM.points+' 积分' : '刚注册 · 准备出发');
+  renderBadges();
+}
+function updateGamUI(){
+  const li=levelInfo();
+  const diff=dayDiffFromLast();
+  const big=document.getElementById('homeStreakBig');
+  const lab=document.getElementById('homeStreakLab');
+  const sub=document.getElementById('homeStreakSub');
+  const ptag=document.getElementById('homePtag');
+  const pts=document.getElementById('homePts');
+  const flame=document.getElementById('homeFlame');
+  if(GAM.streak>0){
+    big.textContent=GAM.streak+' 天';
+    lab.textContent='连续学习 · Lv.'+li.lv+' '+li.name;
+    if(diff===0){ sub.textContent=(GAM.todayPts>0?'今日已得 '+GAM.todayPts+' 积分 · 再翻一张':'今天已学习 · 翻一张卡巩固'); }
+    else if(diff===1){ sub.textContent='昨天坚持了 · 今天翻一张续上'; }
+    else { sub.textContent='休息了几天 · 翻一张卡重新连'; }
+    ptag.style.display='inline-flex'; pts.textContent=GAM.todayPts||0;
+    flame.textContent=GAM.streak>=7?'🔥':GAM.streak>=3?'⚡':'🌱';
+  } else {
+    big.textContent='开始';
+    lab.textContent='你的精神药理学习';
+    sub.textContent='还没有学习记录 · 从「今日药物」或药库起步';
+    ptag.style.display='none'; flame.textContent='🌱';
+  }
+  const cont=document.getElementById('contTtl');
+  if(cont){
+    const learned=Object.keys(GAM.seen||{}).length;
+    if(learned===0){ cont.textContent='还没有学习记录'; document.getElementById('contMeta').textContent='选一个药物类别，开始你的第一天'; document.getElementById('contBar').style.width='0%'; }
+    else { cont.textContent='已学 '+learned+' 种药'; document.getElementById('contMeta').textContent='累计记住 '+(GAM.remembered||0)+' 次 · 继续巩固'; document.getElementById('contBar').style.width=Math.min(100,learned/DRUGS.length*100)+'%'; }
+  }
+  renderProfileGam(li);
+}
+
+/* init */
+renderHomePills();
+renderChips();
+renderLibrary();
+renderStudy();
+ensureInteractOptions();
+updateGamUI();
+</script>
+
+  <!-- 登录门（首次打开或退出后显示；可「先本地体验」跳过） -->
+  <div class="authgate" id="authGate" style="display:none;">
+    <div class="authcard">
+      <h2>欢迎来到药枢</h2>
+      <div class="asub">登录后，你的学习进度（积分 · 连续天数 · 徽章 · 已学药物）可在多台设备间同步。</div>
+      <div class="afield"><input id="authEmail" type="email" inputmode="email" placeholder="邮箱" autocomplete="email"></div>
+      <div class="afield"><input id="authPwd" type="password" placeholder="密码（至少 6 位）" autocomplete="current-password"></div>
+      <div class="amsg" id="authMsg"></div>
+      <button class="abtn" id="authSubmit">登录</button>
+      <div class="aswitch" id="authSwitch">没有账号？注册一个</div>
+      <div class="amore" id="authLocal">先本地体验 ›</div>
+    </div>
+  </div>
+
+  <!-- 同步客户端：先 sync.js（包装 saveGam）再 auth.js（登录门 + 同步中心） -->
+  <script src="sync.js"></script>
+  <script src="auth.js"></script>
+</body>
+</html>
