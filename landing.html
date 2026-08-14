@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>药枢 NeuroPharm · 网页版 & 下载</title>
-<meta name="description" content="药枢 NeuroPharm —— 精神药理学习工具。打开网页版直接学，或扫码下载 Android App。" />
+<meta name="description" content="药枢 NeuroPharm —— 精神药理学习工具。左侧预览网页版，右侧扫码下载 Android App。" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Sora:wght@600;700&display=swap" rel="stylesheet" />
@@ -15,108 +15,204 @@
     --ink: #0B1020;
     --text: #161D2E;
     --muted: #5B6478;
+    --line: rgba(17,24,39,0.08);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: 100%; }
   body {
     font-family: "Noto Sans SC", system-ui, -apple-system, "Segoe UI", sans-serif;
     color: var(--text);
     background:
-      radial-gradient(700px 500px at 50% -10%, rgba(124,58,237,0.18), transparent 60%),
-      radial-gradient(600px 500px at 100% 110%, rgba(34,211,238,0.14), transparent 60%),
+      radial-gradient(700px 520px at 18% -10%, rgba(124,58,237,0.16), transparent 60%),
+      radial-gradient(640px 520px at 92% 110%, rgba(34,211,238,0.13), transparent 60%),
       #F4F5FB;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100%;
-    padding: 24px;
+    min-height: 100vh;
     -webkit-font-smoothing: antialiased;
   }
-  .card {
-    width: 100%;
-    max-width: 420px;
-    background: #fff;
-    border: 1px solid rgba(17,24,39,0.07);
-    border-radius: 24px;
-    padding: 40px 32px 34px;
-    text-align: center;
-    box-shadow: 0 24px 60px rgba(17,24,39,0.10);
+  .topbar {
+    max-width: 1000px; margin: 0 auto; padding: 26px 24px 0;
+    display: flex; align-items: center; gap: 11px;
   }
-  .brand {
-    display: inline-flex; align-items: center; gap: 10px;
-    font-weight: 700; color: var(--ink); margin-bottom: 6px;
-  }
+  .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; color: var(--ink); }
   .brand .logo {
-    width: 34px; height: 34px; border-radius: 10px;
+    width: 32px; height: 32px; border-radius: 9px;
     background: linear-gradient(135deg, var(--indigo), var(--violet));
-    display: grid; place-items: center;
-    box-shadow: 0 6px 18px rgba(79,70,229,0.4);
+    display: grid; place-items: center; box-shadow: 0 6px 16px rgba(79,70,229,0.38);
   }
-  .brand .logo svg { width: 20px; height: 20px; }
-  .brand b { font-size: 19px; letter-spacing: 0.02em; }
-  .brand span { font-family: "Sora", sans-serif; font-weight: 600; font-size: 13px; color: rgba(11,16,32,0.5); }
-  .tag { color: var(--muted); font-size: 14px; margin-bottom: 22px; }
+  .brand .logo svg { width: 19px; height: 19px; }
+  .brand b { font-size: 18px; letter-spacing: 0.02em; }
+  .brand span { font-family: "Sora", sans-serif; font-weight: 600; font-size: 12.5px; color: rgba(11,16,32,0.5); }
+  .tagline { margin-left: auto; color: var(--muted); font-size: 14px; }
 
-  .btn {
-    display: inline-flex; align-items: center; justify-content: center; gap: 9px;
-    width: 100%;
-    font-family: "Sora", "Noto Sans SC", sans-serif;
-    font-weight: 600; font-size: 16px;
-    text-decoration: none;
-    padding: 14px 22px; border-radius: 13px;
-    color: #fff;
-    background: linear-gradient(135deg, var(--indigo), var(--violet));
-    box-shadow: 0 12px 28px rgba(79,70,229,0.38);
-    transition: transform 0.18s ease, box-shadow 0.25s ease;
+  .stage {
+    max-width: 1000px; margin: 0 auto; padding: 40px 24px 56px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center;
   }
-  .btn:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(124,58,237,0.46); }
-  .btn svg { width: 18px; height: 18px; }
 
-  .divider { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 12.5px; margin: 22px 0 16px; }
-  .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: rgba(17,24,39,0.08); }
+  /* ---- Phone mockup ---- */
+  .phone-link { display: inline-block; text-decoration: none; justify-self: center; }
+  .phone {
+    width: 300px; height: 620px;
+    border-radius: 44px;
+    background: linear-gradient(160deg, #1a2138, #0B1020);
+    padding: 13px;
+    box-shadow: 0 34px 70px rgba(11,16,32,0.30);
+    position: relative;
+    transition: transform 0.22s ease, box-shadow 0.25s ease;
+  }
+  .phone-link:hover .phone { transform: translateY(-6px); box-shadow: 0 44px 84px rgba(11,16,32,0.38); }
+  .phone .notch {
+    position: absolute; top: 13px; left: 50%; transform: translateX(-50%);
+    width: 116px; height: 22px; background: #0B1020; border-radius: 0 0 15px 15px; z-index: 4;
+  }
+  .screen {
+    width: 100%; height: 100%; border-radius: 32px; background: #F6F7FB; overflow: hidden;
+    display: flex; flex-direction: column; position: relative;
+  }
+  .statusbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 20px 4px; font-size: 12px; font-weight: 600; color: #161D2E;
+  }
+  .statusbar .dots { display: flex; gap: 4px; }
+  .statusbar .dots i { width: 5px; height: 5px; border-radius: 50%; background: #161D2E; opacity: 0.55; }
+  .appbar { display: flex; align-items: center; gap: 9px; padding: 8px 18px 12px; }
+  .appbar .mark {
+    width: 26px; height: 26px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--indigo), var(--violet)); display: grid; place-items: center;
+  }
+  .appbar .mark svg { width: 15px; height: 15px; }
+  .appbar .name { font-weight: 900; font-size: 15px; color: #161D2E; }
+  .appbar .streak {
+    margin-left: auto; font-size: 12px; font-weight: 700; color: #B45309;
+    background: #FEF3C7; padding: 4px 9px; border-radius: 999px;
+  }
+  .sec-title { padding: 4px 18px 8px; font-size: 14px; font-weight: 700; color: #161D2E; }
 
+  .progress-card {
+    margin: 0 16px 14px; padding: 14px 16px; border-radius: 16px;
+    background: linear-gradient(135deg, rgba(79,70,229,0.10), rgba(34,211,238,0.10));
+    border: 1px solid rgba(79,70,229,0.16);
+  }
+  .progress-card .row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 9px; }
+  .progress-card .t { font-size: 13px; font-weight: 700; color: #161D2E; }
+  .progress-card .n { font-family: "Sora", sans-serif; font-size: 13px; color: var(--indigo); font-weight: 700; }
+  .bar { height: 8px; border-radius: 999px; background: rgba(17,24,39,0.10); overflow: hidden; }
+  .bar > i { display: block; height: 100%; width: 27%; border-radius: 999px; background: linear-gradient(90deg, var(--indigo), var(--violet)); }
+
+  .card {
+    margin: 0 16px 11px; padding: 12px 14px; border-radius: 14px; background: #fff;
+    border: 1px solid var(--line); box-shadow: 0 6px 16px rgba(17,24,39,0.05);
+  }
+  .card .pill {
+    display: inline-block; font-size: 10.5px; font-weight: 700; color: var(--violet);
+    background: rgba(124,58,237,0.10); padding: 2px 8px; border-radius: 999px; margin-bottom: 6px;
+  }
+  .card .cn { font-size: 14px; font-weight: 700; color: #161D2E; }
+  .card .en { font-family: "Sora", sans-serif; font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+  .tabbar {
+    margin-top: auto; display: flex; border-top: 1px solid var(--line); background: #fff;
+    border-radius: 0 0 32px 32px;
+  }
+  .tabbar .tab {
+    flex: 1; text-align: center; padding: 11px 0 13px; font-size: 11px; font-weight: 600; color: var(--muted);
+  }
+  .tabbar .tab.on { color: var(--indigo); }
+
+  .enter-hint { text-align: center; margin-top: 16px; font-size: 13px; color: var(--muted); }
+  .enter-hint a { color: var(--indigo); text-decoration: none; font-weight: 600; }
+
+  /* ---- Right: QR ---- */
+  .side { justify-self: center; text-align: center; }
+  .side .label { font-size: 15px; font-weight: 700; color: #161D2E; margin-bottom: 4px; }
+  .side .sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
   .qr {
-    background: #fff;
-    border: 1px solid rgba(17,24,39,0.08);
-    border-radius: 18px;
-    padding: 18px;
-    display: inline-block;
+    display: inline-block; background: #fff; border: 1px solid var(--line);
+    border-radius: 20px; padding: 18px; box-shadow: 0 18px 44px rgba(17,24,39,0.10);
   }
-  .qr img { width: 200px; height: 200px; display: block; }
-  .qr-cap { margin-top: 12px; font-size: 14px; font-weight: 500; color: var(--text); }
+  .qr img { width: 210px; height: 210px; display: block; }
+  .side .cap { margin-top: 14px; font-size: 14px; font-weight: 500; color: var(--text); }
+  .side .rel { margin-top: 10px; font-size: 13px; }
+  .side .rel a { color: var(--indigo); text-decoration: none; font-weight: 500; }
+  .side .rel a:hover { text-decoration: underline; }
 
-  .fallback { margin-top: 20px; font-size: 13.5px; }
-  .fallback a { color: var(--indigo); text-decoration: none; font-weight: 500; }
-  .fallback a:hover { text-decoration: underline; }
+  @media (max-width: 760px) {
+    .tagline { display: none; }
+    .stage { grid-template-columns: 1fr; gap: 36px; padding-top: 28px; }
+    .side { order: 2; }
+  }
 </style>
 </head>
 <body>
-  <main class="card">
-    <div class="brand">
+
+  <div class="topbar">
+    <span class="brand">
       <span class="logo" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 2a4 4 0 0 0-4 4v1a3 3 0 0 0 0 6v1a4 4 0 0 0 8 0v-1a3 3 0 0 0 0-6V6a4 4 0 0 0-4-4Z"/><path d="M12 2v18"/>
         </svg>
       </span>
       <span><b>药枢</b> <span>NeuroPharm</span></span>
-    </div>
-    <p class="tag">精神药理学习 · 网页版 &amp; Android App</p>
+    </span>
+    <span class="tagline">精神药理学习 · 网页版 &amp; App</span>
+  </div>
 
-    <a class="btn" href="psychopharm-app.html">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      打开网页版
+  <main class="stage">
+
+    <!-- Left: phone screen preview (click to open web app) -->
+    <a class="phone-link" href="psychopharm-app.html" target="_blank" rel="noopener" title="点击进入网页版">
+      <div class="phone">
+        <div class="notch" aria-hidden="true"></div>
+        <div class="screen">
+          <div class="statusbar">
+            <span>9:41</span>
+            <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          </div>
+          <div class="appbar">
+            <span class="mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2a4 4 0 0 0-4 4v1a3 3 0 0 0 0 6v1a4 4 0 0 0 8 0v-1a3 3 0 0 0 0-6V6a4 4 0 0 0-4-4Z"/><path d="M12 2v18"/>
+              </svg>
+            </span>
+            <span class="name">药枢</span>
+            <span class="streak">🔥 12</span>
+          </div>
+          <div class="sec-title">今日复习</div>
+          <div class="progress-card">
+            <div class="row"><span class="t">已学药物</span><span class="n">8 / 30</span></div>
+            <div class="bar"><i></i></div>
+          </div>
+          <div class="card">
+            <span class="pill">抗抑郁 · SSRI</span>
+            <div class="cn">舍曲林 Sertraline</div>
+            <div class="en">抑制 5-HT 再摄取</div>
+          </div>
+          <div class="card">
+            <span class="pill">抗精神病 · 非典型</span>
+            <div class="cn">奥氮平 Olanzapine</div>
+            <div class="en">阻断 D₂ / 5-HT₂A</div>
+          </div>
+          <div class="tabbar">
+            <div class="tab on">学习</div>
+            <div class="tab">统计</div>
+            <div class="tab">我的</div>
+          </div>
+        </div>
+      </div>
     </a>
+    <p class="enter-hint">点击手机即可 <a href="psychopharm-app.html" target="_blank" rel="noopener">进入网页版</a></p>
 
-    <div class="divider">或扫码下载</div>
-
-    <div class="qr">
-      <img src="download-qr.svg" alt="扫码下载 Android App（前往 GitHub Releases）" width="200" height="200" />
-      <p class="qr-cap">扫码下载 Android App</p>
+    <!-- Right: download QR -->
+    <div class="side">
+      <div class="label">下载 Android App</div>
+      <div class="sub">扫码安装，离线也能学</div>
+      <div class="qr">
+        <img src="download-qr.svg" alt="扫码下载 Android App（前往 GitHub Releases）" width="210" height="210" />
+      </div>
+      <div class="cap">扫码下载 Android App</div>
+      <div class="rel"><a href="https://github.com/CochraneK/neuropharm/releases" target="_blank" rel="noopener">或前往 GitHub Releases</a></div>
     </div>
 
-    <p class="fallback">
-      <a href="https://github.com/CochraneK/neuropharm/releases" target="_blank" rel="noopener">前往 GitHub Releases 下载 APK</a>
-    </p>
   </main>
+
 </body>
 </html>
