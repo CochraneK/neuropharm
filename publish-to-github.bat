@@ -7,7 +7,7 @@ REM    2. Log in once:  gh auth login   (browser OAuth, GitHub.com)
 REM  Then run this script ONCE from the repo root.
 REM ============================================================
 setlocal
-set "REPO=neuropharm-app"
+set "REPO=neuropharm"
 
 REM Detect GitHub username from the logged-in account
 for /f "tokens=*" %%i in ('gh api user --jq .login 2^>nul') do set "USERNAME=%%i"
