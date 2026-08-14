@@ -2,10 +2,11 @@
 
 单文件 HTML 学习原型，带邮箱账号注册/登录与多设备云端同步（后端为独立 Cloudflare Worker + D1）。
 
-## 在线版（GitHub Pages）
-> 地址：`https://CochraneK.github.io/neuropharm/`
+## 落地页 / 在线版（GitHub Pages）
+> 落地页：`https://CochraneK.github.io/neuropharm/`
+> 网页版 App：`https://CochraneK.github.io/neuropharm/psychopharm-app.html`
 
-直接用浏览器打开即可学习；登录后进度（积分 · 连续天数 · 徽章 · 已学药物）在多台设备间同步。
+首页是项目落地页（功能介绍 + 网页版 / APK 下载入口）。点「打开网页版」即用浏览器学习；登录后进度（积分 · 连续天数 · 徽章 · 已学药物）在多台设备间同步。
 
 ## Android APK
 见仓库 **Releases**：原生 WebView 壳，离线打包本仓库最新 H5 与账号同步脚本（`auth.js`/`sync.js`）。
@@ -13,6 +14,7 @@
 （APK 由 `.github/workflows/build-apk.yml` 在打 `v*` tag 时由 GitHub Actions 云端构建，产物见 Releases。）
 
 ## 目录
+- `landing.html` — 项目落地页（首页，功能介绍 + 下载入口）
 - `psychopharm-app.html` — 主程序（移动端原型）
 - `auth.js` / `sync.js` — 账号与同步客户端
 - `neuropharm-worker/` — Cloudflare Worker 同步后端（crypto/worker/schema/deploy）

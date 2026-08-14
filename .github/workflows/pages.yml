@@ -20,10 +20,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Prepare site (app + its local scripts)
+      - name: Prepare site (landing page + app + its local scripts)
         run: |
           mkdir -p site
-          cp psychopharm-app.html site/index.html
+          cp landing.html site/index.html
+          cp psychopharm-app.html site/psychopharm-app.html
           cp auth.js site/auth.js
           cp sync.js site/sync.js
 
