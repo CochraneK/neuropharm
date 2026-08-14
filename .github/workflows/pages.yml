@@ -20,6 +20,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Regenerate drugs-data.js from single source drugs.json
+        run: node gen-data.js
+
       - name: Prepare site (landing page + app + its local scripts)
         run: |
           mkdir -p site
@@ -27,6 +30,7 @@ jobs:
           cp psychopharm.html site/psychopharm.html
           cp auth.js site/auth.js
           cp sync.js site/sync.js
+          cp drugs-data.js site/drugs-data.js
           cp download-qr.svg site/download-qr.svg
 
       - uses: actions/upload-pages-artifact@v3

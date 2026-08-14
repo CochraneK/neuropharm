@@ -29,12 +29,16 @@ jobs:
           yes | sdkmanager --licenses || true
           sdkmanager "platforms;android-34" "build-tools;34.0.0"
 
+      - name: Regenerate drugs-data.js from single source drugs.json
+        run: node gen-data.js
+
       - name: Bundle latest HTML + sync scripts into app assets (offline WebView)
         run: |
           mkdir -p psychopharm-android/app/src/main/assets
           cp psychopharm.html psychopharm-android/app/src/main/assets/psychopharm.html
           cp auth.js psychopharm-android/app/src/main/assets/auth.js
           cp sync.js psychopharm-android/app/src/main/assets/sync.js
+          cp drugs-data.js psychopharm-android/app/src/main/assets/drugs-data.js
           cp download-qr.svg psychopharm-android/app/src/main/assets/download-qr.svg
 
       - name: Ensure Gradle wrapper (project has no committed gradlew)

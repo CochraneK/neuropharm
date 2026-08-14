@@ -88,9 +88,13 @@ def qa_file(path, mono):
             fexp = subset[k]['zh']
             if not zw_name_in(fspan, fexp):
                 problems.append(f"P{fp+1} front cell#{k}: '{fexp}' missing (got '{{}}'.format(''.join(s[4] for s in fspan)[:24]))")
-            bexp = subset[perm[k]]['zh']
-            if not zw_name_in(bspan, bexp):
-                problems.append(f"P{bp+1} back cell#{k}: '{bexp}' missing")
+            # perm[k] is the back-slot for drug k; the drug expected in back cell k
+            # is subset[perm[k]] == subset[flip(k)]. Only check when that slot is
+            # actually occupied (perm[k] < n); otherwise the back cell is empty by design.
+            if perm[k] < n:
+                bexp = subset[perm[k]]['zh']
+                if not zw_name_in(bspan, bexp):
+                    problems.append(f"P{bp+1} back cell#{k}: '{bexp}' missing")
             # overlap check
             o = overlap_found(fspan)
             if o:
@@ -105,7 +109,7 @@ def qa_file(path, mono):
                 fr_name = subset[k]['zh']
                 bb = spans_in_cell(back, kg)
                 if not zw_name_in(bb, fr_name):
-                    problems.append(f"PAIR P{fp+1}/{bp+1}: front#{k}('{fr_name}') != back glued#{kg}('{subset[perm[kg]]['zh']}')")
+                    problems.append(f"PAIR P{fp+1}/{bp+1}: front#{k}('{fr_name}') != back glued#{kg}")
             if mono:
                 if is_colorful(fspan) or is_colorful(bspan):
                     colored_hits += 1

@@ -55,12 +55,14 @@ R = 10           # corner radius
 DUPLEX = 'long'
 
 def _back_perm(n):
-    """For back position index k (0..n-1, row-major), return the drug-list index
-    whose drug must be drawn there so it glues to the correct front under DUPLEX."""
+    """Return back-slot index for each drug index j (0..n-1), i.e. the grid slot on
+    the back page where drug j must be drawn so it glues to its front under DUPLEX.
+    flip() is an involution and always lands inside the full ROWS*COLS grid, so this
+    is safe even for a partial last page (n < ROWS*COLS) — no out-of-range index."""
     if DUPLEX == 'short':
-        return [(ROWS - 1 - (k // COLS)) * COLS + (k % COLS) for k in range(n)]
+        return [(ROWS - 1 - (j // COLS)) * COLS + (j % COLS) for j in range(n)]
     if DUPLEX == 'long':
-        return [(k // COLS) * COLS + (COLS - 1 - (k % COLS)) for k in range(n)]
+        return [(j // COLS) * COLS + (COLS - 1 - (j % COLS)) for j in range(n)]
     return list(range(n))  # 'none'
 
 
@@ -356,12 +358,12 @@ def main():
                 draw_card(c, subset[k], x, yb, 'front', mono=mono)
                 crop_marks(c, x, yb)
             c.showPage()
-            # back page: remap each drug to the slot that glues to its front
-            # under the chosen DUPLEX flip, so a cut card's front/back match.
-            perm = _back_perm(n)            # perm[k] = subset-index drawn at back slot k
-            for k in range(n):
-                x, yb = pos[k]
-                draw_card(c, subset[perm[k]], x, yb, 'back', mono=mono)
+            # back page: each drug j is drawn at the back slot (perm[j]) that glues
+            # to its front under DUPLEX, so a cut card's front/back match.
+            perm = _back_perm(n)            # perm[j] = back-slot for drug j
+            for j in range(n):
+                x, yb = pos[perm[j]]
+                draw_card(c, subset[j], x, yb, 'back', mono=mono)
                 crop_marks(c, x, yb)
             c.showPage()
         c.save()
