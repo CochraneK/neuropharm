@@ -59,7 +59,7 @@ devices(device_id TEXT PK, uid TEXT, name TEXT, platform TEXT, last_sync_at INTE
 - 邮箱为主键；密码服务端加盐哈希，不落明文；全站 HTTPS；token 有期；设备移除即吊销该设备后续拉取。
 - uid 为主键，不绑定任何第三方社交账号。
 
-## 7. UI（已嵌入 `psychopharm-app.html`）
+## 7. UI（已嵌入 `psychopharm.html`）
 - **登录页**：邮箱 + 密码为主；底部不加第三方绑定说明，保持干净。
 - **同步中心**：上次同步时间、「立即同步」按钮、设备列表（标记「此设备」、可移除其他）、退出登录。
 - **无障碍**：`<label>` 关联、`aria-live` 同步状态、`focus-visible` 描边、`prefers-reduced-motion` 关闭动画。
@@ -68,7 +68,7 @@ devices(device_id TEXT PK, uid TEXT, name TEXT, platform TEXT, last_sync_at INTE
 ## 8. 落地状态与部署步骤（2026-08 实际实现）
 
 ### 8.1 已完成（代码就绪，已通过语法 + 密码学烟测）
-- **客户端已接线**：`auth.js`(NPAuth) + `sync.js`(NPSync) 已接入 `psychopharm-app.html`
+- **客户端已接线**：`auth.js`(NPAuth) + `sync.js`(NPSync) 已接入 `psychopharm.html`
   - 主脚本后按序引入 `sync.js` → `auth.js`（sync.js 包装 `window.saveGam`，实现变更后自动 800ms 防抖推送）。
   - 新增「登录门」`#authGate`：首次打开或退出后弹出，可点「先本地体验」跳过（本地模式不同步，行为不变）。
   - profile 页「学习设置」下方新增「数据同步」区：`#syncStatus` / `#syncNowRow`（立即同步）/ `#syncDevicesRow`(+`#syncDevCount`) / `#logoutRow` / `#syncLoginRow`，由 auth.js 的 `renderSyncStatus()` 驱动显隐。

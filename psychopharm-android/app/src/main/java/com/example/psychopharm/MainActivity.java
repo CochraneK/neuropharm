@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * 药枢 · 精神药理学习助手
- * 原生 Android 外壳：用 WebView 加载本地 assets/psychopharm-app.html（单文件 H5 原型）。
+ * 原生 Android 外壳：用 WebView 加载本地 assets/psychopharm.html（单文件 H5 原型）。
  * 全部业务逻辑在 HTML 内，本类只负责：沉浸式状态栏、WebView 配置、返回键。
  */
 public class MainActivity extends AppCompatActivity {
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         webView.setWebViewClient(new WebViewClient());
 
         // 资源在 app/src/main/assets/，路径固定为 file:///android_asset/...
-        webView.loadUrl("file:///android_asset/psychopharm-app.html");
+        webView.loadUrl("file:///android_asset/psychopharm.html");
     }
 
     /**
