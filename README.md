@@ -3,7 +3,7 @@
 单文件 HTML 学习原型，带邮箱账号注册/登录与多设备云端同步（后端为独立 Cloudflare Worker + D1）。
 
 ## 在线版（GitHub Pages）
-> 地址在首次推送后回填：`https://USERNAME.github.io/neuropharm-app/`
+> 地址：`https://CochraneK.github.io/neuropharm-app/`
 
 直接用浏览器打开即可学习；登录后进度（积分 · 连续天数 · 徽章 · 已学药物）在多台设备间同步。
 
