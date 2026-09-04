@@ -28,6 +28,8 @@
     --c-anx-soft:#E3F3F0;
     --c-stim:#C2466B;
     --c-stim-soft:#FBE7EE;
+    --c-hyp:#7C3AED;
+    --c-hyp-soft:#F0ECFF;
     --c-other:#6B7280;
     --c-other-soft:#EEF1F5;
     --radius-card:20px;
@@ -735,7 +737,7 @@
 <script>
 
 
-const CHIPS = ["全部","抗抑郁药","典型抗精神病药","非典型抗精神病药","心境稳定剂","抗焦虑药","催眠药","相关药物","兴奋剂"];
+const CHIPS = ["全部","抗抑郁药","典型抗精神病药","非典型抗精神病药","心境稳定剂","抗焦虑药","催眠药","兴奋剂","抗帕金森药","抗痴呆药","β受体阻滞剂","相关药物"];
 let activeChip = "全部";
 let detailFrom = "library";
 
@@ -759,7 +761,11 @@ function renderHomePills(){
     "抗精神病药":{e:"🟪",c:"var(--c-psy-soft)"},
     "心境稳定剂":{e:"🟧",c:"var(--c-mood-soft)"},
     "抗焦虑药":{e:"🟩",c:"var(--c-anx-soft)"},
-    "兴奋剂":{e:"🟥",c:"var(--c-stim-soft)"}
+    "催眠药":{e:"🟣",c:"var(--c-hyp-soft)"},
+    "兴奋剂":{e:"🟥",c:"var(--c-stim-soft)"},
+    "抗帕金森药":{e:"⬜",c:"var(--c-other-soft)"},
+    "抗痴呆药":{e:"⬜",c:"var(--c-other-soft)"},
+    "β受体阻滞剂":{e:"⬜",c:"var(--c-other-soft)"}
   };
   const wrap = document.getElementById('homePills');
   wrap.innerHTML='';
@@ -910,7 +916,13 @@ function openInteract(zh){
 /* Study */
 let studyMode='cards';
 let cardIdx=0;
+let cardOrder; // shuffled index order
 function renderStudy(){
+  if(studyMode==='cards'){
+    // 每次打开闪卡都重新随机打乱
+    cardOrder=shuffle(DRUGS.map((_,i)=>i));
+    cardIdx=0;
+  }
   if(studyMode==='cards') renderCard();
   else { if(quizQueue.length) renderQuiz(); else startQuiz(); }
 }
@@ -919,7 +931,7 @@ function renderCard(){
   document.getElementById('quizWrap').style.display='none';
   const sp=document.getElementById('studyProgress'); if(sp) sp.style.display='';
   document.getElementById('studyModeLabel').textContent='记忆卡片';
-  const d=DRUGS[cardIdx%DRUGS.length];
+  const d=DRUGS[cardOrder[cardIdx]];
   const fc=document.getElementById('flashcard');
   fc.classList.remove('flip');
   document.getElementById('fcZh').textContent=d.zh;
@@ -951,7 +963,7 @@ function nextCard(remembered){
   const jb=document.querySelectorAll('.judge button');
   if(jb[0] && jb[0].dataset.locked) return;
   jb.forEach(x=>x.dataset.locked='1');
-  const d=DRUGS[cardIdx%DRUGS.length];
+  const d=DRUGS[cardOrder[cardIdx]];
   GAM.seen[d.zh]=true;
   touchStreak();
   if(remembered){ GAM.remembered=(GAM.remembered||0)+1; addPoints(10); showToast('记住了 · +10 🪙'); }
@@ -967,15 +979,50 @@ function setStudyMode(m){
 }
 /* 自测小考：稳定题库 + 上一题/下一题 + 结果页 */
 let quizQueue=[], quizPos=0, quizResult=[];
-const QUIZ_SIZE=15;
+const QUIZ_SIZE=25;
 const CURATED=[
+  /* ——— 基础 / 跨类别 ——— */
   {q:"下列哪种药物属于苯二氮䓬类抗焦虑药？",opts:["舍曲林","地西泮","奥氮平","碳酸锂"],ans:1},
   {q:"舍曲林（Sertraline）的主要作用机制是？",opts:["阻断 D2 受体","抑制 5-HT 再摄取","增强 GABA 能","阻断钠通道"],ans:1},
   {q:"需要定期监测血锂浓度的药物是？",opts:["丙戊酸钠","氟西汀","碳酸锂","哌甲酯"],ans:2},
   {q:"下列哪种属于第一代（典型）抗精神病药？",opts:["氯丙嗪","利培酮","地西泮","舍曲林"],ans:0},
   {q:"哌甲酯（Methylphenidate）主要用于？",opts:["抑郁症","ADHD","双相躁狂","强迫症"],ans:1},
   {q:"氯氮平（Clozapine）最需警惕的严重不良反应是？",opts:["体重增加","粒细胞缺乏","流涎","镇静"],ans:1},
-  {q:"阿立哌唑的作用特点更接近？",opts:["D2 完全阻断","D2 部分激动","纯抗组胺","MAOI"],ans:1}
+  {q:"阿立哌唑的作用特点更接近？",opts:["D2 完全阻断","D2 部分激动","纯抗组胺","MAOI"],ans:1},
+
+  /* ——— 抗抑郁药 ——— */
+  {q:"具有双重 5-HT 和 NE 再摄取抑制作用的药物是？",opts:["氟西汀","文拉法辛","曲唑酮","米氮平"],ans:1},
+  {q:"度洛西汀除抗抑郁外，还获批用于哪种疼痛？",opts:["偏头痛","糖尿病周围神经痛","骨关节炎","纤维肌痛"],ans:1},
+  {q:"米氮平（Mirtazapine）的特点包括？",opts:["激活为主","镇静+食欲增加","纯 5-HT 再摄取抑制","D2 阻断"],ans:1},
+  {q:"阿戈美拉汀（Agomelatine）的独特机制是？",opts:["褪黑素受体激动","5-HT 再摄取抑制","NE 再摄取抑制","MAO 抑制"],ans:0},
+  {q:"曲唑酮（Trazodone）在低剂量（25-50 mg）时常用作？",opts:["抗抑郁","催眠","抗焦虑","抗强迫"],ans:1},
+  {q:"伏硫西汀（Vortioxetine）的作用特点包括？",opts:["纯 SSRI","5-HT 调质 + 多受体调节","D2 部分激动","GABA 增强"],ans:1},
+  {q:"SSRI 类药物最常见的初期不良反应是？",opts:["粒细胞缺乏","恶心/胃肠不适","体重急剧下降","锥体外系反应"],ans:1},
+
+  /* ——— 抗精神病药 ——— */
+  {q:"哪种非典型抗精神病药引起体重增加和代谢综合征风险最高？",opts:["利培酮","奥氮平","阿立哌唑","氨磺必利"],ans:1},
+  {q:"利培酮需要重点监测的不良反应是？",opts:["肝功能","泌乳素升高","粒细胞缺乏","甲状腺功能"],ans:1},
+  {q:"氟哌啶醇属于哪一类抗精神病药？",opts:["非典型","典型(第一代)","非典型(部分激动)","苯甲酰胺类"],ans:1},
+  {q:"FGA 的典型不良反应是？",opts:["体重增加","锥体外系反应(EPS)","镇静","高泌乳素"],ans:1},
+  {q:"喹硫平（Quetiapine）低剂量（25-100 mg）常用于？",opts:["抗精神病","助眠/焦虑","躁狂","强迫症"],ans:1},
+  {q:"氨磺必利（Amisulpride）低剂量时主要作用机制是？",opts:["D2 阻断","5-HT2A 阻断","突触前 D2/D3 阻断→前额叶多巴胺增加","H1 阻断"],ans:2},
+
+  /* ——— 心境稳定剂 ——— */
+  {q:"丙戊酸钠常见但需监控的副作用是？",opts:["肾毒性","肝功能异常+体重增加","QT 延长","甲状腺功能减退"],ans:1},
+  {q:"拉莫三嗪最需要关注的严重不良反应是？",opts:["肝功能衰竭","Stevens-Johnson 综合征","粒细胞缺乏","胰腺炎"],ans:1},
+  {q:"卡马西平因其酶诱导特性会影响？",opts:["其他药物代谢(降低血药浓度)","自身吸收","肾脏排泄","蛋白结合"],ans:0},
+  {q:"碳酸锂的中毒浓度参考值是？",opts:[">0.6 mmol/L",">1.2 mmol/L",">2.0 mmol/L",">0.3 mmol/L"],ans:1},
+
+  /* ——— 抗焦虑 / 催眠 ——— */
+  {q:"哪种 Z 类药物主要用于入睡困难？",opts:["艾司唑仑","思诺思(酒石酸唑吡坦)","地西泮","劳拉西泮"],ans:1},
+  {q:"莱博雷生（Lemborexant）的作用机制是？",opts:["GABA 增强","褪黑素受体激动","食欲素受体拮抗","5-HT 再摄取抑制"],ans:2},
+  {q:"长期使用苯二氮䓬类药物应警惕？",opts:["肝功能损害","依赖与戒断反应","肾毒性","粒细胞缺乏"],ans:1},
+
+  /* ——— 新增类别 ——— */
+  {q:"苯海索用于处理抗精神病药的哪种副作用？",opts:["体重增加","锥体外系反应(EPS)","便秘","流涎"],ans:1},
+  {q:"普萘洛尔在精神科常用于？",opts:["惊恐发作","静坐不能/表演性焦虑","抑郁","狂躁"],ans:1},
+  {q:"多奈哌齐和卡巴拉汀共同的作用机制是？",opts:["NMDA 拮抗","胆碱酯酶抑制","MAO-B 抑制","多巴胺激动"],ans:1},
+  {q:"美金刚（Memantine）在阿尔茨海默病中的定位是？",opts:["轻中度一线","中重度","预防","全部阶段"],ans:1}
 ];
 function sampleExcept(pool, exclude, n){
   const cand=[...new Set(pool.filter(x=>x!==exclude))];
@@ -991,10 +1038,12 @@ function buildQuizBank(){
   const classLabels=[...new Set(DRUGS.map(d=>d.cls+(d.sub?'·'+d.sub:'')))];
   const names=DRUGS.map(d=>d.zh);
   const inds=DRUGS.flatMap(d=>d.ind||[]);
+  const sides=DRUGS.flatMap(d=>d.side||[]);
   DRUGS.forEach(d=>{
     const cls=d.cls+(d.sub?'·'+d.sub:'');
     bank.push(makeQ(`「${d.zh}」属于哪一类精神药物？`, cls, classLabels));
     if(d.ind && d.ind.length){ bank.push(makeQ(`「${d.zh}」常用于治疗下列哪种情况？`, d.ind[0], inds)); }
+    if(d.side && d.side.length){ bank.push(makeQ(`「${d.zh}」的常见不良反应包括？`, d.side[0], sides)); }
     bank.push(makeQ(`下列哪种药物属于「${cls}」？`, d.zh, names));
   });
   CURATED.forEach(q=>bank.push(q));
@@ -1248,7 +1297,7 @@ updateGamUI();
 <div class="dlqr" aria-label="下载 Android App 二维码">
   <div class="t">下载 Android App</div>
   <div class="s">扫码安装，离线也能学</div>
-  <img src="download-qr.svg" alt="扫码下载 Android App（GitHub Releases）" width="196" height="196" />
+  <img src="download-qr.png" alt="扫码下载 Android App（GitHub Releases）" width="196" height="196" />
   <div class="c">扫码下载 Android App</div>
   <div class="rel"><a href="https://github.com/CochraneK/neuropharm/releases" target="_blank" rel="noopener">或前往 GitHub Releases</a></div>
 </div>
