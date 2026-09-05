@@ -12,8 +12,8 @@ const fs = require('fs');
 const path = require('path');
 
 const root = __dirname;
-const src = path.join(root, 'drugs.json');
-const out = path.join(root, 'drugs-data.js');
+const src = path.join(root, '..', 'data', 'drugs.json');
+const out = path.join(root, '..', 'drugs-data.js');
 
 const drugs = JSON.parse(fs.readFileSync(src, 'utf-8'));
 const js = '/* AUTO-GENERATED from drugs.json — 不要手改本文件，改 drugs.json 后跑 node gen-data.js */\n'

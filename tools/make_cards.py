@@ -4,6 +4,7 @@ A4 portrait, 3x3 grid of poker-size cards (180x252 pt), crop marks,
 class color-coded. Fronts and backs interleaved for long-edge duplex printing.
 """
 import json
+import os
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.cidfonts import UnicodeCIDFont
@@ -13,6 +14,11 @@ from reportlab.pdfbase.pdfmetrics import stringWidth
 
 pdfmetrics.registerFont(UnicodeCIDFont('STSong-Light'))
 FONT = 'STSong-Light'
+
+# Script-relative base so the tool works from any cwd (repo root or tools/).
+HERE = os.path.dirname(os.path.abspath(__file__))
+DATA = os.path.join(HERE, '..', 'data', 'drugs.json')
+DIST = os.path.join(HERE, '..', 'dist')
 
 # class -> (main color, soft bg, dark "print-safe" band color, short label)
 # The dark band guarantees white text stays legible even in grayscale / ink-saver print.
@@ -342,14 +348,15 @@ def assert_layout():
 def main():
     lay = assert_layout()
     print('layout registration:', lay)
-    drugs = json.load(open('drugs.json', encoding='utf-8'))
+    drugs = json.load(open(DATA, encoding='utf-8'))
     pos = grid_positions()
     PER = len(pos)  # 9
     sets = [drugs[i:i + PER] for i in range(0, len(drugs), PER)]
 
     for outfile, mono in [('psychopharm-cards-deck.pdf', False),
                           ('psychopharm-cards-deck-mono.pdf', True)]:
-        c = canvas.Canvas(outfile, pagesize=A4)
+        outpath = os.path.join(DIST, outfile)
+        c = canvas.Canvas(outpath, pagesize=A4)
         for si, subset in enumerate(sets):
             n = len(subset)
             # front page (drug i at grid slot i, 1:1)

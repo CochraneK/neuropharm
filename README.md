@@ -14,11 +14,16 @@
 （APK 由 `.github/workflows/build-apk.yml` 在打 `v*` tag 时由 GitHub Actions 云端构建，产物见 Releases。）
 
 ## 目录
-- `psychopharm.html` — 主程序 / 网页版主页（移动端原型，自带手机屏预览；桌面端右侧含下载二维码）；`download-qr.svg` 为二维码
-- `auth.js` / `sync.js` — 账号与同步客户端
+- `psychopharm.html` — 主程序 / 网页版主页（移动端原型，自带手机屏预览；桌面端右侧含下载二维码）；`download-qr.png` 为二维码
+- `auth.js` / `sync.js` — 账号与同步客户端（被 App 直接引用，留在根目录）
+- `drugs-data.js` — 由 `data/drugs.json` 自动生成，被 App 直接引用（改动 `data/drugs.json` 后跑 `node tools/gen-data.js` 重新生成）
+- `data/drugs.json` — **药品单一数据源**（手写改这里，网页/App/PDF 全部同步）
+- `tools/` — 开发/构建脚本：`gen-data.js`（数据源→JS）、`make_cards.py` + `qa_pairing.py`（双面打印卡牌 PDF 生成与质检）、`publish-to-github.bat`
+- `docs/auth-sync-design.md` — 账号与同步后端设计文档
+- `dist/` — 生成的卡牌 PDF（`psychopharm-cards-deck.pdf` 彩色 / `-mono.pdf` 灰度墨省版）
 - `neuropharm-worker/` — Cloudflare Worker 同步后端（crypto/worker/schema/deploy）
-- `make_cards.py` / `qa_pairing.py` — 双面打印记忆卡片 PDF 生成与质检
 - `psychopharm-android/` — 真实 Android WebView 壳工程（APK 由 CI 在打 `v*` tag 时云端构建，产物见 Releases）
 
 ## 本地开发
-浏览器直接打开 `psychopharm.html` 即可；账号同步走 Cloudflare Worker（见 `neuropharm-worker/` 与 `auth-sync-design.md`）。
+浏览器直接打开 `psychopharm.html` 即可；账号同步走 Cloudflare Worker（见 `neuropharm-worker/` 与 `docs/auth-sync-design.md`）。
+增删药品只改 `data/drugs.json`，然后 `node tools/gen-data.js` 重建 `drugs-data.js`；要出 PDF 卡牌跑 `python tools/make_cards.py`（产物在 `dist/`），`python tools/qa_pairing.py` 做双面配对质检。

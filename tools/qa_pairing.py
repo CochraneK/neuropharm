@@ -6,14 +6,14 @@
   4) mono deck is truly grayscale (ink-saver).
 Run: python qa_pairing.py [color.pdf] [mono.pdf]
 """
-import sys, json
+import sys, json, os
 import make_cards as mk
 
 PW, PH = mk.A4
 CW, CH = mk.CARD_W, mk.CARD_H
 COLS, ROWS = mk.COLS, mk.ROWS
 pos = mk.grid_positions()
-drugs = json.load(open('drugs.json', encoding='utf-8'))
+drugs = json.load(open(os.path.join(mk.HERE, '..', 'data', 'drugs.json'), encoding='utf-8'))
 PER = len(pos)
 sets = [drugs[i:i + PER] for i in range(0, len(drugs), PER)]
 
@@ -141,8 +141,8 @@ def check_geometry(path):
 
 
 def main():
-    color_path = sys.argv[1] if len(sys.argv) > 1 else 'psychopharm-cards-deck.pdf'
-    mono_path = sys.argv[2] if len(sys.argv) > 2 else 'psychopharm-cards-deck-mono.pdf'
+    color_path = sys.argv[1] if len(sys.argv) > 1 else 'dist/psychopharm-cards-deck.pdf'
+    mono_path = sys.argv[2] if len(sys.argv) > 2 else 'dist/psychopharm-cards-deck-mono.pdf'
     print(f"== DUPLEX mode: {mk.DUPLEX} ==")
 
     geo_c = check_geometry(color_path)
