@@ -17,6 +17,7 @@ venv/
 # ── Android 工程构建产物 & 本地配置（APK 由 CI 生成并发布到 Release，不入库）──
 psychopharm-android/.gradle/
 psychopharm-android/app/build/
+psychopharm-android/app/src/main/assets/   # 由 build-apk.yml 从根目录现生成，禁止入库（防重复/漂移）
 psychopharm-android/local.properties
 *.apk
 
