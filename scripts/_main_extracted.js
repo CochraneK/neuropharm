@@ -308,7 +308,8 @@ function renderCard(){
   document.getElementById('fcWarn').textContent=d.warn;
   document.getElementById('fcDose').textContent=d.dose;
   document.getElementById('fcCls2').textContent=`${d.cls} · ${d.sub}`;
-  document.getElementById('studyProgress').textContent=`${cardIdx%DRUGS.length+1} / ${DRUGS.length}`;
+  // 进度以实际队列长度为准（SRS 队列含复习卡，长度可能不等于 DRUGS.length）
+  document.getElementById('studyProgress').textContent=`${cardIdx+1} / ${cardOrder.length}`;
   // SRS 状态提示
   const dIdx=cardOrder[cardIdx];
   const sD=DRUGS[dIdx];
@@ -347,7 +348,13 @@ function nextCard(remembered){
   if(remembered){ GAM.remembered=(GAM.remembered||0)+1; addPoints(10); showToast('记住了 · +10 🪙'); }
   else { addPoints(3); showToast('再看看 · +3 🪙'); }
   saveGam(); checkBadges(); updateGamUI();
-  cardIdx++; renderCard();
+  cardIdx++;
+  // 队列耗尽时按最新 SRS 状态重新排队，避免 cardOrder[cardIdx] 越界导致 d.zh 抛错卡死
+  if(cardIdx>=cardOrder.length){
+    cardOrder=getSRSQueue(); cardIdx=0;
+    showToast('🎉 本轮完成 · 已按掌握情况重新排队');
+  }
+  renderCard();
   jb.forEach(x=>delete x.dataset.locked);
 }
 function setStudyMode(m){
