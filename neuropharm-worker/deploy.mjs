@@ -84,15 +84,15 @@ log('部署 Worker …');
 const deployOut = capture(`"${WR}" deploy`);
 console.log(deployOut);
 let url = (deployOut.match(/https:\/\/[^\s'"]+\.workers\.dev/i) || [null])[0];
-if (!url) { console.error('⚠ 未能从部署输出解析 workers.dev URL，请手动确认后回填 auth.js'); process.exit(2); }
+if (!url) { console.error('⚠ 未能从部署输出解析 workers.dev URL，请手动确认后回填 js/auth.js'); process.exit(2); }
 log('Worker URL =', url);
 
 // ── 7. 回填 auth.js 的 API_BASE ──────────────────────────────
-const authPath = join(APP_ROOT, 'auth.js');
+const authPath = join(APP_ROOT, 'js', 'auth.js');
 let auth = readFileSync(authPath, 'utf8');
 const before = auth;
 auth = auth.replace(/'https:\/\/[^']*workers\.dev'/, `'${url}'`);
-if (auth === before) { console.error('⚠ auth.js 未匹配到占位 URL，请手动更新 API_BASE'); }
-else { writeFileSync(authPath, auth); log('已回填 auth.js ->', url); }
+if (auth === before) { console.error('⚠ js/auth.js 未匹配到占位 URL，请手动更新 API_BASE'); }
+else { writeFileSync(authPath, auth); log('已回填 js/auth.js ->', url); }
 
 console.log('\n\x1b[32m✅ 部署完成：多设备同步后端已上线。\x1b[0m');

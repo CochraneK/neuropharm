@@ -68,10 +68,10 @@ devices(device_id TEXT PK, uid TEXT, name TEXT, platform TEXT, last_sync_at INTE
 ## 8. 落地状态与部署步骤（2026-08 实际实现）
 
 ### 8.1 已完成（代码就绪，已通过语法 + 密码学烟测）
-- **客户端已接线**：`auth.js`(NPAuth) + `sync.js`(NPSync) 已接入 `psychopharm.html`
-  - 主脚本后按序引入 `sync.js` → `auth.js`（sync.js 包装 `window.saveGam`，实现变更后自动 800ms 防抖推送）。
+- **客户端已接线**：`js/auth.js`(NPAuth) + `js/sync.js`(NPSync) 已接入 `psychopharm.html`
+  - 主脚本后按序引入 `js/sync.js` → `js/auth.js`（sync.js 包装 `window.saveGam`，实现变更后自动 800ms 防抖推送）。
   - 新增「登录门」`#authGate`：首次打开或退出后弹出，可点「先本地体验」跳过（本地模式不同步，行为不变）。
-  - profile 页「学习设置」下方新增「数据同步」区：`#syncStatus` / `#syncNowRow`（立即同步）/ `#syncDevicesRow`(+`#syncDevCount`) / `#logoutRow` / `#syncLoginRow`，由 auth.js 的 `renderSyncStatus()` 驱动显隐。
+  - profile 页「学习设置」下方新增「数据同步」区：`#syncStatus` / `#syncNowRow`（立即同步）/ `#syncDevicesRow`(+`#syncDevCount`) / `#logoutRow` / `#syncLoginRow`，由 `js/auth.js` 的 `renderSyncStatus()` 驱动显隐。
 - **后端文件**：`neuropharm-worker/` 下 `crypto.mjs`(PBKDF2-SHA256 + HS256 自签 token)、`worker.js`(register/login/pull/push/devices 六路由 + D1)、`schema.sql`(users/states/devices 三表)、`wrangler.toml`、`_smoke.mjs`。
 - **同步模型（实现）**：状态即现有 `GAM` 对象（积分/连续/徽章/已学）。推送时打 `GAM._rev = Date.now()`；`pull()` 按 `updatedAt ≥ _rev` 采用服务端（LWW），本地更新则反推上传。`saveGam` 触发 800ms 防抖推送到 `/sync/push`（顺带 upsert 设备行）。
 - **密码学验证**：`_smoke.mjs` 实测 PBKDF2 派生/校验、HS256 token 签发/验签（含过期、错误密钥返回 `null`）全部通过。
@@ -79,13 +79,13 @@ devices(device_id TEXT PK, uid TEXT, name TEXT, platform TEXT, last_sync_at INTE
 ### 8.2 部署（已上线 ✅ — 2026-08-12）
 - **生产地址**：`https://neuropharm-sync.cunyikang.workers.dev`（Cloudflare 账户 Cunyikang@gmail.com's Account）。
 - **D1**：`neuropharm`（database_id 已写入 `wrangler.toml`）；**JWT_SECRET** 以 `wrangler secret put` 注入（不落 toml）。
-- **一键重部署**：在 `neuropharm-worker/` 准备好 `.cf_env`（`CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`，参考 `.cf_env.example`），然后 `node deploy.mjs` 即可完成 d1 create → 建表 → secret → deploy → 回填 `auth.js`。
+- **一键重部署**：在 `neuropharm-worker/` 准备好 `.cf_env`（`CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`，参考 `.cf_env.example`），然后 `node deploy.mjs` 即可完成 d1 create → 建表 → secret → deploy → 回填 `js/auth.js`。
 - 手动步骤（等价）：
   1. `wrangler d1 create neuropharm`（记下 `database_id` 填 `wrangler.toml`）。
   2. `wrangler secret put JWT_SECRET`（交互输入长随机串）。
   3. `wrangler d1 execute neuropharm --remote --file=./schema.sql`。
   4. `wrangler deploy`。
-  5. `auth.js` 的 `API_BASE` 已回填为真实域名（可改 / 覆盖 `localStorage.neuropharm_api_base`）。
+  5. `js/auth.js` 的 `API_BASE` 已回填为真实域名（可改 / 覆盖 `localStorage.neuropharm_api_base`）。
 - 本地联调：`wrangler dev` + `API_BASE=http://127.0.0.1:8787`（见 §8.3）。
 
 ### 8.3 本地联调（不部署也可验证客户端逻辑）
@@ -93,7 +93,7 @@ devices(device_id TEXT PK, uid TEXT, name TEXT, platform TEXT, last_sync_at INTE
 - 不部署时：App 走本地模式正常学习（不推送/不拉取）；若已登录但后端不可达，`push/pull` 失败被静默捕获（控制台 `warn`），不阻塞本地使用。
 
 ### 8.4 待办
-- [x] 执行 8.2 部署并回填 `auth.js` 的 `API_BASE` 真实域名（已上线：`neuropharm-sync.cunyikang.workers.dev`）。
+- [x] 执行 8.2 部署并回填 `js/auth.js` 的 `API_BASE` 真实域名（已上线：`neuropharm-sync.cunyikang.workers.dev`）。
 - [ ] 真机/多设备跑通一次 pull/push 验收（LWW：后同步者覆盖前者，符合设计）。← 建议首次登录后换设备验证。
 - [ ] 首登行为确认：服务端空 → 保留本地、下次变更时上传（当前已如此实现，非覆盖式）；若希望首登即主动上传，可在登录成功后调用 `NPSync.pushNow()`（可选增强）。
 

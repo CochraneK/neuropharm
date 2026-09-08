@@ -342,7 +342,7 @@ def assert_layout():
 def main():
     lay = assert_layout()
     print('layout registration:', lay)
-    drugs = json.load(open('drugs.json', encoding='utf-8'))
+    drugs = json.load(open('../drugs.json', encoding='utf-8'))
     pos = grid_positions()
     PER = len(pos)  # 9
     sets = [drugs[i:i + PER] for i in range(0, len(drugs), PER)]
