@@ -20,8 +20,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Regenerate drugs-data.js from single source drugs.json
-        run: node gen-data.js
+      - name: Regenerate drugs-data.js from single source data/drugs.json
+        run: node tools/gen-data.js
 
       - name: Prepare site (landing page + app + its local scripts)
         run: |
@@ -31,7 +31,7 @@ jobs:
           cp auth.js site/auth.js
           cp sync.js site/sync.js
           cp drugs-data.js site/drugs-data.js
-          cp download-qr.svg site/download-qr.svg
+          cp download-qr.png site/download-qr.png
 
       - uses: actions/upload-pages-artifact@v3
         with:
