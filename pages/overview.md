@@ -15,8 +15,8 @@
    - 结果：`PASS ✅` — COLOR 0 问题 / MONO 0 问题且 0 彩色命中。
 
 ## 交付文件
-- `psychopharm-cards-deck.pdf`（彩色，8 页 / 33 卡，flip hint 已移除）
-- `psychopharm-cards-deck-mono.pdf`（纯灰度墨省版，8 页 / 33 卡）
+- `psychopharm-cards-deck.pdf`（彩色，8 页 / 38 卡，flip hint 已移除）
+- `psychopharm-cards-deck-mono.pdf`（纯灰度墨省版，8 页 / 38 卡）
 
 ## 备注
 - 若实测打印仍错位，将 `make_cards.py` 中的 `DUPLEX = 'long'` 改为 `'short'`（短边装订，垂直反转）或 `'none'`（无镜像），重跑脚本即可。

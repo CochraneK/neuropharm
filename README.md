@@ -30,4 +30,4 @@
 ```
 
 ## 本地开发
-浏览器直接打开 `psychopharm.html` 即可；账号同步走 Cloudflare Worker（见 `pages/auth-sync-design.md`）。
+浏览器直接打开 `psychopharm.html` 即可；账号同步走 Cloudflare Worker（见 `docs/auth-sync-design.md`）。

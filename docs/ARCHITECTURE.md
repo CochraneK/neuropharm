@@ -59,5 +59,5 @@
 
 ## 文档索引
 - 账号同步设计 → `auth-sync-design.md`
-- 卡片 PDF → `overview.md`
+- 卡片 PDF → `../pages/overview.md`
 - 项目规则 → `CLAUDE.md`

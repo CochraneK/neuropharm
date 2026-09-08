@@ -15,10 +15,10 @@ from reportlab.pdfbase.pdfmetrics import stringWidth
 pdfmetrics.registerFont(UnicodeCIDFont('STSong-Light'))
 FONT = 'STSong-Light'
 
-# Script-relative base so the tool works from any cwd (repo root or tools/).
+# Script-relative base so the tool works from any cwd (repo root or scripts/).
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, '..', 'data', 'drugs.json')
-DIST = os.path.join(HERE, '..', 'dist')
+DIST = os.path.join(HERE, '..', 'pdf')
 
 # class -> (main color, soft bg, dark "print-safe" band color, short label)
 # The dark band guarantees white text stays legible even in grayscale / ink-saver print.
@@ -348,11 +348,7 @@ def assert_layout():
 def main():
     lay = assert_layout()
     print('layout registration:', lay)
-<<<<<<<< HEAD:scripts/make_cards.py
-    drugs = json.load(open('../drugs.json', encoding='utf-8'))
-========
     drugs = json.load(open(DATA, encoding='utf-8'))
->>>>>>>> acad1af603e0ebcf3a8ec5cbcb1d06986033d161:tools/make_cards.py
     pos = grid_positions()
     PER = len(pos)  # 9
     sets = [drugs[i:i + PER] for i in range(0, len(drugs), PER)]
