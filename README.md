@@ -1,12 +1,20 @@
 # 药枢 NeuroPharm · 精神药理学习 App
 
-单文件 HTML 学习原型，带邮箱账号注册/登录与多设备云端同步（后端为独立 Cloudflare Worker + D1）。
+单文件 HTML 学习原型，覆盖 **50 味精神科药物**，含 SRS 间隔重复闪卡、药物相互作用查询（72 对）、194+ 题库、游戏化进度追踪，带邮箱账号注册/登录与多设备云端同步（后端为独立 Cloudflare Worker + D1）。
 
 ## 在线版（GitHub Pages）
 > 主页（网页版 App）：`https://CochraneK.github.io/neuropharm/`
 > 桌面端页面右侧含「下载 Android App」二维码，扫码安装离线 App。
 
 主页即 `psychopharm.html`（单文件 H5 学习原型，自带手机屏预览）；桌面端右侧扫码（二维码指向 GitHub Releases）即可下载 Android APK。登录后进度（积分 · 连续天数 · 徽章 · 已学药物）在多台设备间同步。
+
+## 功能亮点
+
+- **50 味精神科药物**：覆盖 SSRI、SNRI、NaSSA、MAOI、典型/非典型抗精神病药、心境稳定剂、苯二氮䓬类、抗帕金森药、β受体阻滞剂、抗痴呆药等
+- **SRS 间隔重复闪卡**：基于简化 SM-2 算法（reps/ease/interval/nextReview），记住翻倍间隔、没记住重置，专注薄弱药物
+- **药物相互作用查询**：72 对已知相互作用（含 class 级 fallback 匹配），高危/中危/低危三级标注
+- **自测 / 题库**：194+ 自定义题目 + 自动生成题，覆盖药名（通用名/商品名）、分类、适应症、副作用、相互作用
+- **游戏化系统**：积分、连续天数、等级、徽章
 
 ## Android APK
 见仓库 **Releases**：原生 WebView 壳，离线打包本仓库最新 H5 与账号同步脚本（`js/auth.js`/`js/sync.js`）。
