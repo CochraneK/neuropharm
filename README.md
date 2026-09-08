@@ -16,8 +16,8 @@
 ## 目录
 ```
 ├── psychopharm.html            主程序（单文件 H5）
-├── drugs.json                  药物数据（唯一真源）
-├── scripts/gen-data.js         数据生成器
+├── data/drugs.json              药物数据（唯一真源）
+├── scripts/gen-data.js          数据生成器
 ├── drugs-data.js               生成的 JS 数据
 ├── js/                         客户端 JS（auth.js / sync.js）
 ├── img/                        静态资源（二维码等）

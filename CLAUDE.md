@@ -4,10 +4,10 @@
 单文件 HTML 精神药理学习 App（`psychopharm.html`），含 38 味精神科药物完整题库（184 题），支持闪卡、自测、进度追踪。Android WebView 壳（`psychopharm-android/`）+ Cloudflare Worker 同步后端（`neuropharm-worker/`）。
 
 ## 数据流水线（不可违反）
-- **唯一真源**: `drugs.json`（JSON，38 味药）
-- **生成**: `gen-data.js` 读 drugs.json → 输出 `drugs-data.js`
+- **唯一真源**: `data/drugs.json`（JSON，38 味药）
+- **生成**: `scripts/gen-data.js` 读 `data/drugs.json` → 输出 `drugs-data.js`
 - **消费**: `psychopharm.html` 引用 `drugs-data.js`
-- **规律**: 改药物分类/增减药 → 只改 `drugs.json` → 跑 `gen-data.js` 重新生成 → 同步 APK assets
+- **规律**: 改药物分类/增减药 → 只改 `data/drugs.json` → 跑 `scripts/gen-data.js` 重新生成 → 同步 APK assets
 
 ## 关键约定
 - `README.md` 保持最新，特别是文件列表和二维码引用
@@ -19,7 +19,7 @@
 | 路径 | 说明 |
 |---|---|
 | `psychopharm.html` | 主程序（单文件 H5） |
-| `drugs.json` | 药物数据（唯一真源） |
+| `data/drugs.json` | 药物数据（唯一真源） |
 | `scripts/gen-data.js` | 数据生成器 |
 | `drugs-data.js` | 生成的 JS 数据 |
 | `js/auth.js` / `js/sync.js` | 账号与同步客户端 |
@@ -33,5 +33,5 @@
 
 ## 深入文档
 - 架构概览 → `docs/ARCHITECTURE.md`
-- 账号同步设计 → `pages/auth-sync-design.md`
+- 账号同步设计 → `docs/auth-sync-design.md`
 - 卡片 PDF 说明 → `pages/overview.md`
