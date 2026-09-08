@@ -1,10 +1,10 @@
 # 药枢 NeuroPharm — 项目规则
 
 ## 项目简介
-单文件 HTML 精神药理学习 App（`psychopharm.html`），含 50 味精神科药物及完整题库（194+ 自定义 + 自动生成题），支持 SRS 间隔重复闪卡、自测、药物相互作用查询、游戏化进度追踪。Android WebView 壳（`psychopharm-android/`）+ Cloudflare Worker 同步后端（`neuropharm-worker/`）。
+单文件 HTML 精神药理学习 App（`psychopharm.html`），含 62 味精神科药物及完整题库（194+ 自定义 + 自动生成题），支持 SRS 间隔重复闪卡、自测、药物相互作用查询、游戏化进度追踪。Android WebView 壳（`psychopharm-android/`）+ Cloudflare Worker 同步后端（`neuropharm-worker/`）。
 
 ## 数据流水线（不可违反）
-- **唯一真源**: `data/drugs.json`（JSON，50 味药）
+- **唯一真源**: `data/drugs.json`（JSON，62 味药）
 - **生成**: `scripts/gen-data.js` 读 `data/drugs.json` → 输出 `drugs-data.js`
 - **消费**: `psychopharm.html` 引用 `drugs-data.js`
 - **规律**: 改药物分类/增减药 → 只改 `data/drugs.json` → 跑 `scripts/gen-data.js` 重新生成 → 同步 APK assets

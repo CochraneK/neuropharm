@@ -999,17 +999,136 @@ const PAIRS = {
   "丙戊酸钠|阿司匹林":["中等","阿司匹林置换蛋白结合丙戊酸，升高游离丙戊酸浓度，监测毒性。"],
   "文拉法辛|MAOI":["禁忌","SNRI 与 MAOI 联用可致致命性 5-羟色胺综合征，需 14 天洗脱期。"]
 };
+/* ===== 相互作用自动推导引擎（数据驱动）
+ * 依据 drugs.json 中每味药的 rx 药理标签（CYP 底物/抑制/诱导、5-HT 能强度、
+ * 镇静强度、QT 风险、癫痫阈值、抗胆碱、阿片、MAOI 等）按规则自动生成组合结论，
+ * 无需逐对硬编码，覆盖 62×61/2 全部组合。 */
+function getRx(name){ const d=DRUGS.find(x=>x.zh===name); return (d && d.rx) ? d.rx : null; }
+const CYP_NAME={"1A2":"CYP1A2","2C19":"CYP2C19","2C9":"CYP2C9","2D6":"CYP2D6","3A4":"CYP3A4","2B6":"CYP2B6","2E1":"CYP2E1"};
+/* 窄治疗窗底物：被 CYP 抑制时后果严重 */
+const NARROW=["氯氮平","碳酸锂","美沙酮","阿米替林","丙米嗪","氟哌啶醇","齐拉西酮","多奈哌齐","加兰他敏"];
+
+function deriveInteractions(a,b){
+  const A=getRx(a), B=getRx(b);
+  if(!A||!B) return [];
+  const out=[];
+  const add=(lvl,txt)=>out.push([lvl,txt]);
+  const sum=k=>(A[k]||0)+(B[k]||0);
+  const has=(o,t)=>(o.other||[]).includes(t);
+  const inter=(x,y)=>x.filter(v=>y.indexOf(v)>=0);
+  const es=en=>en.map(e=>CYP_NAME[e]||e).join('、');
+  const maoiSum=sum('maoi');
+
+  /* 1. 阿片拮抗剂 + 阿片类 → 急性戒断（绝对禁忌） */
+  if((has(A,'opioid_antagonist')&&(B.opio||0)>0)||(has(B,'opioid_antagonist')&&(A.opio||0)>0))
+    add("禁忌","纳曲酮为阿片受体拮抗剂，与阿片类（美沙酮/丁丙诺啡）合用会阻断其镇痛作用并诱发急性戒断反应；开始纳曲酮治疗前须完成 7–14 天阿片洗脱。");
+
+  /* 2. MAOI 组合 */
+  if(maoiSum>0){
+    const otherSerot = (A.maoi>0 ? B.serot : A.serot)||0;
+    const otherCns   = (A.maoi>0 ? B.cns   : A.cns  )||0;
+    if(otherSerot>=2)
+      add("禁忌","单胺氧化酶抑制剂（MAOI）与 5-HT 能药物合用可致危及生命的 5-羟色胺综合征或高血压危象，属绝对禁忌；两药转换须 2 周洗脱期。");
+    else if(otherCns>=3)
+      add("严重","MAOI 与强中枢抑制剂合用加重镇静与呼吸抑制，须严密监护生命体征。");
+    else
+      add("严重","含 MAOI 方案须严格低酪胺饮食（避免奶酪、腌制品、红酒），并避免与拟交感神经药、右美沙芬、曲马多、哌替啶合用。");
+  }
+
+  /* 3. 5-HT 综合征（非 MAOI 情形） */
+  if(maoiSum===0){
+    const ss=sum('serot');
+    if(ss>=4)
+      add("严重","两药均具显著 5-HT 能作用（叠加评分 "+ss+"），存在 5-羟色胺综合征风险：肌张力增高、高热、自主神经不稳；尽量避免联用，必须联用时从小剂量起始并密切观察。");
+    else if(ss===3)
+      add("中等","5-HT 能作用叠加（评分 3），联用需警惕 5-羟色胺综合征早期表现（震颤、腹泻、烦躁、心率加快）。");
+  }
+
+  /* 4. 中枢抑制 / 呼吸抑制 */
+  const cn=sum('cns');
+  const op=Math.max(A.opio||0,B.opio||0);
+  if(op>0 && cn>=4)
+    add("严重","阿片类与其他中枢抑制剂联用可致深度镇静、呼吸抑制甚至死亡；须减量并监测呼吸频率与意识水平，避免与苯二氮䓬、酒精同用。");
+  else if(cn>=5)
+    add("严重","中枢抑制作用强叠加（评分 "+cn+"），显著镇静、共济失调与跌倒风险，老年人尤须防范；用药期间避免驾驶与高空作业。");
+  else if(cn>=4)
+    add("中等","中枢抑制叠加（评分 "+cn+"），注意嗜睡、注意力下降与跌倒风险，初期避免驾车。");
+
+  /* 5. QT 间期延长 */
+  const qt=sum('qt');
+  if(qt>=3)
+    add("严重","两药均可延长 QT 间期（叠加评分 "+qt+"），尖端扭转型室速风险升高；联用前后查心电图并纠正低钾、低镁。");
+  else if(qt===2)
+    add("中等","两药均有轻度 QT 延长倾向，联用建议监测心电图，尤其合并心脏病、电解质紊乱或联用其他致 QT 延长药物时。");
+
+  /* 6. CYP 抑制 → 底物血药浓度升高 */
+  const inhAB=inter(A.inh||[],B.sub||[]), inhBA=inter(B.inh||[],A.sub||[]);
+  if(inhAB.length){
+    const sev=NARROW.indexOf(b)>=0;
+    add(sev?"严重":"中等","【"+a+"】抑制 "+es(inhAB)+"，可使【"+b+"】血药浓度升高"+(sev?"（该药治疗窗窄，中毒风险显著）":"")+"，建议减量并监测不良反应"+(sev?"与血药浓度":"")+"。");
+  }
+  if(inhBA.length){
+    const sev=NARROW.indexOf(a)>=0;
+    add(sev?"严重":"中等","【"+b+"】抑制 "+es(inhBA)+"，可使【"+a+"】血药浓度升高"+(sev?"（该药治疗窗窄，中毒风险显著）":"")+"，建议减量并监测不良反应"+(sev?"与血药浓度":"")+"。");
+  }
+
+  /* 7. CYP 诱导 → 底物血药浓度降低 */
+  const indAB=inter(A.ind||[],B.sub||[]), indBA=inter(B.ind||[],A.sub||[]);
+  if(indAB.length)
+    add("中等","【"+a+"】诱导 "+es(indAB)+"，可加速【"+b+"】代谢致血药浓度下降、疗效降低；必要时调整剂量或换用替代药。");
+  if(indBA.length)
+    add("中等","【"+b+"】诱导 "+es(indBA)+"，可加速【"+a+"】代谢致血药浓度下降、疗效降低；必要时调整剂量或换用替代药。");
+
+  /* 8. 癫痫阈值 */
+  if(sum('seiz')>=3)
+    add("中等","两药均可降低癫痫发作阈值，联用增加惊厥风险；有癫痫病史或脑损伤者慎用，避免与酒精同用。");
+
+  /* 9. 抗胆碱叠加 */
+  if(sum('ach')>=3)
+    add("中等","抗胆碱作用叠加，易出现口干、便秘、尿潴留、视物模糊；老年患者警惕谵妄、肠梗阻与青光眼加重。");
+
+  /* 10. 特殊：锂盐窄治疗窗 */
+  if(has(A,'lithium')||has(B,'lithium')){
+    const o=has(A,'lithium')?b:a;
+    add("中等","碳酸锂治疗窗窄（目标 0.6–1.2 mmol/L），与【"+o+"】联用须监测血锂浓度、肾功能与电解质；脱水、NSAID、利尿剂、ACEI/ARB 均可升高血锂至中毒。");
+  }
+
+  /* 11. 特殊：氯氮平血液学监测 */
+  if(has(A,'agranulocytosis')||has(B,'agranulocytosis'))
+    add("中等","含氯氮平方案须定期监测白细胞与中性粒细胞计数（前 18 周每周、之后每月），警惕粒细胞缺乏；同时监测心肌炎、癫痫与代谢指标。");
+
+  return out;
+}
+
+/* 严重度排序，用于合并人工条目与自动推导结果时取最高危 */
+const SEV_ORDER=["无明显","轻微","中等","严重","禁忌"];
+function sevRank(l){ const i=SEV_ORDER.indexOf(l); return i<0?0:i; }
+
 function getInteraction(a,b){
   if(a===b) return ["轻微","选择了同一种药物，无需评估相互作用；但注意单药过量与停药反应。"];
   const k=keyOf(a,b);
-  if(PAIRS[k]) return PAIRS[k];
-  // Fallback: class-based matching
-  const ca=getClassKeys(a), cb=getClassKeys(b);
-  for(const caa of ca) for(const cbb of cb){
-    const ck=keyOf(caa,cbb);
-    if(PAIRS[ck] && ck!==k) return PAIRS[ck];
+  const manual=PAIRS[k];
+  const derived=deriveInteractions(a,b);
+
+  if(!derived.length){
+    if(manual) return manual;
+    // 无推导结果 → 回退 class-based 匹配
+    const ca=getClassKeys(a), cb=getClassKeys(b);
+    for(const caa of ca) for(const cbb of cb){
+      const ck=keyOf(caa,cbb);
+      if(PAIRS[ck] && ck!==k) return PAIRS[ck];
+    }
+    return ["无明显","按药理标签自动推导未发现显著相互作用；但联用仍须以说明书与指南为准，注意个体差异与酶诱导/抑制。"];
   }
-  return ["无明显","当前库内未记录两药明确严重相互作用；但联用仍须以说明书与指南为准，注意个体差异与酶诱导/抑制。"];
+
+  // 合并人工条目 + 自动推导：取最高严重度，文本全部呈现
+  let best=derived[0];
+  derived.forEach(x=>{ if(sevRank(x[0])>sevRank(best[0])) best=x; });
+  if(manual && sevRank(manual[0])>sevRank(best[0])) best=manual;
+  const texts=[];
+  if(manual) texts.push(manual[1]);
+  derived.forEach(x=>{ if(texts.indexOf(x[1])<0) texts.push(x[1]); });
+  return [best[0], texts.join('\n\n')];
 }
 function keyOf(a,b){return [a,b].sort().join('|');}
 function ensureInteractOptions(){
@@ -1301,7 +1420,7 @@ const BADGES=[
   {id:'quiz5',  icon:'🎯', name:'满分学霸', desc:'自测连对 5 题'},
   {id:'pts1000',icon:'💫',name:'千分俱乐部', desc:'累计积分达到 1000'},
   {id:'pts5000',icon:'✨',name:'万分预备', desc:'累计积分达到 5000'},
-  {id:'allseen',icon:'📚',name:'药库通览', desc:'浏览过全部 50 味药'},
+  {id:'allseen',icon:'📚',name:'药库通览', desc:'浏览过全部 62 味药'},
   {id:'srs10',  icon:'🔄',name:'间隔达人', desc:'SRS 累计复习 10 张到期卡片'},
   {id:'lib',    icon:'🗂️',name:'百宝箱', desc:'浏览全部药库'}
 ];
