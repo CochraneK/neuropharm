@@ -333,6 +333,14 @@
   .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:rgba(14,140,127,.95);color:#fff;font-size:14px;font-weight:700;padding:9px 18px;border-radius:99px;box-shadow:0 8px 24px rgba(16,24,40,.22);z-index:50;opacity:0;transition:opacity .25s ease, transform .25s ease;pointer-events:none;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
   .ptag{display:inline-flex;align-items:center;gap:4px;background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:800;padding:3px 10px;border-radius:99px;margin-top:8px;}
+  /* daily goal row below streak */
+  .goal-row{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 16px;margin-top:12px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow);}
+  .goal-row .gl{flex:1;min-width:0;}
+  .goal-row .gl .gt{font-size:12.5px;font-weight:700;}
+  .goal-row .gl .gp{font-size:11px;color:var(--text-3);margin-top:3px;}
+  .goal-row .gl .gb{height:5px;background:var(--surface-2);border-radius:99px;margin-top:6px;overflow:hidden;}
+  .goal-row .gl .gb i{display:block;height:100%;width:0%;background:var(--accent);border-radius:99px;transition:width .4s ease;}
+  .goal-row .gv{font-size:16px;font-weight:800;color:var(--accent);flex:0 0 auto;}
 
   /* ---------- Mature standards: a11y & mobile ---------- */
   button{font-family:var(--font);touch-action:manipulation;}
@@ -454,6 +462,16 @@
           <div class="sub" id="srsCount" style="display:none;margin-top:6px;"></div>
         </div>
         <div class="flame" id="homeFlame">🌱</div>
+      </div>
+
+      <!-- 每日目标 -->
+      <div class="goal-row" id="goalRow" style="display:none;">
+        <div class="gl">
+          <div class="gt">今日目标</div>
+          <div class="gp" id="goalText">0 / 30 张卡片</div>
+          <div class="gb"><i id="goalBar" style="width:0%"></i></div>
+        </div>
+        <div class="gv" id="goalPct">0%</div>
       </div>
 
       <div class="sec">
@@ -1259,21 +1277,28 @@ function showQuizResult(){
 
 /* ===== Gamification (参考「不背单词」) ===== */
 const LS_KEY='neuropharm_gam_v1';
-const LEVELS=[0,100,250,450,700,1000,1400,1900,2500,3300];
-const LEVEL_NAMES=['萌新','学徒','药童','药师','药剂师','临床药师','药理专家','资深专家','主任医师','药枢大师'];
+const LEVELS=[0,80,200,380,600,880,1200,1600,2100,2700,3400,4200,5100,6100,7200,8500,10000,12000,15000,20000];
+const LEVEL_NAMES=['萌新','学徒','药童','药师','药剂师','临床药师','药理专家','资深专家','主任医师','药枢大师',
+  '药王','药圣','太上药王','丹青妙手','百草通灵','万药归宗','药理宗师','药道天师','药帝','药神'];
 const BADGES=[
   {id:'first',  icon:'🌱', name:'初出茅庐', desc:'完成第一次学习'},
   {id:'rem10',  icon:'📖', name:'小有心得', desc:'累计记住 10 次'},
   {id:'rem50',  icon:'🧠', name:'药理学徒', desc:'累计记住 50 次'},
   {id:'rem100', icon:'🏆', name:'药理学徒毕业', desc:'累计记住 100 次'},
+  {id:'rem500', icon:'👑', name:'药理学霸', desc:'累计记住 500 次'},
   {id:'streak3',icon:'🔥', name:'坚持不懈', desc:'连续学习 3 天'},
   {id:'streak7',icon:'⚡', name:'一周不辍', desc:'连续学习 7 天'},
   {id:'streak30',icon:'💎',name:'初心如磐', desc:'连续学习 30 天'},
+  {id:'streak100',icon:'🌟',name:'百日筑基', desc:'连续学习 100 天'},
   {id:'quiz10', icon:'✅', name:'自测达人', desc:'完成 10 道自测'},
   {id:'quiz5',  icon:'🎯', name:'满分学霸', desc:'自测连对 5 题'},
+  {id:'pts1000',icon:'💫',name:'千分俱乐部', desc:'累计积分达到 1000'},
+  {id:'pts5000',icon:'✨',name:'万分预备', desc:'累计积分达到 5000'},
+  {id:'allseen',icon:'📚',name:'药库通览', desc:'浏览过全部 50 味药'},
+  {id:'srs10',  icon:'🔄',name:'间隔达人', desc:'SRS 累计复习 10 张到期卡片'},
   {id:'lib',    icon:'🗂️',name:'百宝箱', desc:'浏览全部药库'}
 ];
-function defaultGam(){return{points:0,todayPts:0,streak:0,lastDate:'',remembered:0,seen:{},quizTotal:0,quizCorrect:0,quizStreak:0,quizMax:0,visitedLib:false,badges:{}};}
+function defaultGam(){return{points:0,todayPts:0,streak:0,lastDate:'',remembered:0,seen:{},quizTotal:0,quizCorrect:0,quizStreak:0,quizMax:0,visitedLib:false,badges:{},lastLevel:1,srsReviewed:0,goalSetCards:30,goalSetPts:150,srs:{}};}
 function loadGam(){ try{const raw=localStorage.getItem(LS_KEY);if(raw){const o=JSON.parse(raw);return Object.assign(defaultGam(),o);}}catch(e){} return defaultGam(); }
 function saveGam(){ try{localStorage.setItem(LS_KEY,JSON.stringify(GAM));}catch(e){} }
 let GAM=loadGam();
@@ -1297,7 +1322,43 @@ function levelInfo(){
   const need=next!==null?next-GAM.points:0;
   return {lv,name,prog,need};
 }
-function addPoints(n){ GAM.points+=n; GAM.todayPts=(GAM.todayPts||0)+n; }
+function addPoints(n){
+  GAM.points+=n; GAM.todayPts=(GAM.todayPts||0)+n;
+  const oldLv=GAM.lastLevel||1;
+  const newLv=levelInfo().lv;
+  if(newLv>oldLv){ GAM.lastLevel=newLv; showLevelUp(oldLv,newLv); saveGam(); }
+}
+function showLevelUp(oldLv,newLv){
+  const oldName=LEVEL_NAMES[oldLv-1]||'';
+  const newName=LEVEL_NAMES[newLv-1]||'';
+  const el=document.createElement('div');
+  el.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.45);opacity:0;transition:opacity .3s ease;';
+  el.innerHTML='<div style="background:var(--surface);border-radius:28px;padding:32px 24px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.2);transform:scale(.7);transition:transform .4s cubic-bezier(.34,1.56,.64,1);"><div style="font-size:56px;line-height:1;">🎊</div><div style="font-size:20px;font-weight:800;margin-top:16px;">恭喜升级！</div><div style="font-size:15px;color:var(--text-2);margin-top:8px;">Lv.'+oldLv+' '+oldName+' → <b style="color:var(--accent);">Lv.'+newLv+' '+newName+'</b></div><div style="font-size:13px;color:var(--text-3);margin-top:4px;">升级奖励 +50 🪙</div><button onclick="this.closest(\'div[style]\').remove()" style="margin-top:18px;border:none;background:var(--accent);color:#fff;font-family:var(--font);font-size:14px;font-weight:700;padding:11px 28px;border-radius:12px;cursor:pointer;">太棒了</button></div>';
+  document.body.appendChild(el);
+  requestAnimationFrame(()=>{
+    el.style.opacity='1';
+    const card=el.firstElementChild;
+    if(card) requestAnimationFrame(()=>{ card.style.transform='scale(1)'; });
+  });
+  GAM.points+=50;
+  updateGamUI();
+}
+function checkGoal(){
+  const todayCards=Object.keys(GAM.seen||{}).filter(zh=>{
+    const s=SRS[zh]; return s&&s.reps>0;
+  }).length;
+  const todayPts=GAM.todayPts||0;
+  const cDone=todayCards>=GAM.goalSetCards;
+  const pDone=todayPts>=GAM.goalSetPts;
+  if(cDone && pDone && !GAM._goalDoneToday){
+    GAM._goalDoneToday=true;
+    const el=document.createElement('div');
+    el.style.cssText='position:fixed;z-index:9998;top:50%;left:50%;transform:translate(-50%,-50%) scale(.8);background:var(--surface);border-radius:24px;padding:28px 22px;text-align:center;box-shadow:0 16px 48px rgba(0,0,0,.15);opacity:0;transition:all .3s ease;';
+    el.innerHTML='<div style="font-size:48px;">🏅</div><div style="font-size:18px;font-weight:800;margin-top:12px;">今日目标达成！</div><div style="font-size:13px;color:var(--text-2);margin-top:6px;">完成 '+GAM.goalSetCards+' 张卡片 · '+GAM.goalSetPts+' 积分</div><button onclick="this.parentElement.remove()" style="margin-top:16px;border:none;background:var(--accent);color:#fff;font-family:var(--font);font-size:14px;font-weight:700;padding:10px 24px;border-radius:12px;cursor:pointer;">继续加油</button></div>';
+    document.body.appendChild(el);
+    requestAnimationFrame(()=>{ el.style.opacity='1'; el.style.transform='translate(-50%,-50%) scale(1)'; });
+  }
+}
 function checkBadges(){
   const u=[];
   const unlock=id=>{ if(!GAM.badges[id]){ GAM.badges[id]=true; u.push(id); } };
@@ -1305,11 +1366,17 @@ function checkBadges(){
   if((GAM.remembered||0)>=10) unlock('rem10');
   if((GAM.remembered||0)>=50) unlock('rem50');
   if((GAM.remembered||0)>=100) unlock('rem100');
+  if((GAM.remembered||0)>=500) unlock('rem500');
   if((GAM.streak||0)>=3) unlock('streak3');
   if((GAM.streak||0)>=7) unlock('streak7');
   if((GAM.streak||0)>=30) unlock('streak30');
+  if((GAM.streak||0)>=100) unlock('streak100');
   if((GAM.quizTotal||0)>=10) unlock('quiz10');
   if((GAM.quizMax||0)>=5) unlock('quiz5');
+  if((GAM.points||0)>=1000) unlock('pts1000');
+  if((GAM.points||0)>=5000) unlock('pts5000');
+  if(Object.keys(GAM.seen||{}).length>=DRUGS.length) unlock('allseen');
+  if((GAM.srsReviewed||0)>=10) unlock('srs10');
   if(GAM.visitedLib) unlock('lib');
   if(u.length){
     saveGam();
@@ -1391,6 +1458,27 @@ function updateGamUI(){
     else { cont.textContent='已学 '+learned+' 种药'; document.getElementById('contMeta').textContent='累计记住 '+(GAM.remembered||0)+' 次 · 继续巩固'; document.getElementById('contBar').style.width=Math.min(100,learned/DRUGS.length*100)+'%'; }
   }
   renderProfileGam(li);
+  // render daily goal section
+  const goalRow=document.getElementById('goalRow');
+  const goalText=document.getElementById('goalText');
+  const goalBar=document.getElementById('goalBar');
+  const goalPct=document.getElementById('goalPct');
+  if(goalRow && goalText && goalBar && goalPct){
+    const todayCards=Object.keys(GAM.seen||{}).filter(zh=>{ const s=SRS[zh]; return s&&s.reps>0; }).length;
+    const todayPts=GAM.todayPts||0;
+    const cDone=todayCards>=GAM.goalSetCards;
+    const pDone=todayPts>=GAM.goalSetPts;
+    const cardPct=Math.min(100,Math.round(todayCards/GAM.goalSetCards*100));
+    const ptsPct=Math.min(100,Math.round(todayPts/GAM.goalSetPts*100));
+    const avgPct=Math.round((cardPct+ptsPct)/2);
+    if(avgPct>0){
+      goalRow.style.display='flex';
+      goalText.textContent='卡片 '+todayCards+'/'+GAM.goalSetCards+' · 积分 '+todayPts+'/'+GAM.goalSetPts;
+      goalBar.style.width=avgPct+'%';
+      goalPct.textContent=avgPct+'%';
+    } else { goalRow.style.display='none'; }
+    GAM._goalDoneToday=(cDone && pDone);
+  }
 }
 
 /* ===== SRS 间隔重复系统 (SM-2 简化版) ===== */
@@ -1412,8 +1500,26 @@ function loadSRS(){
   }catch(e){}
   return defaultSRS();
 }
-let SRS=loadSRS();
-function saveSRS(){try{localStorage.setItem(SRS_KEY,JSON.stringify(SRS));}catch(e){}}
+/* SRS 并入 GAM 以实现云同步；兼容旧版独立 localStorage 数据（迁移后清除） */
+(function migrateSRS(){
+  try{
+    const raw=localStorage.getItem(SRS_KEY);
+    if(raw){
+      if(!GAM.srs||!Object.keys(GAM.srs).length){ GAM.srs=JSON.parse(raw); saveGam(); }
+      localStorage.removeItem(SRS_KEY);
+    }
+  }catch(e){}
+})();
+function ensureSRS(){
+  if(!GAM.srs||typeof GAM.srs!=='object')GAM.srs={};
+  DRUGS.forEach(d=>{if(!GAM.srs[d.zh])GAM.srs[d.zh]={...SRS_DEFAULTS};});
+  return GAM.srs;
+}
+let SRS=ensureSRS();
+/* 远程同步覆盖 GAM 后需重绑 SRS 引用 */
+function bindSRS(){ SRS=ensureSRS(); if(typeof updateSRSHomeUI==='function')updateSRSHomeUI(); }
+window.bindSRS=bindSRS;
+function saveSRS(){ GAM.srs=ensureSRS(); saveGam(); }
 function todayMS(){
   const d=new Date();d.setHours(0,0,0,0);return d.getTime();
 }
@@ -1433,12 +1539,14 @@ function getSRSQueue(){
   due.sort((a,b)=>a.next-b.next);
   const out=due.map(x=>x.idx);
   shuffle(newC); out.push(...newC);
-  shuffle(learnt); out.push(...learnt.slice(0,5));
+  // learnt 存的是 {idx,next} 对象，必须映射为索引，否则队列混入对象导致取药为 undefined
+  shuffle(learnt); out.push(...learnt.slice(0,5).map(x=>x.idx));
   return out;
 }
 function recordSRS(zh,remembered){
   const s=SRS[zh];
   if(!s) return;
+  if(s.reps>0){ GAM.srsReviewed=(GAM.srsReviewed||0)+1; }
   if(remembered){
     s.reps++;
     s.ease=Math.min(3.0,Math.max(1.3,s.ease+0.15));
@@ -1453,6 +1561,7 @@ function recordSRS(zh,remembered){
   }
   saveSRS();
   updateSRSHomeUI();
+  checkGoal();
 }
 function updateSRSHomeUI(){
   const due=getDueCount();
@@ -1474,6 +1583,12 @@ renderStudy();
 ensureInteractOptions();
 updateGamUI();
 updateSRSHomeUI();
+// 初始化今日目标状态
+GAM._goalDoneToday=(()=>{
+  const todayCards=Object.keys(GAM.seen||{}).filter(zh=>{const s=SRS[zh];return s&&s.reps>0;}).length;
+  const todayPts=GAM.todayPts||0;
+  return todayCards>=GAM.goalSetCards && todayPts>=GAM.goalSetPts;
+})();
 </script>
 
   <!-- 登录门（首次打开或退出后显示；可「先本地体验」跳过） -->

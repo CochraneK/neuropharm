@@ -55,7 +55,9 @@ const NPSync = (function () {
         GAM._rev = serverRev;
         if (typeof saveGam === 'function') saveGam(); // 本地持久化（_applyingRemote 阻止推送）
         _applyingRemote = false;
+        if (typeof window.bindSRS === 'function') window.bindSRS(); // GAM 被整体替换后重绑 SRS
         if (typeof updateGamUI === 'function') updateGamUI();
+        if (typeof updateSRSHomeUI === 'function') updateSRSHomeUI();
         return true;
       }
       if (localRev > serverRev) {
