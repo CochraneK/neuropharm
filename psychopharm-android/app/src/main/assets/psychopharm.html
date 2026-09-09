@@ -182,6 +182,34 @@
   .remindbar b{font-weight:800;}
   /* 仅显示通用名：隐藏英文药名 */
   body.generic-only .drug .en,body.generic-only .den{display:none;}
+  /* 自测：题型筛选 + 场景病例 + 解析 */
+  .quizfilter{display:flex;gap:8px;margin-top:16px;}
+  .qf{border:1px solid var(--border);background:var(--surface);color:var(--text-2);font-size:12.5px;font-weight:700;padding:6px 14px;border-radius:99px;cursor:pointer;font-family:inherit;}
+  .qf.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .casebox{background:var(--surface-2);border-left:3px solid var(--accent);border-radius:10px;padding:13px 15px;margin-top:14px;font-size:13.5px;line-height:1.65;color:var(--text-2);}
+  .casebox b{color:var(--text);}
+  .casebox .cl{display:block;font-size:11px;font-weight:800;color:var(--accent);letter-spacing:.6px;margin-bottom:6px;}
+  .why{margin-top:14px;padding:11px 13px;background:var(--accent-soft);border-radius:10px;font-size:12.5px;line-height:1.6;color:var(--text-2);}
+  .why b{color:var(--accent);}
+  /* 药物对比 */
+  .cmprow{margin-top:12px;}
+  .cmpbtn{border:1px solid var(--border);background:var(--surface);color:var(--text-2);font-size:12.5px;font-weight:700;padding:6px 14px;border-radius:99px;cursor:pointer;font-family:inherit;}
+  .cmpbtn.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .drug .cbox{display:none;width:20px;height:20px;border-radius:6px;border:2px solid var(--border);flex:0 0 auto;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;}
+  body.cmp-mode .drug .cbox{display:flex;}
+  .drug.cmp-on{border-color:var(--accent);background:var(--accent-soft);}
+  .drug.cmp-on .cbox{background:var(--accent);border-color:var(--accent);}
+  .cmpbar{position:sticky;bottom:10px;display:none;align-items:center;gap:10px;margin:14px 0 0;padding:11px 14px;background:var(--text);color:#fff;border-radius:12px;font-size:13px;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.18);}
+  .cmpbar-r{margin-left:auto;display:flex;gap:8px;}
+  .cmpbar button{border:0;border-radius:8px;padding:7px 14px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;}
+  .cmpgo{background:var(--accent);color:#fff;}
+  .cmpgo:disabled{background:#5A6270;color:#9AA1AC;cursor:not-allowed;}
+  .cmpcancel{background:rgba(255,255,255,.14);color:#fff;}
+  .cmpwrap{overflow-x:auto;margin-top:14px;}
+  .cmptab{width:100%;border-collapse:collapse;font-size:12.5px;min-width:100%;}
+  .cmptab th,.cmptab td{border:1px solid var(--border);padding:9px 11px;text-align:left;vertical-align:top;line-height:1.6;}
+  .cmptab thead th{background:var(--surface-2);font-weight:800;font-size:13px;color:var(--text);position:sticky;top:0;}
+  .cmptab tbody th{background:var(--surface-2);color:var(--text-3);font-weight:700;white-space:nowrap;width:88px;}
   .drug .chev{color:var(--text-3);font-size:18px;}
   /* ---------- Detail ---------- */
   .detail-head{display:flex;align-items:center;gap:12px;margin-top:4px;}
@@ -553,12 +581,33 @@
 
       <div class="sec" style="margin-top:16px;">
         <div class="chips" id="chips"></div>
+        <div class="cmprow"><button class="cmpbtn" id="cmpToggle" onclick="toggleCompareMode()">⇄ 药物对比</button></div>
       </div>
 
       <div class="sec" style="margin-top:18px;">
         <div id="drugList"></div>
       </div>
+      <div class="cmpbar" id="cmpBar" style="display:none;">
+        <span id="cmpText">已选 0 味（2–3 味）</span>
+        <div class="cmpbar-r">
+          <button class="cmpgo" id="cmpGo" onclick="openCompare()">开始对比</button>
+          <button class="cmpcancel" onclick="toggleCompareMode()">取消</button>
+        </div>
+      </div>
       <div class="disclaimer">数据用于学习，实际临床请以药品说明书与权威指南为准。</div>
+    </section>
+
+    <!-- ===== COMPARE ===== -->
+    <section class="screen" id="compare">
+      <div class="detail-head">
+        <div class="back" onclick="showScreen('library')">‹</div>
+        <div>
+          <div class="dname">药物对比</div>
+          <div class="den" id="cmpSub"></div>
+        </div>
+      </div>
+      <div id="cmpTable"></div>
+      <div class="disclaimer">对比数据来自本 App 药库，临床决策请以说明书与指南为准。</div>
     </section>
 
     <!-- ===== STUDY ===== -->
@@ -603,9 +652,15 @@
       </div>
 
       <div id="quizWrap" style="display:none;">
+        <div class="quizfilter">
+          <button class="qf on" data-f="all" onclick="setQuizFilter('all')">全部题型</button>
+          <button class="qf" data-f="scen" onclick="setQuizFilter('scen')">🩺 场景病例</button>
+        </div>
+        <div class="casebox" id="quizCase" style="display:none;"></div>
         <div class="block" style="margin-top:18px;">
           <div class="bt"><span class="tag"></span><span id="quizQ">下列哪种药物属于苯二氮䓬类抗焦虑药？</span></div>
           <div id="quizOpts"></div>
+          <div class="why" id="quizWhy" style="display:none;"></div>
         </div>
         <div class="quiz-nav">
           <button class="qprev" id="quizPrev" onclick="quizPrev()">‹ 上一题</button>
@@ -908,6 +963,8 @@ function renderLibrary(){
     }
     const el=document.createElement('div');
     el.className='drug';
+    const sel = compareMode && compareSel.indexOf(d.zh)>=0;
+    if(sel) el.classList.add('cmp-on');
     el.innerHTML=`
       <div class="dot" style="background:${d.color}">${d.emoji}</div>
       <div class="info">
@@ -915,14 +972,70 @@ function renderLibrary(){
         <div class="en">${markText(d.en,q,py)}</div>
         <span class="cls" style="background:${d.soft};color:${d.color}">${markText(d.cls+' · '+d.sub,q,py)}</span>
       </div>
+      <div class="cbox">${sel?'✓':''}</div>
       <div class="chev">›</div>`;
-    el.onclick=()=>openDrug(d.zh);
+    el.onclick=()=>{ if(compareMode) toggleCompareItem(d.zh); else openDrug(d.zh); };
     list.appendChild(el);
   });
   const hint=document.createElement('div');
   hint.className='searchhint';
   hint.textContent= q ? `共 ${scored.length} 个结果${grouped?' · 按类别分组':''}` : '';
   if(q) list.appendChild(hint);
+}
+
+/* ===== 药物对比（2–3 味并排） ===== */
+let compareMode=false, compareSel=[];
+function toggleCompareMode(){
+  compareMode=!compareMode;
+  compareSel=[];
+  document.body.classList.toggle('cmp-mode', compareMode);
+  const bar=document.getElementById('cmpBar'); if(bar) bar.style.display=compareMode?'flex':'none';
+  const b=document.getElementById('cmpToggle');
+  if(b){ b.textContent=compareMode?'✕ 退出对比':'⇄ 药物对比'; b.classList.toggle('on', compareMode); }
+  updateCmpBar();
+  renderLibrary();
+}
+function toggleCompareItem(zh){
+  const i=compareSel.indexOf(zh);
+  if(i>=0) compareSel.splice(i,1);
+  else {
+    if(compareSel.length>=3){ showToast('最多同时对比 3 味药'); return; }
+    compareSel.push(zh);
+  }
+  updateCmpBar();
+  renderLibrary();
+}
+function updateCmpBar(){
+  const t=document.getElementById('cmpText');
+  if(t) t.textContent = compareSel.length ? `已选 ${compareSel.length} 味：` + compareSel.join('、') : '已选 0 味（2–3 味）';
+  const go=document.getElementById('cmpGo');
+  if(go) go.disabled = compareSel.length<2;
+}
+function openCompare(){
+  if(compareSel.length<2){ showToast('至少选择 2 味药'); return; }
+  renderCompare();
+  showScreen('compare');
+}
+const CMP_ROWS=[
+  ['类别',       d=>d.cls+(d.sub?' · '+d.sub:'')],
+  ['英文名',     d=>d.en],
+  ['半衰期',     d=>d.half],
+  ['妊娠分级',   d=>d.preg],
+  ['作用机制',   d=>d.mech],
+  ['适应症',     d=>(d.ind||[]).join('、')],
+  ['常见不良反应', d=>(d.side||[]).join('、')],
+  ['剂量',       d=>d.dose],
+  ['警示',       d=>d.warn]
+];
+function renderCompare(){
+  const list=compareSel.map(zh=>DRUGS.find(d=>d.zh===zh)).filter(Boolean);
+  const sub=document.getElementById('cmpSub');
+  if(sub) sub.textContent=list.map(d=>d.zh).join('  vs  ');
+  const box=document.getElementById('cmpTable');
+  if(!box) return;
+  const head='<tr><th></th>'+list.map(d=>'<th>'+escHtml(d.zh)+'<div style="font-weight:600;font-size:11px;color:var(--text-3);margin-top:2px;">'+escHtml(d.en||'')+'</div></th>').join('')+'</tr>';
+  const rows=CMP_ROWS.map(r=>'<tr><th>'+r[0]+'</th>'+list.map(d=>'<td>'+escHtml(r[1](d)||'—')+'</td>').join('')+'</tr>').join('');
+  box.innerHTML='<div class="cmpwrap"><table class="cmptab"><thead>'+head+'</thead><tbody>'+rows+'</tbody></table></div>';
 }
 
 function openDrug(zh){
@@ -1358,6 +1471,92 @@ const CURATED=[
   {q:"多奈哌齐和卡巴拉汀共同的作用机制是？",opts:["NMDA 拮抗","胆碱酯酶抑制","MAO-B 抑制","多巴胺激动"],ans:1},
   {q:"美金刚（Memantine）在阿尔茨海默病中的定位是？",opts:["轻中度一线","中重度","预防","全部阶段"],ans:1}
 ];
+
+/* ===== 场景病例题（临床推理） =====
+ * case: 虚拟病例  q: 提问  opts: 4 选项  ans: 正确索引  why: 解析
+ */
+const SCENARIOS=[
+  {case:"男，28 岁，病程 2 年。与人交往时紧张、心悸、脸红，回避当众发言；近半年入睡困难。无躁狂史，躯体检查正常。",
+  q:"首选的长期药物治疗方案是？",
+  opts:["锂盐单用","苯二氮䓬类长期单用","第一代抗精神病药","SSRIs（舍曲林 / 帕罗西汀）长期规范治疗"],
+  ans:3,
+  why:"社交焦虑障碍一线为 SSRI/SNRI；苯二氮䓬虽有速效抗焦虑作用，但有依赖与耐受，仅作短期桥接或按需，不宜长期单用。"},
+  {case:"女，32 岁，诊断重性抑郁发作。除情绪低落、迟滞外，存在与心境协调的幻听与自罪妄想。",
+  q:"最合适的药物策略是？",
+  opts:["SSRI 单药并加大剂量","抗抑郁药 + 抗精神病药联合","单用苯二氮䓬","单用锂盐"],
+  ans:1,
+  why:"精神病性抑郁需抗抑郁药联合抗精神病药（也可用奥氟合剂）；单用抗抑郁药对精神病性症状疗效不足，预后较差。"},
+  {case:"男，24 岁，双相 I 型。近 1 周睡眠需求减少、语速加快、挥霍钱财，坚信自己有特殊使命。",
+  q:"急性期首选治疗是？",
+  opts:["心境稳定剂（锂盐 / 丙戊酸）联合非典型抗精神病药","SSRI 单药","单用苯二氮䓬","MAOI 单药"],
+  ans:0,
+  why:"双相躁狂急性期以心境稳定剂 + 非典型抗精神病药为主；单用抗抑郁药可能诱发转躁或混合状态。"},
+  {case:"女，78 岁，阿尔茨海默病中重度。近两周出现激越、夜间徘徊与视幻觉，无急性躯体疾病。",
+  q:"处理原则是？",
+  opts:["大剂量氟哌啶醇长期维持","长期苯二氮䓬","小剂量非典型抗精神病药并权衡风险、短期使用","三环类抗抑郁药"],
+  ans:2,
+  why:"痴呆相关精神行为症状首选非药物干预；确需用药时用最低剂量、短疗程，并充分告知脑血管事件与死亡风险增加（黑框警告）。"},
+  {case:"男，45 岁，重性抑郁。已先后足量足疗程使用两种 SSRI，疗效不佳，目前有消极观念。",
+  q:"下一步最应考虑的是？",
+  opts:["继续换用第三种 SSRI","停用全部药物观察","单用苯二氮䓬","艾司氯胺酮（鼻喷）/ 氯胺酮，或增效策略"],
+  ans:3,
+  why:"难治性抑郁（≥2 种抗抑郁药失败）可考虑 NMDA 调制（艾司氯胺酮 / 氯胺酮）、锂盐或阿立哌唑增效，并加强自杀风险管理。"},
+  {case:"男，52 岁，酒精使用障碍。已完成脱毒 1 周，目前清醒，希望降低复饮风险。",
+  q:"可选择的防复饮药物是？",
+  opts:["苯二氮䓬长期维持","纳曲酮或阿坎酸（必要时联用双硫仑）","SSRI 单药","锂盐单药"],
+  ans:1,
+  why:"纳曲酮降低饮酒的奖赏与渴求，阿坎酸帮助维持戒断，双硫仑通过厌恶反应辅助；均需在脱毒后、配合心理社会干预使用。"},
+  {case:"男，30 岁，阿片类使用障碍，每日使用，末次使用 12 小时前，目前处于戒断早期。",
+  q:"此时最恰当的药物方案是？",
+  opts:["美沙酮或丁丙诺啡维持治疗","立即起始纳曲酮","单用苯二氮䓬","SSRI 单药"],
+  ans:0,
+  why:"美沙酮 / 丁丙诺啡是阿片维持治疗的一线；纳曲酮须在完全脱毒后（通常 7–10 天）起始，否则会诱发急性戒断。"},
+  {case:"女，35 岁，反复出现突发心悸、窒息感与濒死感，每次约 20 分钟，检查排除心源性原因。",
+  q:"一线药物治疗是？",
+  opts:["第一代抗精神病药","长期苯二氮䓬单用","SSRI 一线，必要时短期苯二氮䓬桥接","锂盐"],
+  ans:2,
+  why:"惊恐障碍一线为 SSRI/SNRI；苯二氮䓬起效快但影响暴露治疗的长期效果，仅短期桥接，之后逐步减停。"},
+  {case:"男，60 岁，主诉单纯入睡困难 3 个月，无其他精神症状，白天功能尚可。",
+  q:"较合适的选择是？",
+  opts:["长效苯二氮䓬（地西泮）","抗精神病药","大剂量三环类抗抑郁药","短效 Z 药（唑吡坦）或食欲素受体拮抗剂（莱博雷生）"],
+  ans:3,
+  why:"入睡困难宜选短效助眠药并短期使用；长效苯二氮䓬易致次日残留、跌倒与依赖，老年人尤应避免。"},
+  {case:"男，26 岁，反复洗涤与检查，每日耗时 3 小时以上，明知不合理但无法控制。",
+  q:"药物治疗要点是？",
+  opts:["抗精神病药单用","低剂量苯二氮䓬","锂盐单用","SSRI 高剂量、足疗程（氟伏沙明 / 舍曲林等）"],
+  ans:3,
+  why:"强迫症需 SSRI 较高剂量且疗程足够（通常 8–12 周才评估疗效），并可联合暴露与反应预防（ERP）。"},
+  {case:"男，22 岁，首次发病，评论性幻听与关系妄想 3 个月，既往未用药。",
+  q:"初始治疗原则是？",
+  opts:["非典型抗精神病药单药、最低有效剂量","第一代抗精神病药大剂量","抗抑郁药单药","首选电休克治疗"],
+  ans:0,
+  why:"首发精神病首选非典型抗精神病药单药、低起始量缓慢滴定，以减少 EPS 与代谢负担，提高依从性。"},
+  {case:"男，40 岁，精神分裂症。先后两种非典型抗精神病药足量足疗程治疗，症状仍显著，且曾有自杀企图。",
+  q:"下一步应考虑？",
+  opts:["换用氯氮平并规律监测血常规","继续加大现用药物剂量","换用 SSRI","停用抗精神病药"],
+  ans:0,
+  why:"氯氮平是难治性精神分裂症的金标准，且降低自杀风险；须监测粒细胞（前 18 周每周，其后定期）并警惕心肌炎、癫痫与便秘。"},
+  {case:"女，29 岁，孕 16 周，中重度抑郁，非药物干预效果不佳，需考虑用药。",
+  q:"相对更合适的选择与禁忌是？",
+  opts:["丙戊酸钠","舍曲林（在充分权衡利弊后较常用）","沙利度胺","卡马西平"],
+  ans:1,
+  why:"妊娠期用药须权衡母体疾病风险与胎儿暴露：丙戊酸、卡马西平有明确致畸风险应避免；SSRI（如舍曲林）数据相对较多，需与产科、精神科共同决策。"},
+  {case:"男，70 岁，抑郁发作。合并体位性低血压、良性前列腺增生与慢性便秘。",
+  q:"应避免的药物是？",
+  opts:["舍曲林","西酞普兰","阿米替林（三环类）","安非他酮"],
+  ans:2,
+  why:"三环类抗抑郁药抗胆碱作用强（加重排尿困难、便秘）、易致体位性低血压与心脏传导影响，老年人属高风险，应尽量避免。"},
+  {case:"男，50 岁，长期服用苯乙肼类 MAOI。因抑郁加重，门诊欲加用氟西汀。",
+  q:"正确的处理是？",
+  opts:["可直接联用","属禁忌：需足够洗脱期（约 2 周，氟西汀需更长）后再换药","两药各减半即可","换用另一种 MAOI 联用"],
+  ans:1,
+  why:"MAOI 与 5-HT 能药物联用可致 5-HT 综合征（高热、肌强直、意识改变），属禁忌；氟西汀半衰期长，洗脱期需 5 周以上。"},
+  {case:"男，48 岁，服碳酸锂（血锂 0.8 mmol/L）病情稳定 2 年。因关节痛自行长期服用布洛芬。",
+  q:"最需要提醒的是？",
+  opts:["无相互作用，可放心使用","会使血锂浓度下降需加量","NSAID 降低锂的肾清除，可使血锂升高甚至中毒，需监测","需改用利尿剂"],
+  ans:2,
+  why:"NSAID、ACEI/ARB 与噻嗪类利尿剂均可升高血锂浓度；锂治疗窗窄（0.6–1.2 mmol/L），联用时应监测血锂并观察震颤、恶心、共济失调等中毒征象。"}
+];
 function sampleExcept(pool, exclude, n){
   const cand=[...new Set(pool.filter(x=>x!==exclude))];
   shuffle(cand);
@@ -1381,11 +1580,19 @@ function buildQuizBank(){
     bank.push(makeQ(`下列哪种药物属于「${cls}」？`, d.zh, names));
   });
   CURATED.forEach(q=>bank.push(q));
+  SCENARIOS.forEach(s=>bank.push({q:s.q, opts:s.opts, ans:s.ans, scen:true, case:s.case, why:s.why}));
   return bank;
 }
 function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i];a[i]=a[j];a[j]=t; } return a; }
+let quizFilter='all';
+function setQuizFilter(f){
+  quizFilter=f;
+  document.querySelectorAll('.qf').forEach(b=>b.classList.toggle('on', b.dataset.f===f));
+  startQuiz();
+}
 function startQuiz(){
-  const bank=buildQuizBank();
+  let bank=buildQuizBank();
+  if(quizFilter==='scen') bank=bank.filter(q=>q.scen);
   shuffle(bank);
   quizQueue=bank.slice(0, Math.min(QUIZ_SIZE, bank.length));
   quizPos=0; quizResult=new Array(quizQueue.length).fill(null);
@@ -1401,6 +1608,13 @@ function renderQuiz(){
   const optsBox=document.getElementById('quizOpts'); if(optsBox) optsBox.style.opacity='1';
   const item=quizQueue[quizPos];
   document.getElementById('quizQ').textContent=item.q;
+  const caseBox=document.getElementById('quizCase');
+  const whyBox=document.getElementById('quizWhy');
+  if(caseBox){
+    if(item.case){ caseBox.style.display='block'; caseBox.innerHTML='<span class="cl">临床场景</span>'+escHtml(item.case); }
+    else caseBox.style.display='none';
+  }
+  if(whyBox){ whyBox.style.display='none'; whyBox.innerHTML=''; }
   const wrap=document.getElementById('quizOpts');
   wrap.innerHTML='';
   const rec=quizResult[quizPos];
@@ -1433,9 +1647,12 @@ function renderQuiz(){
       }
       quizResult[quizPos]={picked:i,correct:correct,earned:correct?15:5};
       saveGam(); checkBadges(); updateGamUI();
+      if(whyBox && item.why){ whyBox.style.display='block'; whyBox.innerHTML='<b>解析 · </b>'+escHtml(item.why); }
     };
     wrap.appendChild(b);
   });
+  // 回看已答题目时保留解析
+  if(rec && whyBox && item.why){ whyBox.style.display='block'; whyBox.innerHTML='<b>解析 · </b>'+escHtml(item.why); }
   const prev=document.getElementById('quizPrev');
   const next=document.getElementById('quizNext');
   const last=quizPos===quizQueue.length-1;
@@ -1510,7 +1727,7 @@ function toggleSetting(k){
   if(k==='remind'&&s.remind&&'Notification' in window&&Notification.permission==='default'){
     try{ Notification.requestPermission(); }catch(e){}
   }
-  if(k==='srs') toast(s.srs?'已开启间隔重复：优先复习到期卡片':'已关闭间隔重复：改为随机顺序');
+  if(k==='srs') showToast(s.srs?'已开启间隔重复：优先复习到期卡片':'已关闭间隔重复：改为随机顺序');
 }
 function renderSettings(){
   const s=getSettings();
@@ -1538,20 +1755,7 @@ function exportData(){
   a.download='neuropharm-progress-'+new Date().toISOString().slice(0,10)+'.json';
   document.body.appendChild(a); a.click();
   setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },0);
-  toast('已导出学习数据 JSON');
-}
-function toast(msg){
-  let t=document.getElementById('npToast');
-  if(!t){
-    t=document.createElement('div');
-    t.id='npToast';
-    t.style.cssText='position:fixed;left:50%;bottom:80px;transform:translateX(-50%);background:rgba(27,31,36,.92);color:#fff;font-size:13px;padding:10px 16px;border-radius:10px;z-index:9999;opacity:0;transition:opacity .25s;pointer-events:none;max-width:80%;text-align:center;';
-    document.body.appendChild(t);
-  }
-  t.textContent=msg;
-  t.style.opacity='1';
-  clearTimeout(t._tm);
-  t._tm=setTimeout(()=>{ t.style.opacity='0'; },2200);
+  showToast('已导出学习数据 JSON');
 }
 /* 每日提醒：当天未学习时首页提示 + 系统通知（需授权） */
 function checkDailyRemind(){

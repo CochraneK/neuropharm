@@ -1,7 +1,7 @@
 # 药枢 NeuroPharm — 项目规则
 
 ## 项目简介
-单文件 HTML 精神药理学习 App（`psychopharm.html`），含 62 味精神科药物及题库（279 题 = 248 自动生成 + 31 精选），支持 SRS 间隔重复闪卡、自测、药物相互作用自动推导查询、游戏化进度追踪。Android WebView 壳（`psychopharm-android/`）+ Cloudflare Worker 同步后端（`neuropharm-worker/`）。
+单文件 HTML 精神药理学习 App（`psychopharm.html`），含 62 味精神科药物及题库（295 题 = 248 自动生成 + 31 精选 + 16 场景病例），支持 SRS 间隔重复闪卡、自测、药物相互作用自动推导查询、游戏化进度追踪。Android WebView 壳（`psychopharm-android/`）+ Cloudflare Worker 同步后端（`neuropharm-worker/`）。
 
 ## 数据流水线（不可违反）
 - **唯一真源**: `data/drugs.json`（JSON，62 味药）
@@ -20,7 +20,7 @@
 - 文档类文件已整理到 `pages/` 和 `docs/`，根级不放非核心文件
 - APK 构建走 GitHub Actions（打 `v*` tag 自动构建），本地 `psychopharm-android/` 的 assets 需手动同步
 - 首页药丸样式经过迭代，当前定型为「白底卡片 + 色块 emoji + 数量」——先问再改
-- 改动后跑验证：`node scripts/_check.js` + `_test_srs.js` + `_test_interact.js`
+- 改动后跑验证：`node scripts/_check.js` + `_test_srs.js` + `_test_interact.js` + `_test_search.js` + `_test_scenarios.js` + `_test_compare.js`
 - 推送后用 `git ls-remote origin main` 核对远程，`git log origin/main..main` 会因 tracking ref 未刷新而误报
 
 ## 目录速查
@@ -36,6 +36,13 @@
 | `scripts/_check.js` | 语法冒烟 + 关键符号检查 |
 | `scripts/_test_srs.js` | SRS 逻辑测试（20 项断言） |
 | `scripts/_test_interact.js` | 相互作用推导测试（11 项断言） |
+| `scripts/gen-pinyin.js` | 生成拼音索引 `py/pyi/spy/spyi`（需 `NODE_PATH` 指向含 pinyin-pro 的 node_modules） |
+| `scripts/gen-icon.js` | 生成 PWA 图标（纯 Node 手写 PNG，无依赖） |
+| `scripts/_test_search.js` | 拼音搜索测试（16 项断言） |
+| `scripts/_test_scenarios.js` | 场景病例题测试（100 项断言） |
+| `scripts/_balance_scenarios.js` | 均衡场景题答案位置（防答案集中被猜） |
+| `scripts/_test_compare.js` | 药物对比视图测试（12 项断言） |
+| `manifest.json` / `service-worker.js` | PWA 离线支持 |
 | `pages/` | 辅助页面（认证/海报/设计文档） |
 | `pdf/` | 打印卡片 PDF |
 | `docs/` | 架构文档 |
