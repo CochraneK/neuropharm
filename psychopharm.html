@@ -4,6 +4,11 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>药枢 · 精神药理学习</title>
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#0E8C7F" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="药枢" />
+<link rel="apple-touch-icon" href="img/icon-192.png" />
 <style>
   :root{
     --bg:#F5F6F8;
@@ -165,6 +170,18 @@
   .drug .zh{font-size:15.5px;font-weight:700;}
   .drug .en{font-size:12px;color:var(--text-3);margin-top:1px;}
   .drug .cls{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;margin-top:7px;}
+  /* 搜索：结果分组标题 + 关键词高亮 */
+  .grp{font-size:11.5px;font-weight:800;color:var(--text-3);letter-spacing:.5px;padding:14px 2px 7px;display:flex;align-items:center;gap:7px;}
+  .grp::after{content:"";flex:1;height:1px;background:var(--border);}
+  .grp:first-child{padding-top:4px;}
+  .drug mark{background:#FFF3A3;color:inherit;border-radius:3px;padding:0 1px;}
+  .searchhint{font-size:11.5px;color:var(--text-3);padding:8px 2px 0;}
+  /* 每日学习提醒条 */
+  .remindbar{display:none;align-items:center;gap:8px;margin:10px 14px 0;padding:11px 14px;background:var(--accent-soft);color:var(--accent);border-radius:12px;font-size:13px;font-weight:600;line-height:1.4;}
+  .remindbar .go{margin-left:auto;font-weight:800;cursor:pointer;white-space:nowrap;}
+  .remindbar b{font-weight:800;}
+  /* 仅显示通用名：隐藏英文药名 */
+  body.generic-only .drug .en,body.generic-only .den{display:none;}
   .drug .chev{color:var(--text-3);font-size:18px;}
   /* ---------- Detail ---------- */
   .detail-head{display:flex;align-items:center;gap:12px;margin-top:4px;}
@@ -417,6 +434,7 @@
   .dlqr .t{font-size:15px;font-weight:800;color:var(--text);margin-bottom:4px;}
   .dlqr .s{font-size:12.5px;color:var(--text-2);margin-bottom:14px;}
   .dlqr .c{font-size:13px;color:var(--text);margin-top:12px;font-weight:600;}
+  .pwabtn{display:block;width:100%;margin-top:12px;padding:10px 8px;border:0;border-radius:10px;background:var(--accent);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}
   .dlqr .rel{font-size:12px;color:var(--text-2);margin-top:10px;}
   .dlqr .rel a{color:var(--accent);text-decoration:none;font-weight:600;}
   /* 桌面端：二维码固定在手机右侧，脱离文档流，手机始终水平居中（不随 QR 偏移）。
@@ -450,6 +468,7 @@
   <div class="screens">
     <!-- ===== HOME ===== -->
     <section class="screen active" id="home">
+      <div class="remindbar" id="remindBar"></div>
       <div class="hello">下午好，<b>未来精神科医师</b></div>
       <div class="htitle">今天想从哪一类药起步？</div>
 
@@ -529,7 +548,7 @@
     <section class="screen" id="library">
       <div class="search">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#9AA1AC" stroke-width="2"/><path d="M16 16L20 20" stroke="#9AA1AC" stroke-width="2" stroke-linecap="round"/></svg>
-        <input id="searchInput" placeholder="搜索药物、类别或适应症…" oninput="renderLibrary()" />
+        <input id="searchInput" placeholder="搜索药名 / 拼音(sql) / 英文 / 适应症…" oninput="renderLibrary()" />
       </div>
 
       <div class="sec" style="margin-top:16px;">
@@ -666,10 +685,10 @@
       </div>
       <div class="sec">
         <div class="seclabel">学习设置</div>
-        <div class="setrow"><div class="sl">每日学习提醒</div><div class="sr"><div class="toggle on"></div></div></div>
-        <div class="setrow"><div class="sl">间隔重复背诵</div><div class="sr"><div class="toggle on"></div></div></div>
-        <div class="setrow"><div class="sl">仅显示通用名</div><div class="sr"><div class="toggle off"></div></div></div>
-        <div class="setrow"><div class="sl">数据导出</div><div class="sr">›</div></div>
+        <div class="setrow" onclick="toggleSetting('remind')"><div class="sl">每日学习提醒</div><div class="sr"><div class="toggle on" id="set-remind"></div></div></div>
+        <div class="setrow" onclick="toggleSetting('srs')"><div class="sl">间隔重复背诵</div><div class="sr"><div class="toggle on" id="set-srs"></div></div></div>
+        <div class="setrow" onclick="toggleSetting('genericOnly')"><div class="sl">仅显示通用名</div><div class="sr"><div class="toggle off" id="set-genericOnly"></div></div></div>
+        <div class="setrow" onclick="exportData()"><div class="sl">数据导出</div><div class="sr">›</div></div>
         <div class="setrow"><div class="sl">关于 · 资料来源</div><div class="sr">›</div></div>
       </div>
       <div class="sec">
@@ -774,7 +793,7 @@ function showScreen(id){
   document.getElementById(id).classList.add('active');
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on', t.dataset.tab===id));
   if(id==='library'){ GAM.visitedLib=true; saveGam(); renderLibrary(); renderChips(); checkBadges(); }
-  if(id==='home'){ renderHomePills(); updateSRSHomeUI(); }
+  if(id==='home'){ renderHomePills(); updateSRSHomeUI(); if(typeof checkDailyRemind==='function') checkDailyRemind(); }
   if(id==='study'){ renderStudy(); updateSRSHomeUI(); }
   if(id==='interact'){ ensureInteractOptions(); }
   updateGamUI();
@@ -831,33 +850,79 @@ function renderChips(){
   });
 }
 
+/* HTML 转义 + 搜索关键词高亮（字面命中高亮片段；拼音命中整名高亮） */
+function escHtml(s){
+  return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
+function markText(s,q,pyHit){
+  const t=escHtml(s);
+  if(!q) return t;
+  if(t.toLowerCase().includes(q)){
+    const safe=q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    return t.replace(new RegExp(safe,'ig'),m=>'<mark>'+m+'</mark>');
+  }
+  return pyHit ? '<mark>'+t+'</mark>' : t;
+}
+/* 搜索匹配：字面(中/英/类别/适应症) 或 拼音(全拼/首字母，含子类) */
+function matchDrug(d,q){
+  if(!q) return {hit:true, py:false};
+  const literal=(d.zh+d.en+d.cls+d.sub+d.ind.join('')).toLowerCase().includes(q);
+  if(literal) return {hit:true, py:false};
+  const pyHay=((d.py||'')+(d.pyi||'')+(d.spy||'')+(d.spyi||'')).toLowerCase();
+  if(pyHay.includes(q)) return {hit:true, py:true};
+  return {hit:false, py:false};
+}
+
 function renderLibrary(){
-  const q=(document.getElementById('searchInput').value||'').toLowerCase();
+  const q=(document.getElementById('searchInput').value||'').trim().toLowerCase();
   const list=document.getElementById('drugList');
   list.innerHTML='';
-  const filtered=DRUGS.filter(d=>{
-    const matchChip = activeChip==='全部' || d.tag===activeChip || d.cls===activeChip;
-    const matchQ = !q || (d.zh+d.en+d.cls+d.sub+d.ind.join('')).toLowerCase().includes(q);
-    return matchChip && matchQ;
+  const scored=[];
+  DRUGS.forEach(d=>{
+    if(activeChip!=='全部' && d.tag!==activeChip && d.cls!==activeChip) return;
+    const m=matchDrug(d,q);
+    if(m.hit) scored.push({d, py:m.py});
   });
-  if(filtered.length===0){
-    list.innerHTML='<div style="text-align:center;color:var(--text-3);padding:40px 0;font-size:13px;">未找到匹配的药物</div>';
+  // 排序：中文名前缀命中 > 中文名包含 > 拼音首字母命中 > 其余
+  if(q){
+    scored.sort((a,b)=>{
+      const ra=(a.d.zh.toLowerCase().startsWith(q)?0:(a.d.zh.toLowerCase().includes(q)?1:((a.d.pyi||'').startsWith(q)?2:3)));
+      const rb=(b.d.zh.toLowerCase().startsWith(q)?0:(b.d.zh.toLowerCase().includes(q)?1:((b.d.pyi||'').startsWith(q)?2:3)));
+      return ra-rb;
+    });
+  }
+  if(scored.length===0){
+    list.innerHTML='<div style="text-align:center;color:var(--text-3);padding:40px 0;font-size:13px;">未找到匹配的药物<br><span style="font-size:11.5px;">可试拼音首字母，如 <b>sql</b> 或全拼 <b>shequlin</b></span></div>';
     return;
   }
-  filtered.forEach(d=>{
+  // 搜索时按大类分组展示
+  const grouped = q && scored.length>1;
+  let lastCls=null;
+  scored.forEach(({d,py})=>{
+    if(grouped && d.cls!==lastCls){
+      lastCls=d.cls;
+      const g=document.createElement('div');
+      g.className='grp';
+      g.textContent=d.cls;
+      list.appendChild(g);
+    }
     const el=document.createElement('div');
     el.className='drug';
     el.innerHTML=`
       <div class="dot" style="background:${d.color}">${d.emoji}</div>
       <div class="info">
-        <div class="zh">${d.zh}</div>
-        <div class="en">${d.en}</div>
-        <span class="cls" style="background:${d.soft};color:${d.color}">${d.cls} · ${d.sub}</span>
+        <div class="zh">${markText(d.zh,q,py)}</div>
+        <div class="en">${markText(d.en,q,py)}</div>
+        <span class="cls" style="background:${d.soft};color:${d.color}">${markText(d.cls+' · '+d.sub,q,py)}</span>
       </div>
       <div class="chev">›</div>`;
     el.onclick=()=>openDrug(d.zh);
     list.appendChild(el);
   });
+  const hint=document.createElement('div');
+  hint.className='searchhint';
+  hint.textContent= q ? `共 ${scored.length} 个结果${grouped?' · 按类别分组':''}` : '';
+  if(q) list.appendChild(hint);
 }
 
 function openDrug(zh){
@@ -1168,7 +1233,7 @@ let cardOrder; // shuffled index order
 function renderStudy(){
   if(studyMode==='cards'){
     // SRS 间隔重复：到期卡片优先，然后新卡，再复习少量已学卡片
-    cardOrder=getSRSQueue();
+    cardOrder=(getSettings().srs?getSRSQueue():shuffle(DRUGS.map(function(_,i){return i;})));
     cardIdx=0;
   }
   if(studyMode==='cards') renderCard();
@@ -1235,7 +1300,7 @@ function nextCard(remembered){
   cardIdx++;
   // 队列耗尽时按最新 SRS 状态重新排队，避免 cardOrder[cardIdx] 越界导致 d.zh 抛错卡死
   if(cardIdx>=cardOrder.length){
-    cardOrder=getSRSQueue(); cardIdx=0;
+    cardOrder=(getSettings().srs?getSRSQueue():shuffle(DRUGS.map(function(_,i){return i;}))); cardIdx=0;
     showToast('🎉 本轮完成 · 已按掌握情况重新排队');
   }
   renderCard();
@@ -1424,7 +1489,87 @@ const BADGES=[
   {id:'srs10',  icon:'🔄',name:'间隔达人', desc:'SRS 累计复习 10 张到期卡片'},
   {id:'lib',    icon:'🗂️',name:'百宝箱', desc:'浏览全部药库'}
 ];
-function defaultGam(){return{points:0,todayPts:0,streak:0,lastDate:'',remembered:0,seen:{},quizTotal:0,quizCorrect:0,quizStreak:0,quizMax:0,visitedLib:false,badges:{},lastLevel:1,srsReviewed:0,goalSetCards:30,goalSetPts:150,srs:{}};}
+function defaultGam(){return{points:0,todayPts:0,streak:0,lastDate:'',remembered:0,seen:{},quizTotal:0,quizCorrect:0,quizStreak:0,quizMax:0,visitedLib:false,badges:{},lastLevel:1,srsReviewed:0,goalSetCards:30,goalSetPts:150,srs:{},settings:{remind:true,srs:true,genericOnly:false},notes:{}};}
+
+/* ===== 设置（存 GAM.settings，随账号云同步） ===== */
+const SETTING_DEFAULTS={remind:true,srs:true,genericOnly:false};
+function getSettings(){
+  if(!GAM.settings||typeof GAM.settings!=='object') GAM.settings={};
+  Object.keys(SETTING_DEFAULTS).forEach(k=>{
+    if(typeof GAM.settings[k]!=='boolean') GAM.settings[k]=SETTING_DEFAULTS[k];
+  });
+  return GAM.settings;
+}
+function toggleSetting(k){
+  const s=getSettings();
+  if(!(k in SETTING_DEFAULTS)) return;
+  s[k]=!s[k];
+  saveGam();
+  renderSettings();
+  applySettings();
+  if(k==='remind'&&s.remind&&'Notification' in window&&Notification.permission==='default'){
+    try{ Notification.requestPermission(); }catch(e){}
+  }
+  if(k==='srs') toast(s.srs?'已开启间隔重复：优先复习到期卡片':'已关闭间隔重复：改为随机顺序');
+}
+function renderSettings(){
+  const s=getSettings();
+  Object.keys(SETTING_DEFAULTS).forEach(k=>{
+    const el=document.getElementById('set-'+k);
+    if(el) el.className='toggle'+(s[k]?'':' off');
+  });
+}
+function applySettings(){
+  const s=getSettings();
+  // 仅显示通用名：隐藏英文药名
+  document.body.classList.toggle('generic-only', !!s.genericOnly);
+}
+function exportData(){
+  const payload={
+    app:'药枢 NeuroPharm', version:1,
+    exportedAt:new Date().toISOString(),
+    drugCount: DRUGS.length,
+    progress: GAM,
+    notes: GAM.notes||{}
+  };
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='neuropharm-progress-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },0);
+  toast('已导出学习数据 JSON');
+}
+function toast(msg){
+  let t=document.getElementById('npToast');
+  if(!t){
+    t=document.createElement('div');
+    t.id='npToast';
+    t.style.cssText='position:fixed;left:50%;bottom:80px;transform:translateX(-50%);background:rgba(27,31,36,.92);color:#fff;font-size:13px;padding:10px 16px;border-radius:10px;z-index:9999;opacity:0;transition:opacity .25s;pointer-events:none;max-width:80%;text-align:center;';
+    document.body.appendChild(t);
+  }
+  t.textContent=msg;
+  t.style.opacity='1';
+  clearTimeout(t._tm);
+  t._tm=setTimeout(()=>{ t.style.opacity='0'; },2200);
+}
+/* 每日提醒：当天未学习时首页提示 + 系统通知（需授权） */
+function checkDailyRemind(){
+  const s=getSettings();
+  const bar=document.getElementById('remindBar');
+  if(!bar) return;
+  if(!s.remind){ bar.style.display='none'; return; }
+  const today=new Date().toDateString();
+  const learnedToday=(GAM.todayPts||0)>0;
+  if(learnedToday||GAM.lastRemind===today){ bar.style.display='none'; return; }
+  const due=getDueCount();
+  bar.style.display='flex';
+  bar.innerHTML=`今天还没学习 · ${due>0?`有 <b>${due}</b> 张卡片待复习`:'来翻几张卡片保持手感'} <span class="go" onclick="showScreen('study')">开始 ›</span>`;
+  GAM.lastRemind=today;
+  if('Notification' in window && Notification.permission==='granted'){
+    try{ new Notification('药枢 · 今日学习提醒',{body: due>0?`有 ${due} 张卡片待复习`:'来翻几张卡片保持手感'}); }catch(e){}
+  }
+}
 function loadGam(){ try{const raw=localStorage.getItem(LS_KEY);if(raw){const o=JSON.parse(raw);return Object.assign(defaultGam(),o);}}catch(e){} return defaultGam(); }
 function saveGam(){ try{localStorage.setItem(LS_KEY,JSON.stringify(GAM));}catch(e){} }
 let GAM=loadGam();
@@ -1709,6 +1854,9 @@ renderStudy();
 ensureInteractOptions();
 updateGamUI();
 updateSRSHomeUI();
+renderSettings();
+applySettings();
+checkDailyRemind();
 // 初始化今日目标状态
 GAM._goalDoneToday=(()=>{
   const todayCards=Object.keys(GAM.seen||{}).filter(zh=>{const s=SRS[zh];return s&&s.reps>0;}).length;
@@ -1734,12 +1882,41 @@ GAM._goalDoneToday=(()=>{
   <!-- 同步客户端：先 sync.js（包装 saveGam）再 auth.js（登录门 + 同步中心） -->
   <script src="js/sync.js"></script>
   <script src="js/auth.js"></script>
+
+  <!-- PWA：注册 Service Worker（file:// 或不支持时静默跳过） -->
+  <script>
+  (function(){
+    if(!('serviceWorker' in navigator)) return;
+    if(location.protocol==='file:') return; // Android assets 内无需 SW
+    window.addEventListener('load', function(){
+      navigator.serviceWorker.register('service-worker.js').catch(function(){});
+    });
+    // 「添加到主屏幕」：捕获安装提示，暴露给后续 UI 使用
+    window.__pwaPrompt = null;
+    window.addEventListener('beforeinstallprompt', function(e){
+      e.preventDefault();
+      window.__pwaPrompt = e;
+      var b = document.getElementById('pwaInstall');
+      if(b) b.style.display = 'block';
+    });
+    window.installPWA = function(){
+      if(!window.__pwaPrompt) return false;
+      window.__pwaPrompt.prompt();
+      window.__pwaPrompt.userChoice.then(function(r){
+        if(r.outcome==='accepted'){ var b=document.getElementById('pwaInstall'); if(b) b.style.display='none'; }
+        window.__pwaPrompt = null;
+      });
+      return true;
+    };
+  })();
+  </script>
 <div class="dlqr" aria-label="下载 Android App 二维码">
   <div class="t">下载 Android App</div>
   <div class="s">扫码安装，离线也能学</div>
   <img src="img/download-qr.png" alt="扫码下载 Android App（GitHub Releases）" width="196" height="196" />
   <div class="c">扫码下载 Android App</div>
   <div class="rel"><a href="https://github.com/CochraneK/neuropharm/releases" target="_blank" rel="noopener">或前往 GitHub Releases</a></div>
+  <button id="pwaInstall" class="pwabtn" style="display:none" onclick="installPWA()">添加到主屏幕 · 免安装离线用</button>
 </div>
 </body>
 </html>

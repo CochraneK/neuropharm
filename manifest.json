@@ -1,0 +1,32 @@
+{
+  "name": "药枢 NeuroPharm · 精神药理学习",
+  "short_name": "药枢",
+  "description": "62 味精神科药物 · SRS 间隔重复闪卡 · 药物相互作用查询 · 支持离线",
+  "start_url": "./psychopharm.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F5F6F8",
+  "theme_color": "#0E8C7F",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "img/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "img/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "img/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

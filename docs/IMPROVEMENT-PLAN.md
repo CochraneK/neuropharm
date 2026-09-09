@@ -69,11 +69,25 @@
 ### 5. 药物对比视图 —— ⬜ 待做
 选 2~3 种药并排对比（同类：舍曲林 vs 艾司西酞普兰 vs 氟西汀；跨类：SNRI vs SSRI）。
 
-### 6. PWA 离线支持 —— ⬜ 待做
-`manifest.json` + `service-worker.js`，支持「添加到主屏幕」，无需 APK 即可分享 URL。
+### 6. PWA 离线支持 —— ✅ 已完成
 
-### 7. 搜索体验 —— ⬜ 待做
-拼音首字母（「SLS」→ 舍曲林）、英文搜索、匹配高亮、结果按类别分组。
+- `manifest.json`（standalone / 竖屏 / teal 主题色 / 192+512 图标，含 maskable）
+- `service-worker.js`：静态资源 cache-first、导航 network-first 回退缓存、后端 API 不缓存
+- 图标由 `scripts/gen-icon.js` 生成（纯 Node 手写 PNG 编码，无第三方依赖）
+- `psychopharm.html`：manifest link + theme-color + apple-touch-icon + SW 注册
+  （`file://` 环境下自动跳过注册，不影响 Android APK）
+- 捕获 `beforeinstallprompt`，二维码区出现「添加到主屏幕 · 免安装离线用」按钮
+
+### 7. 搜索体验 —— ✅ 已完成
+
+- `scripts/gen-pinyin.js` 为每味药生成 `py`（全拼）/ `pyi`（首字母）/ `spy`+`spyi`（子类拼音）
+  - `ü` 归一化为 `v`（输入法习惯：氯氮平 lvdanping）
+  - 62 味药拼音首字母**零冲突**
+- 匹配：字面（中/英/类别/适应症）+ 拼音（全拼/首字母）双通道
+- 结果按大类分组 + 小标题；命中词 `<mark>` 高亮（拼音命中整名高亮）
+- 相关性排序：中文前缀 > 中文包含 > 拼音首字母 > 其余
+- 空结果给出拼音示例提示
+- 测试：`scripts/_test_search.js`（16 项断言）
 
 ---
 
@@ -88,8 +102,18 @@
 ### 10. 桌面端学习模式 —— ⬜ 待做
 >1200px 去掉手机外壳，全屏 + 多栏（左药库列表 / 右详情）。
 
-### 11. 设置真正生效 —— ⬜ 待做
-每日提醒、间隔重复开关、仅显示通用名、数据导出目前均为摆设。
+### 11. 设置真正生效 —— ✅ 已完成
+
+原四个设置项均为无 `onclick` 的静态 div，现已全部接线（存 `GAM.settings`，**随账号云同步**）：
+
+| 设置项 | 行为 |
+|---|---|
+| 每日学习提醒 | 当天未学习时首页显示提醒条（含待复习数）；已授权则发系统通知 |
+| 间隔重复背诵 | 关闭则闪卡退回随机顺序，开启用 SRS 队列（两处 `cardOrder` 均已接） |
+| 仅显示通用名 | `body.generic-only` 隐藏药库列表与详情页的英文药名 |
+| 数据导出 | 导出 `neuropharm-progress-YYYY-MM-DD.json`（进度 + 笔记 + 药库版本） |
+
+附：`toast()` 轻提示组件。
 
 ### 12. 社区 / 临床笔记 —— ⬜ 待做
 每味药个人笔记（localStorage + 同步）；「循证引用」替代「不背单词」的例句功能。

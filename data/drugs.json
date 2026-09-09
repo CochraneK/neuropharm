@@ -38,7 +38,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "agemeilating",
+    "pyi": "agmlt",
+    "spy": "tuiheisushoutijidong",
+    "spyi": "thsstjd"
   },
   {
     "zh": "草酸艾司西酞普兰",
@@ -84,7 +88,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "caosuanaisixitaipulan",
+    "pyi": "csasxtpl",
+    "spy": "",
+    "spyi": ""
   },
   {
     "zh": "度洛西汀",
@@ -133,7 +141,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "duluoxiting",
+    "pyi": "dlxt",
+    "spy": "",
+    "spyi": ""
   },
   {
     "zh": "伏硫西汀",
@@ -175,7 +187,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "fuliuxiting",
+    "pyi": "flxt",
+    "spy": "",
+    "spyi": ""
   },
   {
     "zh": "氟西汀",
@@ -223,7 +239,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "fuxiting",
+    "pyi": "fxt",
+    "spy": "",
+    "spyi": ""
   },
   {
     "zh": "米氮平",
@@ -265,7 +285,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "midanping",
+    "pyi": "mdp",
+    "spy": "",
+    "spyi": ""
   },
   {
     "zh": "曲唑酮",
@@ -308,7 +332,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "quzuotong",
+    "pyi": "qzt",
+    "spy": "",
+    "spyi": ""
   },
   {
     "zh": "舍曲林",
@@ -358,7 +386,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "shequlin",
+    "pyi": "sql",
+    "spy": "",
+    "spyi": ""
   },
   {
     "zh": "文拉法辛",
@@ -402,7 +434,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "wenlafaxin",
+    "pyi": "wlfx",
+    "spy": "",
+    "spyi": ""
   },
   {
     "zh": "阿立哌唑",
@@ -446,7 +482,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "alipaizuo",
+    "pyi": "alpz",
+    "spy": "feidianxing",
+    "spyi": "fdx"
   },
   {
     "zh": "氨磺必利",
@@ -488,7 +528,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "anhuangbili",
+    "pyi": "ahbl",
+    "spy": "feidianxing",
+    "spyi": "fdx"
   },
   {
     "zh": "奥氮平",
@@ -534,7 +578,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "aodanping",
+    "pyi": "adp",
+    "spy": "feidianxing",
+    "spyi": "fdx"
   },
   {
     "zh": "氟哌啶醇",
@@ -578,7 +626,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "fupaidingchun",
+    "pyi": "fpdc",
+    "spy": "dianxing",
+    "spyi": "dx"
   },
   {
     "zh": "喹硫平",
@@ -621,7 +673,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "kuiliuping",
+    "pyi": "klp",
+    "spy": "feidianxing",
+    "spyi": "fdx"
   },
   {
     "zh": "利培酮",
@@ -666,7 +722,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "lipeitong",
+    "pyi": "lpt",
+    "spy": "feidianxing",
+    "spyi": "fdx"
   },
   {
     "zh": "氯丙嗪",
@@ -712,7 +772,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "lvbingqin",
+    "pyi": "lbq",
+    "spy": "dianxing",
+    "spyi": "dx"
   },
   {
     "zh": "氯氮平",
@@ -758,7 +822,11 @@
       "other": [
         "agranulocytosis"
       ]
-    }
+    },
+    "py": "lvdanping",
+    "pyi": "ldp",
+    "spy": "feidianxing",
+    "spyi": "fdx"
   },
   {
     "zh": "帕利哌酮",
@@ -798,7 +866,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "palipaitong",
+    "pyi": "plpt",
+    "spy": "feidianxing",
+    "spyi": "fdx"
   },
   {
     "zh": "丙戊酸钠",
@@ -848,7 +920,11 @@
       "other": [
         "valproate"
       ]
-    }
+    },
+    "py": "bingwusuanna",
+    "pyi": "bwsn",
+    "spy": "kangjingjue",
+    "spyi": "kjj"
   },
   {
     "zh": "卡马西平",
@@ -897,7 +973,11 @@
       "other": [
         "carbamazepine"
       ]
-    }
+    },
+    "py": "kamaxiping",
+    "pyi": "kmxp",
+    "spy": "kangjingjue",
+    "spyi": "kjj"
   },
   {
     "zh": "拉莫三嗪",
@@ -938,7 +1018,11 @@
       "other": [
         "sjs"
       ]
-    }
+    },
+    "py": "lamosanqin",
+    "pyi": "lmsq",
+    "spy": "kangjingjue",
+    "spyi": "kjj"
   },
   {
     "zh": "碳酸锂",
@@ -981,7 +1065,11 @@
       "other": [
         "lithium"
       ]
-    }
+    },
+    "py": "tansuanli",
+    "pyi": "tsl",
+    "spy": "yanlei",
+    "spyi": "yl"
   },
   {
     "zh": "阿普唑仑",
@@ -1024,7 +1112,11 @@
       "other": [
         "bzd"
       ]
-    }
+    },
+    "py": "apuzuolun",
+    "pyi": "apzl",
+    "spy": "benerdanlei",
+    "spyi": "bedl"
   },
   {
     "zh": "艾司唑仑",
@@ -1068,7 +1160,11 @@
       "other": [
         "bzd"
       ]
-    }
+    },
+    "py": "aisizuolun",
+    "pyi": "aszl",
+    "spy": "benerdanlei",
+    "spyi": "bedl"
   },
   {
     "zh": "地西泮",
@@ -1115,7 +1211,11 @@
       "other": [
         "bzd"
       ]
-    }
+    },
+    "py": "dixipan",
+    "pyi": "dxp",
+    "spy": "benerdanlei",
+    "spyi": "bedl"
   },
   {
     "zh": "劳拉西泮",
@@ -1159,7 +1259,11 @@
       "other": [
         "bzd"
       ]
-    }
+    },
+    "py": "laolaxipan",
+    "pyi": "llxp",
+    "spy": "benerdanlei",
+    "spyi": "bedl"
   },
   {
     "zh": "莱博雷生",
@@ -1199,7 +1303,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "laiboleisheng",
+    "pyi": "lbls",
+    "spy": "shuangchongshiyusushoutijiekang",
+    "spyi": "scsysstjk"
   },
   {
     "zh": "思诺思",
@@ -1242,7 +1350,11 @@
       "other": [
         "zdrug"
       ]
-    }
+    },
+    "py": "sinuosi",
+    "pyi": "sns",
+    "spy": "feibenerdanlei",
+    "spyi": "fbedl"
   },
   {
     "zh": "佐匹克隆",
@@ -1284,7 +1396,11 @@
       "other": [
         "zdrug"
       ]
-    }
+    },
+    "py": "zuopikelong",
+    "pyi": "zpkl",
+    "spy": "feibenerdanlei",
+    "spyi": "fbedl"
   },
   {
     "zh": "哌甲酯",
@@ -1326,7 +1442,11 @@
       "other": [
         "stimulant"
       ]
-    }
+    },
+    "py": "paijiazhi",
+    "pyi": "pjz",
+    "spy": "zhongshuxingfen",
+    "spyi": "zsxf"
   },
   {
     "zh": "苯海索",
@@ -1367,7 +1487,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "benhaisuo",
+    "pyi": "bhs",
+    "spy": "zhongshukangdanjian",
+    "spyi": "zskdj"
   },
   {
     "zh": "普萘洛尔",
@@ -1413,7 +1537,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "punailuoer",
+    "pyi": "pnle",
+    "spy": "feixuanzexingzuzhi",
+    "spyi": "fxzxzz"
   },
   {
     "zh": "多奈哌齐",
@@ -1458,7 +1586,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "duonaipaiqi",
+    "pyi": "dnpq",
+    "spy": "danjianzhimeiyizhi",
+    "spyi": "djzmyz"
   },
   {
     "zh": "美金刚",
@@ -1499,7 +1631,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "meijingang",
+    "pyi": "mjg",
+    "spy": "jiekang",
+    "spyi": "jk"
   },
   {
     "zh": "司美格鲁肽",
@@ -1542,7 +1678,11 @@
       "other": [
         "glp1"
       ]
-    }
+    },
+    "py": "simeigelutai",
+    "pyi": "smglt",
+    "spy": "shoutijidong",
+    "spyi": "stjd"
   },
   {
     "zh": "泰诺",
@@ -1586,7 +1726,11 @@
       "other": [
         "hepatotox"
       ]
-    }
+    },
+    "py": "tainuo",
+    "pyi": "tn",
+    "spy": "jierezhentong",
+    "spyi": "jrzt"
   },
   {
     "zh": "为力苏",
@@ -1629,7 +1773,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "weilisu",
+    "pyi": "wls",
+    "spy": "weichangcudongli",
+    "spyi": "wccdl"
   },
   {
     "zh": "加兰他敏",
@@ -1674,7 +1822,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "jialantamin",
+    "pyi": "jltm",
+    "spy": "danjianzhimeiyizhi",
+    "spyi": "djzmyz"
   },
   {
     "zh": "叶酸",
@@ -1712,7 +1864,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "yesuan",
+    "pyi": "ys",
+    "spy": "weishengsu",
+    "spyi": "wss"
   },
   {
     "zh": "安非他酮",
@@ -1759,7 +1915,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "anfeitatong",
+    "pyi": "aftt",
+    "spy": "",
+    "spyi": ""
   },
   {
     "zh": "帕罗西汀",
@@ -1808,7 +1968,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "paluoxiting",
+    "pyi": "plxt",
+    "spy": "",
+    "spyi": ""
   },
   {
     "zh": "西酞普兰",
@@ -1853,7 +2017,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "xitaipulan",
+    "pyi": "xtpl",
+    "spy": "",
+    "spyi": ""
   },
   {
     "zh": "阿米替林",
@@ -1900,7 +2068,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "amitilin",
+    "pyi": "amtl",
+    "spy": "",
+    "spyi": ""
   },
   {
     "zh": "丙米嗪",
@@ -1945,7 +2117,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "bingmiqin",
+    "pyi": "bmq",
+    "spy": "",
+    "spyi": ""
   },
   {
     "zh": "齐拉西酮",
@@ -1989,7 +2165,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "qilaxitong",
+    "pyi": "qlxt",
+    "spy": "feidianxing",
+    "spyi": "fdx"
   },
   {
     "zh": "布南色林",
@@ -2030,7 +2210,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "bunanselin",
+    "pyi": "bnsl",
+    "spy": "feidianxing",
+    "spyi": "fdx"
   },
   {
     "zh": "舒必利",
@@ -2072,7 +2256,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "shubili",
+    "pyi": "sbl",
+    "spy": "feidianxing",
+    "spyi": "fdx"
   },
   {
     "zh": "氟哌噻吨",
@@ -2116,7 +2304,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "fupaisaidun",
+    "pyi": "fpsd",
+    "spy": "dianxing",
+    "spyi": "dx"
   },
   {
     "zh": "托吡酯",
@@ -2161,7 +2353,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "tuobizhi",
+    "pyi": "tbz",
+    "spy": "kangjingjue",
+    "spyi": "kjj"
   },
   {
     "zh": "纳曲酮",
@@ -2205,7 +2401,11 @@
       "other": [
         "opioid_antagonist"
       ]
-    }
+    },
+    "py": "naqutong",
+    "pyi": "nqt",
+    "spy": "apianshoutijiekang",
+    "spyi": "apstjk"
   },
   {
     "zh": "氟伏沙明",
@@ -2250,7 +2450,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "fufushaming",
+    "pyi": "ffsm",
+    "spy": "",
+    "spyi": ""
   },
   {
     "zh": "反苯环丙胺",
@@ -2291,7 +2495,11 @@
       "other": [
         "tyramine"
       ]
-    }
+    },
+    "py": "fanbenhuanbingan",
+    "pyi": "fbhba",
+    "spy": "",
+    "spyi": ""
   },
   {
     "zh": "卢美哌隆",
@@ -2332,7 +2540,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "lumeipailong",
+    "pyi": "lmpl",
+    "spy": "feidianxing",
+    "spyi": "fdx"
   },
   {
     "zh": "卡利拉嗪",
@@ -2375,7 +2587,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "kalilaqin",
+    "pyi": "kllq",
+    "spy": "feidianxing",
+    "spyi": "fdx"
   },
   {
     "zh": "布瑞哌唑",
@@ -2417,7 +2633,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "buruipaizuo",
+    "pyi": "brpz",
+    "spy": "feidianxing",
+    "spyi": "fdx"
   },
   {
     "zh": "阿坎酸",
@@ -2455,7 +2675,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "akansuan",
+    "pyi": "aks",
+    "spy": "jiejiuyao",
+    "spyi": "jjy"
   },
   {
     "zh": "美沙酮",
@@ -2499,7 +2723,11 @@
       "opio": 2,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "meishatong",
+    "pyi": "mst",
+    "spy": "apianleihuojiedu",
+    "spyi": "aplhjd"
   },
   {
     "zh": "丁丙诺啡",
@@ -2540,7 +2768,11 @@
       "opio": 2,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "dingbingnuofei",
+    "pyi": "dbnf",
+    "spy": "apianbufenjidonghuojiedu",
+    "spyi": "apbfjdhjd"
   },
   {
     "zh": "双硫仑",
@@ -2580,7 +2812,11 @@
       "other": [
         "alcohol"
       ]
-    }
+    },
+    "py": "shuangliulun",
+    "pyi": "sll",
+    "spy": "jiejiuyao",
+    "spyi": "jjy"
   },
   {
     "zh": "氯胺酮",
@@ -2623,7 +2859,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "lvantong",
+    "pyi": "lat",
+    "spy": "jiekang",
+    "spyi": "jk"
   },
   {
     "zh": "艾司氯胺酮",
@@ -2665,7 +2905,11 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "aisilvantong",
+    "pyi": "aslat",
+    "spy": "jiekang",
+    "spyi": "jk"
   },
   {
     "zh": "奥氟合剂",
@@ -2709,6 +2953,10 @@
       "opio": 0,
       "maoi": 0,
       "other": []
-    }
+    },
+    "py": "aofuheji",
+    "pyi": "afhj",
+    "spy": "fufangfeidianxingjia",
+    "spyi": "fffdxj"
   }
 ]
