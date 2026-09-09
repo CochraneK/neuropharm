@@ -18,5 +18,13 @@
 - `psychopharm-cards-deck.pdf`（彩色，8 页 / 38 卡，flip hint 已移除）
 - `psychopharm-cards-deck-mono.pdf`（纯灰度墨省版，8 页 / 38 卡）
 
+> ⚠️ **产物已过期（2026-09-09 核对）**：以上 PDF 生成于 2026-09-08，对应当时的 **38 味药**。
+> 当前 `data/drugs.json` 已扩至 **62 味**，`pdf/` 下的卡片尚未重新生成。
+> 重生成（会覆盖现有 PDF）：
+> ```bash
+> python scripts/make_cards.py && python scripts/qa_pairing.py
+> ```
+> 重跑后请同步更新本节的页数 / 卡数。
+
 ## 备注
 - 若实测打印仍错位，将 `make_cards.py` 中的 `DUPLEX = 'long'` 改为 `'short'`（短边装订，垂直反转）或 `'none'`（无镜像），重跑脚本即可。
