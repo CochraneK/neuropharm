@@ -479,48 +479,6 @@
       margin-left:0;
     }
   }
-  /* ---------- Desktop: >1200px 全屏多栏布局 ---------- */
-  @media (min-width:1200px){
-    body{ padding:0; background:var(--bg); align-items:stretch; }
-    .phone{ width:100%; height:100vh; border-radius:0; box-shadow:none; max-width:1400px; }
-    .statusbar{ height:44px; flex:0 0 44px; padding:0 24px; font-size:13px; }
-    .screens{ display:block; }
-    .screen{ padding:12px 28px 100px; }
-    /* 首页：两栏网格 */
-    #home.active{display:grid;grid-template-columns:1fr 1fr;gap:16px 24px;padding-bottom:80px;}
-    #home .sec:first-child,
-    #home .sec:nth-child(2),
-    #home .disclaimer,
-    #home #dailyChallengeSec{grid-column:1/-1;}
-    #home .continue{max-width:520px;}
-    /* 药库：两列药物列表 + 树状搜索区 */
-    #library.active #drugList{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-    #library.active .search{max-width:600px;}
-    #library.active #chips{flex-wrap:wrap;}
-    /* 统计页居中 */
-    #stats #statContent{max-width:600px;margin-left:auto;margin-right:auto;}
-    /* 详情页：两列布局，左侧信息右侧笔记 */
-    #detail.active{display:grid;grid-template-columns:1fr 1fr;gap:16px 28px;padding-bottom:60px;}
-    #detail .detail-head{grid-column:1/-1;}
-    #detail .dbadge{grid-column:1/-1;}
-    #detail .facts{grid-column:1/-1;}
-    #detail .block{break-inside:avoid;}
-    #detail .disclaimer{grid-column:1/-1;}
-    #detail button{max-width:280px;}
-    /* 复习：居中卡片区 */
-    #study.active{align-items:center;}
-    #cardWrap{max-width:400px;width:100%;}
-    #quizWrap{max-width:600px;width:100%;}
-    /* 相互作用：两列选择区域 */
-    #interact .sel{width:240px;}
-    #interact .sec:first-of-type{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap;}
-    #interact .seclabel{width:100%;}
-    #interact .plus{padding-top:10px;}
-    #interact .btn{width:auto;padding:11px 28px;}
-    /* Tab bar */
-    .tabbar .pillbar{max-width:600px;margin:0 auto;}
-    .tab .tl{font-size:11px;}
-  }
 </style>
 </head>
 <body>
@@ -608,22 +566,6 @@
           <div class="qlink" onclick="showScreen('study')"><div class="qi">🃏</div><div class="qt">记忆卡片</div></div>
           <div class="qlink" onclick="showScreen('study')"><div class="qi">🧪</div><div class="qt">自测小考</div></div>
           <div class="qlink" onclick="showScreen('interact')"><div class="qi">🔗</div><div class="qt">相互作用</div></div>
-          <div class="qlink" onclick="showScreen('stats')"><div class="qi">📊</div><div class="qt">学习统计</div></div>
-        </div>
-      </div>
-
-      <div class="sec" id="dailyChallengeSec">
-        <div class="seclabel">每日挑战</div>
-        <div class="continue" id="dailyChallengeWrap" style="padding-bottom:10px;">
-          <div class="row">
-            <div>
-              <div class="ttl" id="dcTitle">今日挑战</div>
-              <div class="meta" id="dcMeta">每日 5 题 · 赢积分</div>
-            </div>
-            <div class="gv" id="dcReward" style="font-size:14px;">🏆 +30/题</div>
-          </div>
-          <div id="dailyChallengeContent"></div>
-          <button class="btn ghost" id="dcStartBtn" onclick="startDailyChallenge()">开始挑战</button>
         </div>
       </div>
 
@@ -815,25 +757,6 @@
       <div class="disclaimer">药枢 NeuroPharm · 学习助手原型 · 内容需结合教材与指南核实</div>
     </section>
 
-    <!-- ===== STATISTICS ===== -->
-    <section class="screen" id="stats">
-      <div class="detail-head">
-        <div class="back" onclick="showScreen('home')">‹</div>
-        <div>
-          <div class="dname">学习统计</div>
-          <div class="den">追踪你的学习数据</div>
-        </div>
-      </div>
-      <div class="seg" id="statsSeg">
-        <button class="on" data-tab="points" onclick="setStatTab('points')">📊 7日积分</button>
-        <button data-tab="category" onclick="setStatTab('category')">🎯 分类掌握</button>
-        <button data-tab="wrong" onclick="setStatTab('wrong')">📕 错题本</button>
-      </div>
-      <div id="statContent" style="margin-top:18px;"></div>
-
-      <div class="disclaimer" style="margin-top:24px;">统计数据来自你的学习记录，登录后随账号同步</div>
-    </section>
-
     <!-- ===== DETAIL (overlay) ===== -->
     <section class="screen" id="detail">
       <div class="detail-head">
@@ -884,7 +807,6 @@
       </div>
 
       <button class="btn ghost" style="margin-top:10px;" onclick="openInteract(document.getElementById('dName').textContent)">查看相互作用</button>
-      <button class="btn ghost" style="margin-top:8px;" onclick="editNote(document.getElementById('dName').textContent)">📝 临床笔记</button>
       <button class="btn" style="margin-top:12px;" onclick="showScreen('study')">加入记忆卡片</button>
       <div class="disclaimer">仅供学习，临床用药请遵循说明书与指南。</div>
     </section>
@@ -904,10 +826,6 @@
       <div class="tab" data-tab="study" onclick="showScreen('study')">
         <svg viewBox="0 0 24 24" fill="none" stroke="#9AA1AC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="13" height="16" rx="2"/><path d="M8 4v16"/><path d="M16 8l5-3v14l-5-3"/></svg>
         <span class="tl">复习</span>
-      </div>
-      <div class="tab" data-tab="stats" onclick="showScreen('stats')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#9AA1AC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><path d="M6 16V8"/><path d="M12 16v-6"/><path d="M18 16V4"/></svg>
-        <span class="tl">统计</span>
       </div>
       <div class="tab" data-tab="profile" onclick="showScreen('profile')">
         <svg viewBox="0 0 24 24" fill="none" stroke="#9AA1AC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
@@ -930,10 +848,9 @@ function showScreen(id){
   document.getElementById(id).classList.add('active');
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on', t.dataset.tab===id));
   if(id==='library'){ GAM.visitedLib=true; saveGam(); renderLibrary(); renderChips(); checkBadges(); }
-  if(id==='home'){ renderHomePills(); updateSRSHomeUI(); if(typeof checkDailyRemind==='function') checkDailyRemind(); if(typeof renderDailyChallenge==='function') renderDailyChallenge(); }
+  if(id==='home'){ renderHomePills(); updateSRSHomeUI(); if(typeof checkDailyRemind==='function') checkDailyRemind(); }
   if(id==='study'){ renderStudy(); updateSRSHomeUI(); }
   if(id==='interact'){ ensureInteractOptions(); }
-  if(id==='stats'){ renderStatContent(); }
   updateGamUI();
   document.getElementById(id).scrollTop = 0;
 }
@@ -1139,11 +1056,7 @@ function openDrug(zh){
   document.getElementById('dDose').textContent=d.dose;
   document.getElementById('dWarn').textContent=d.warn;
   const nb=document.getElementById('noteBlock');
-  const userNote=(GAM.notes||{})[d.zh]||'';
-  if(userNote){
-    nb.style.display='block';
-    document.getElementById('dNote').innerHTML='<div style="white-space:pre-wrap;line-height:1.6;">'+escHtml(userNote)+'</div>';
-  } else { nb.style.display='none'; }
+  if(d.note){ nb.style.display='block'; document.getElementById('dNote').textContent=d.note; } else { nb.style.display='none'; }
   showScreen('detail');
 }
 
@@ -1731,8 +1644,6 @@ function renderQuiz(){
         const cb=wrap.children[item.ans];
         if(cb){ cb.style.borderColor='var(--accent)'; cb.style.background='var(--accent-soft)'; }
         addPoints(5); showToast('再想想 · +5 🪙');
-        // 记录错题
-        recordWrong(item, i);
       }
       quizResult[quizPos]={picked:i,correct:correct,earned:correct?15:5};
       saveGam(); checkBadges(); updateGamUI();
@@ -1795,7 +1706,7 @@ const BADGES=[
   {id:'srs10',  icon:'🔄',name:'间隔达人', desc:'SRS 累计复习 10 张到期卡片'},
   {id:'lib',    icon:'🗂️',name:'百宝箱', desc:'浏览全部药库'}
 ];
-function defaultGam(){return{points:0,todayPts:0,streak:0,lastDate:'',remembered:0,seen:{},quizTotal:0,quizCorrect:0,quizStreak:0,quizMax:0,visitedLib:false,badges:{},lastLevel:1,srsReviewed:0,goalSetCards:30,goalSetPts:150,srs:{},settings:{remind:true,srs:true,genericOnly:false},notes:{},dailyPoints:{},wrongAnswers:[],weeklyChallenge:{}};}
+function defaultGam(){return{points:0,todayPts:0,streak:0,lastDate:'',remembered:0,seen:{},quizTotal:0,quizCorrect:0,quizStreak:0,quizMax:0,visitedLib:false,badges:{},lastLevel:1,srsReviewed:0,goalSetCards:30,goalSetPts:150,srs:{},settings:{remind:true,srs:true,genericOnly:false},notes:{}};}
 
 /* ===== 设置（存 GAM.settings，随账号云同步） ===== */
 const SETTING_DEFAULTS={remind:true,srs:true,genericOnly:false};
@@ -1888,10 +1799,6 @@ function levelInfo(){
 }
 function addPoints(n){
   GAM.points+=n; GAM.todayPts=(GAM.todayPts||0)+n;
-  // 按日期记录积分（用于 7 日统计图）
-  const d=todayStr();
-  if(!GAM.dailyPoints) GAM.dailyPoints={};
-  GAM.dailyPoints[d]=(GAM.dailyPoints[d]||0)+n;
   const oldLv=GAM.lastLevel||1;
   const newLv=levelInfo().lv;
   if(newLv>oldLv){ GAM.lastLevel=newLv; showLevelUp(oldLv,newLv); saveGam(); }
@@ -2143,461 +2050,6 @@ function updateSRSHomeUI(){
   }
 }
 
-/* ===== ⑧ 学习统计 ===== */
-function recordWrong(item, pickedIdx){
-  if(!GAM.wrongAnswers) GAM.wrongAnswers=[];
-  // 查找药名
-  let drugName='';
-  // 尝试从题目中提取药名（如「舍曲林（Sertraline）」或「「舍曲林」属于」）
-  const m=item.q.match(/「([^」]+)」/);
-  if(m) drugName=m[1];
-  else {
-    // 从选项中取正确答案文本
-    const correctText=item.opts[item.ans];
-    // 尝试在 DRUGS 中匹配
-    const found=DRUGS.find(d=>d.zh===correctText || d.en===correctText);
-    if(found) drugName=found.zh;
-  }
-  GAM.wrongAnswers.unshift({
-    q:item.q,
-    opts:item.opts,
-    ans:item.ans,
-    picked:pickedIdx,
-    drug: drugName,
-    why: item.why||'',
-    time:Date.now()
-  });
-  // 只保留最近 200 条
-  if(GAM.wrongAnswers.length>200) GAM.wrongAnswers=GAM.wrongAnswers.slice(0,200);
-}
-function getLast7Days(){
-  const days=[];
-  const today=new Date();
-  for(let i=6;i>=0;i--){
-    const d=new Date(today); d.setDate(d.getDate()-i);
-    days.push(d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate());
-  }
-  return days;
-}
-function renderPointsChart(canvas){
-  if(!canvas) return;
-  const ctx=canvas.getContext('2d');
-  const W=canvas.width=Math.max(canvas.clientWidth*2,600);
-  const H=canvas.height=220;
-  const dpr=window.devicePixelRatio||1;
-  ctx.scale(dpr,dpr);
-  const w=Math.floor(canvas.clientWidth||300);
-  const h=110;
-  // 读取 7 日数据
-  const days=getLast7Days();
-  const pts=days.map(d=>(GAM.dailyPoints||{})[d]||0);
-  const maxP=Math.max(...pts,1);
-  const pad={t:10,b:22,l:30,r:10};
-  const cw=w-pad.l-pad.r;
-  const bh=cw>0?(h-pad.t-pad.b):1;
-  // 清空
-  ctx.clearRect(0,0,w,h);
-  ctx.fillStyle=getComputedStyle(document.body).getPropertyValue('--text').trim()||'#1B1F24';
-  ctx.font='10px system-ui,-apple-system,sans-serif';
-  ctx.textAlign='center';
-  // 画柱
-  const gap=cw>0?cw/(days.length*2-1):1;
-  const barW=gap;
-  const maxBarH=Math.max(bh-2,4);
-  pts.forEach((p,i)=>{
-    const x=pad.l+i*gap*2;
-    const barH=p/maxP*maxBarH;
-    const y=h-pad.b-barH;
-    // 柱体圆角
-    const r=Math.min(4,barW/2);
-    ctx.beginPath();
-    ctx.moveTo(x+r,y);
-    ctx.lineTo(x+barW-r,y);
-    ctx.arcTo(x+barW,y,x+barW,y+r,r);
-    ctx.lineTo(x+barW,h-pad.b);
-    ctx.lineTo(x,h-pad.b);
-    ctx.lineTo(x,y+r);
-    ctx.arcTo(x,y,x+r,y,r);
-    ctx.closePath();
-    ctx.fillStyle='#0E8C7F';
-    ctx.globalAlpha=p>0?0.85:0.15;
-    ctx.fill();
-    ctx.globalAlpha=1;
-    // 数值
-    if(p>0){
-      ctx.fillStyle='var(--text)';
-      ctx.font='10px system-ui,-apple-system,sans-serif';
-      ctx.textAlign='center';
-      ctx.fillText(p,x+barW/2,y-4);
-    }
-    // 日期标签
-    const lab=days[i].slice(5);
-    ctx.fillStyle='var(--text-3)';
-    ctx.font='9px system-ui,-apple-system,sans-serif';
-    ctx.fillText(lab,x+barW/2,h-4);
-  });
-  // 画 X 轴
-  ctx.strokeStyle='var(--border)';
-  ctx.lineWidth=1;
-  ctx.beginPath();
-  ctx.moveTo(pad.l,h-pad.b);
-  ctx.lineTo(w-pad.r,h-pad.b);
-  ctx.stroke();
-}
-function renderCategoryRadar(canvas){
-  if(!canvas) return;
-  const ctx=canvas.getContext('2d');
-  const W=canvas.width=Math.max(canvas.clientWidth*2,600);
-  const H=canvas.height=260;
-  const dpr=window.devicePixelRatio||1;
-  ctx.scale(dpr,dpr);
-  const w=Math.floor(canvas.clientWidth||300);
-  const h=130;
-  const cx=w/2,cy=h/2-6,r=Math.min(cx-24,cy-10,80);
-  // 按类别统计掌握度
-  const catMap={'抗抑郁药':'','抗精神病药':'','心境稳定剂':'','抗焦虑药':'','催眠药':'','兴奋剂':'','抗帕金森药':'','抗痴呆药':'','β受体阻滞剂':'','相关药物':''};
-  const cats=Object.keys(catMap);
-  const mastery=cats.map(cat=>{
-    const drugs=DRUGS.filter(d=>d.cls===cat);
-    if(!drugs.length) return 0;
-    const total=drugs.length;
-    const studied=drugs.filter(d=>{const s=SRS[d.zh];return s&&s.reps>0;}).length;
-    return Math.round(studied/total*100);
-  });
-  const n=cats.length;
-  if(n<3) return;
-  const angleStep=2*Math.PI/n;
-  // 清空
-  ctx.clearRect(0,0,w,h);
-  // 网格
-  for(let ring=1;ring<=5;ring++){
-    const rn=r*ring/5;
-    ctx.beginPath();
-    for(let i=0;i<=n;i++){
-      const a=-Math.PI/2+i*angleStep;
-      const x=cx+rn*Math.cos(a),y=cy+rn*Math.sin(a);
-      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
-    }
-    ctx.closePath();
-    ctx.strokeStyle=getComputedStyle(document.body).getPropertyValue('--border').trim()||'#E8EAED';
-    ctx.lineWidth=0.5;
-    ctx.stroke();
-  }
-  // 轴线
-  for(let i=0;i<n;i++){
-    const a=-Math.PI/2+i*angleStep;
-    ctx.beginPath();
-    ctx.moveTo(cx,cy);
-    ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a));
-    ctx.strokeStyle='var(--border)';
-    ctx.lineWidth=0.5;
-    ctx.stroke();
-  }
-  // 数据填充
-  ctx.beginPath();
-  for(let i=0;i<n;i++){
-    const a=-Math.PI/2+i*angleStep;
-    const val=Math.min(mastery[i],100)/100;
-    const x=cx+r*val*Math.cos(a),y=cy+r*val*Math.sin(a);
-    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
-  }
-  ctx.closePath();
-  ctx.fillStyle='rgba(14,140,127,.18)';
-  ctx.fill();
-  ctx.strokeStyle='#0E8C7F';
-  ctx.lineWidth=2;
-  ctx.stroke();
-  // 数据点 + 标签
-  ctx.font='9px system-ui,-apple-system,sans-serif';
-  ctx.textAlign='center';
-  ctx.textBaseline='middle';
-  for(let i=0;i<n;i++){
-    const a=-Math.PI/2+i*angleStep;
-    const val=Math.min(mastery[i],100)/100;
-    const px=cx+r*val*Math.cos(a),py=cy+r*val*Math.sin(a);
-    // 点
-    ctx.beginPath();
-    ctx.arc(px,py,3,0,2*Math.PI);
-    ctx.fillStyle='#0E8C7F';
-    ctx.fill();
-    // 标签（在顶点外侧）
-    const lx=cx+r*1.18*Math.cos(a),ly=cy+r*1.18*Math.sin(a);
-    ctx.fillStyle='var(--text-2)';
-    const sn=cats[i].replace('药','');
-    ctx.fillText(sn,lx,ly);
-    // 百分比
-    ctx.fillStyle='var(--text)';
-    ctx.font='8px system-ui,-apple-system,sans-serif';
-    ctx.fillText(mastery[i]+'%',px,py+10);
-  }
-}
-function renderWrongList(wrap){
-  if(!wrap) return;
-  const wrong=GAM.wrongAnswers||[];
-  if(!wrong.length){
-    wrap.innerHTML='<div style="text-align:center;color:var(--text-3);padding:30px 0;font-size:13px;">暂无错题记录 · 继续答题吧</div>';
-    return;
-  }
-  wrap.innerHTML='<div style="font-size:12px;color:var(--text-3);margin-bottom:8px;">共 '+wrong.length+' 道错题（最近展示）</div>';
-  const show=wrong.slice(0,30);
-  show.forEach((w,i)=>{
-    const el=document.createElement('div');
-    el.style.cssText='background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px;margin-bottom:10px;box-shadow:var(--shadow);';
-    const correctText=w.opts[w.ans];
-    const pickedText=w.opts[w.picked];
-    el.innerHTML='<div style="font-size:13px;font-weight:700;margin-bottom:6px;">'+(i+1)+'. '+escHtml(w.q)+'</div>'+
-      '<div style="font-size:12px;line-height:1.5;"><span style="color:var(--warn);">✗ 你的选择：'+escHtml(pickedText)+'</span><br>'+
-      '<span style="color:var(--accent);">✓ 正确答案：'+escHtml(correctText)+'</span></div>'+
-      (w.why?'<div style="font-size:11.5px;color:var(--text-2);margin-top:6px;padding:6px 8px;background:var(--surface-2);border-radius:8px;">'+escHtml(w.why)+'</div>':'');
-    wrap.appendChild(el);
-  });
-}
-/* 统计页切换 */
-let statTab='points';
-function setStatTab(t){
-  statTab=t;
-  document.querySelectorAll('#statsSeg button').forEach(b=>b.classList.toggle('on', b.dataset.tab===t));
-  renderStatContent();
-}
-function renderStatContent(){
-  const wrap=document.getElementById('statContent');
-  if(!wrap) return;
-  if(statTab==='points'){
-    const canvas=document.createElement('canvas');
-    canvas.style.cssText='width:100%;height:110px;margin-top:6px;';
-    canvas.id='pointsChart';
-    wrap.innerHTML='<div class="seclabel" style="margin-bottom:4px;">近 7 日积分走势</div>';
-    wrap.appendChild(canvas);
-    // 合计
-    const days=getLast7Days();
-    const total=days.reduce((s,d)=>s+((GAM.dailyPoints||{})[d]||0),0);
-    const avg=Math.round(total/7);
-    const sum=document.createElement('div');
-    sum.style.cssText='font-size:12.5px;color:var(--text-2);margin-top:8px;text-align:center;';
-    sum.textContent='7 日合计 '+total+' 积分 · 日均 '+avg+' 分';
-    wrap.appendChild(sum);
-    setTimeout(()=>renderPointsChart(document.getElementById('pointsChart')),50);
-  } else if(statTab==='category'){
-    const canvas=document.createElement('canvas');
-    canvas.style.cssText='width:100%;height:130px;margin-top:6px;';
-    canvas.id='radarChart';
-    wrap.innerHTML='<div class="seclabel" style="margin-bottom:4px;">各类药物掌握度</div>';
-    wrap.appendChild(canvas);
-    setTimeout(()=>renderCategoryRadar(document.getElementById('radarChart')),50);
-  } else if(statTab==='wrong'){
-    wrap.innerHTML='<div class="seclabel" style="margin-bottom:4px;">错题本 <span style="font-weight:400;color:var(--text-3);">答错的题目，红色标记优先复习</span></div>';
-    const listWrap=document.createElement('div');
-    listWrap.id='wrongList';
-    wrap.appendChild(listWrap);
-    renderWrongList(listWrap);
-  }
-}
-
-/* ===== ⑨ 每日挑战 ===== */
-function dailyChallengeKey(){
-  const d=new Date();
-  return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
-}
-function getDailyChallenge(){
-  const key=dailyChallengeKey();
-  // 确保每周目标存在
-  if(!GAM.weeklyChallenge) GAM.weeklyChallenge={};
-  const wc=GAM.weeklyChallenge;
-  // 获取本周一的日期
-  const now=new Date();
-  const dayOfWeek=now.getDay()||7;
-  const mon=new Date(now); mon.setDate(now.getDate()-dayOfWeek+1);
-  const weekKey=mon.getFullYear()+'-'+(mon.getMonth()+1)+'-'+mon.getDate();
-  if(!wc.weekKey||wc.weekKey!==weekKey){
-    wc.weekKey=weekKey;
-    wc.weekDone=0;
-    wc.weekGoal=5;
-  }
-  if(!wc.daily||wc.daily.key!==key){
-    // 生成今日挑战：5 道题
-    const bank=buildQuizBank();
-    // 用日期作种子确定性随机
-    const seed=key.split('-').reduce((s,v)=>s*1000+Number(v),0);
-    const rng=()=>{ let x=Math.sin(seed+(wc.weekDone||0)); return x-Math.floor(x); };
-    const shuffled=[...bank].sort(()=>rng()-0.5);
-    const qs=shuffled.slice(0,5);
-    wc.daily={key,questions:qs,answers:[],done:false};
-    wc.weekDone=wc.weekDone||0;
-  }
-  return {daily:wc.daily, weekDone:wc.weekDone||0, weekGoal:wc.weekGoal||5, weekKey:wc.weekKey};
-}
-function renderDailyChallenge(){
-  const wrap=document.getElementById('dailyChallengeWrap');
-  if(!wrap) return;
-  const ch=getDailyChallenge();
-  const d=ch.daily;
-  if(!d||d.key!==dailyChallengeKey()) return;
-  if(d.done){
-    wrap.innerHTML='<div style="text-align:center;padding:16px 0;">'+
-      '<div style="font-size:32px;margin-bottom:6px;">🏅</div>'+
-      '<div style="font-size:15px;font-weight:800;">今日挑战完成</div>'+
-      '<div style="font-size:12px;color:var(--text-2);margin-top:4px;">得分 '+d.answers.filter(a=>a).length+'/'+d.questions.length+'</div>'+
-      '</div>';
-    return;
-  }
-  const q=d.questions[d.answers.length]||d.questions[0];
-  const qi=d.answers.length;
-  wrap.innerHTML='<div style="margin-top:6px;">'+
-    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">'+
-    '<span style="font-size:13px;font-weight:700;">今日挑战 · 第 '+(qi+1)+'/'+d.questions.length+' 题</span>'+
-    '<span style="font-size:11px;color:var(--text-3);">周目标 '+ch.weekDone+'/'+ch.weekGoal+'</span></div>'+
-    '<div style="font-size:14px;font-weight:600;line-height:1.5;">'+escHtml(q.q)+'</div>'+
-    '<div id="dcOpts" style="margin-top:10px;"></div>'+
-    '<div id="dcResult" style="margin-top:8px;"></div>'+
-    '<button id="dcNext" class="btn" style="display:none;" onclick="nextDailyChallenge()">下一题 ›</button></div>';
-  const optBox=document.getElementById('dcOpts');
-  if(optBox){
-    q.opts.forEach((o,i)=>{
-      const b=document.createElement('button');
-      b.className='quiz-opt';
-      b.textContent=o;
-      b.onclick=()=>answerDailyChallenge(i);
-      optBox.appendChild(b);
-    });
-  }
-}
-function answerDailyChallenge(picked){
-  const ch=getDailyChallenge();
-  const d=ch.daily;
-  if(!d) return;
-  const qi=d.answers.length;
-  if(qi>=d.questions.length) return;
-  const q=d.questions[qi];
-  const correct=picked===q.ans;
-  d.answers.push(correct);
-  const opts=document.getElementById('dcOpts');
-  if(opts){
-    Array.from(opts.children).forEach((c,i)=>{
-      c.dataset.done='1';
-      if(i===q.ans){ c.style.borderColor='var(--accent)'; c.style.background='var(--accent-soft)'; }
-      else if(i===picked){ c.style.borderColor='var(--warn)'; c.style.background='var(--warn-soft)'; }
-    });
-  }
-  const res=document.getElementById('dcResult');
-  if(res){
-    res.innerHTML='<div style="font-size:13px;font-weight:700;'+(correct?'color:var(--accent)':'color:var(--warn)')+';margin-top:4px;">'+
-      (correct?'✓ 正确！+30 🪙':'✗ 再想想 · +5 🪙')+'</div>';
-  }
-  if(correct){
-    addPoints(30);
-    GAM.remembered=(GAM.remembered||0)+1;
-  } else {
-    addPoints(5);
-    recordWrong(q,picked);
-  }
-  saveGam(); checkBadges(); updateGamUI();
-  // 检查是否全部答完
-  const done=d.answers.filter(Boolean).length;
-  const total=d.questions.length;
-  if(d.answers.length>=total){
-    d.done=true;
-    const wc=GAM.weeklyChallenge;
-    if(wc) wc.weekDone=(wc.weekDone||0)+1;
-    const nextBtn=document.getElementById('dcNext');
-    if(nextBtn){
-      nextBtn.style.display='';
-      nextBtn.textContent='查看结果 ›';
-      nextBtn.onclick=()=>{ renderDailyChallenge(); updateGamUI(); };
-    }
-    // 周目标完成弹窗
-    const weekDone=(GAM.weeklyChallenge&&GAM.weeklyChallenge.weekDone)||0;
-    if(weekDone>=5&&!GAM._weekGoalNotified){
-      GAM._weekGoalNotified=true;
-      showAchievement('🎯 周目标达成！','本周完成 5 次挑战 · 加冕小药神',40);
-      addPoints(200);
-    } else {
-      showAchievement('🎉 今日挑战完成！',done+'/'+total+' 正确 · 再接再厉',30);
-    }
-    // 奖励积分
-    addPoints(done>=3?50:20);
-    saveGam(); updateGamUI();
-  } else {
-    const nextBtn=document.getElementById('dcNext');
-    if(nextBtn){
-      nextBtn.style.display='';
-      nextBtn.onclick=nextDailyChallenge;
-    }
-  }
-}
-function nextDailyChallenge(){
-  renderDailyChallenge();
-  updateGamUI();
-  updateSRSHomeUI();
-}
-function showAchievement(title,desc,pts){
-  const el=document.createElement('div');
-  el.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.4);opacity:0;transition:opacity .3s ease;';
-  el.innerHTML='<div style="background:var(--surface);border-radius:24px;padding:28px 22px;text-align:center;box-shadow:0 16px 48px rgba(0,0,0,.15);transform:scale(.8);transition:transform .4s cubic-bezier(.34,1.56,.64,1);">'+
-    '<div style="font-size:48px;line-height:1;">🏅</div>'+
-    '<div style="font-size:18px;font-weight:800;margin-top:12px;">'+escHtml(title)+'</div>'+
-    '<div style="font-size:13px;color:var(--text-2);margin-top:6px;">'+escHtml(desc)+'</div>'+
-    (pts?'<div style="font-size:13px;color:var(--accent);margin-top:4px;font-weight:700;">+'+pts+' 🪙</div>':'')+
-    '<button onclick="this.closest(\'div[style]\').remove()" style="margin-top:16px;border:none;background:var(--accent);color:#fff;font-family:var(--font);font-size:14px;font-weight:700;padding:10px 24px;border-radius:12px;cursor:pointer;">太棒了</button></div>';
-  document.body.appendChild(el);
-  requestAnimationFrame(()=>{
-    el.style.opacity='1';
-    const card=el.firstElementChild;
-    if(card) requestAnimationFrame(()=>{ card.style.transform='scale(1)'; });
-  });
-}
-function startDailyChallenge(){
-  const ch=getDailyChallenge();
-  const d=ch.daily;
-  if(!d||d.done){
-    showToast('今日挑战已完成！');
-    return;
-  }
-  renderDailyChallenge();
-}
-
-/* ===== ⑫ 临床笔记 ===== */
-function editNote(drugZh){
-  const cur=(GAM.notes||{})[drugZh]||'';
-  const el=document.createElement('div');
-  el.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;display:flex;align-items:flex-end;background:rgba(0,0,0,.35);opacity:0;transition:opacity .25s ease;';
-  el.innerHTML='<div style="background:var(--surface);border-radius:20px 20px 0 0;padding:24px 20px 32px;width:100%;max-width:390px;margin:0 auto;transform:translateY(40px);transition:transform .3s cubic-bezier(.34,1.56,.64,1);">'+
-    '<div style="font-size:16px;font-weight:800;margin-bottom:4px;">临床笔记 · '+escHtml(drugZh)+'</div>'+
-    '<div style="font-size:12px;color:var(--text-3);margin-bottom:16px;">记录个人临床体会 · 自动云同步</div>'+
-    '<textarea id="noteEditor" style="width:100%;min-height:160px;border:1px solid var(--border);border-radius:12px;padding:12px;font-family:var(--font);font-size:13.5px;color:var(--text);background:var(--bg);resize:vertical;line-height:1.6;">'+escHtml(cur)+'</textarea>'+
-    '<div style="display:flex;gap:10px;margin-top:14px;">'+
-    '<button onclick="saveNote(\''+drugZh+'\')" style="flex:1;border:none;background:var(--accent);color:#fff;font-family:var(--font);font-size:14px;font-weight:700;padding:12px;border-radius:12px;cursor:pointer;">保存</button>'+
-    '<button onclick="this.closest(\'div[style]\').remove()" style="flex:1;border:1px solid var(--border);background:var(--surface);color:var(--text-2);font-family:var(--font);font-size:14px;font-weight:700;padding:12px;border-radius:12px;cursor:pointer;">取消</button></div></div>';
-  document.body.appendChild(el);
-  requestAnimationFrame(()=>{
-    el.style.opacity='1';
-    const card=el.firstElementChild;
-    if(card) requestAnimationFrame(()=>{ card.style.transform='translateY(0)'; });
-  });
-}
-function saveNote(drugZh){
-  const val=document.getElementById('noteEditor');
-  if(!val) return;
-  const text=val.value.trim();
-  if(!GAM.notes) GAM.notes={};
-  GAM.notes[drugZh]=text;
-  saveGam();
-  updateDrugNote(drugZh);
-  showToast('笔记已保存 ✓');
-  const el=val.closest('div[style]'); if(el) el.remove();
-}
-function updateDrugNote(drugZh){
-  const nb=document.getElementById('noteBlock');
-  const nd=document.getElementById('dNote');
-  if(!nb||!nd) return;
-  const text=(GAM.notes||{})[drugZh]||'';
-  if(text){
-    nb.style.display='block';
-    nd.innerHTML='<div style="white-space:pre-wrap;line-height:1.6;">'+escHtml(text)+'</div>';
-  } else {
-    nb.style.display='none';
-  }
-}
-
 /* init */
 renderHomePills();
 renderChips();
@@ -2609,7 +2061,6 @@ updateSRSHomeUI();
 renderSettings();
 applySettings();
 checkDailyRemind();
-renderDailyChallenge();
 // 初始化今日目标状态
 GAM._goalDoneToday=(()=>{
   const todayCards=Object.keys(GAM.seen||{}).filter(zh=>{const s=SRS[zh];return s&&s.reps>0;}).length;
