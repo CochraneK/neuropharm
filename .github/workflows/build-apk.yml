@@ -38,7 +38,7 @@ jobs:
           cp psychopharm.html psychopharm-android/app/src/main/assets/
           cp js/auth.js psychopharm-android/app/src/main/assets/js/
           cp js/sync.js psychopharm-android/app/src/main/assets/js/
-          cp drugs-data.js psychopharm-android/app/src/main/assets/
+          cp data/drugs-data.js psychopharm-android/app/src/main/assets/
           cp img/download-qr.png psychopharm-android/app/src/main/assets/img/
 
       - name: Ensure Gradle wrapper (project has no committed gradlew)
