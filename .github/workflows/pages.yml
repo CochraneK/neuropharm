@@ -25,12 +25,12 @@ jobs:
 
       - name: Prepare site (landing page + app + its local scripts)
         run: |
-          mkdir -p site/js site/img
+          mkdir -p site/js site/img site/data
           cp psychopharm.html site/index.html
           cp psychopharm.html site/psychopharm.html
           cp js/auth.js site/js/auth.js
           cp js/sync.js site/js/sync.js
-          cp data/drugs-data.js site/drugs-data.js
+          cp data/drugs-data.js site/data/drugs-data.js
           cp img/download-qr.png site/img/download-qr.png
 
       - uses: actions/upload-pages-artifact@v3
