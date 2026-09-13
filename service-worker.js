@@ -9,7 +9,7 @@
 const CACHE = 'neuropharm-v1';
 const ASSETS = [
   './psychopharm.html',
-  './drugs-data.js',
+  './data/drugs-data.js',
   './js/auth.js',
   './js/sync.js',
   './manifest.json',

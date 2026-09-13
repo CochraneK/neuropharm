@@ -17,7 +17,7 @@
 │  │ 场景病例  │  │ 进度/积分/徽章  │  │
 │  └───────────┘  └────────────────┘  │
 ├─────────────────────────────────────┤
-│           drugs-data.js             │ ← 62 味药数据（由 drugs.json 生成）
+│         data/drugs-data.js           │ ← 62 味药数据（由 drugs.json 生成）
 ├─────────────────────────────────────┤
 │  js/auth.js  │  js/sync.js          │ ← 账号与同步客户端（localStorage 持久）
 └──────────┬──────────────────────────┘
@@ -33,7 +33,7 @@
 ## 数据流
 
 ### 学习数据（离线优先，登录后可云同步）
-1. `data/drugs.json` → `scripts/gen-data.js` → `drugs-data.js` → 全局 `DRUGS` 数组
+1. `data/drugs.json` → `scripts/gen-data.js` → `data/drugs-data.js` → 全局 `DRUGS` 数组
 2. 学习进度存 `GAM` 对象（localStorage）；**SRS 调度表为 `GAM.srs`**，随 GAM 一起云同步
 3. 登录后 → `js/sync.js` 800ms 防抖推送到 Worker（LWW，按 `_rev` 时间戳）
 

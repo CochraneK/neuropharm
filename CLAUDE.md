@@ -5,8 +5,8 @@
 
 ## 数据流水线（不可违反）
 - **唯一真源**: `data/drugs.json`（JSON，62 味药）
-- **生成**: `scripts/gen-data.js` 读 `data/drugs.json` → 输出 `drugs-data.js`
-- **消费**: `psychopharm.html` 引用 `drugs-data.js`
+- **生成**: `scripts/gen-data.js` 读 `data/drugs.json` → 输出 `data/drugs-data.js`
+- **消费**: `psychopharm.html` 引用 `data/drugs-data.js`
 - **规律**: 改药物分类/增减药 → 只改 `data/drugs.json` → 跑 `scripts/gen-data.js` 重新生成 → 同步 APK assets
 
 ## 新增药物必须带 rx 字段（硬规则）
@@ -29,7 +29,7 @@
 | `psychopharm.html` | 主程序（单文件 H5） |
 | `data/drugs.json` | 药物数据（唯一真源） |
 | `scripts/gen-data.js` | 数据生成器 |
-| `drugs-data.js` | 生成的 JS 数据 |
+| `data/drugs-data.js` | 生成的 JS 数据 |
 | `js/auth.js` / `js/sync.js` | 账号与同步客户端 |
 | `img/download-qr.png` | Android APK 下载二维码 |
 | `scripts/` | 工具脚本（卡片 PDF 生成/质检/发布/测试） |

@@ -152,9 +152,9 @@
 
 ## 执行约定（不可违反）
 
-- **数据源**：只改 `data/drugs.json` → 跑 `scripts/gen-data.js` → 生成 `drugs-data.js`
+- **数据源**：只改 `data/drugs.json` → 跑 `scripts/gen-data.js` → 生成 `data/drugs-data.js`
 - **rx 字段**：新增药物必须带 `rx` 药理标签，否则不参与相互作用推导
-- **APK 同步**：改 `psychopharm.html` / `drugs-data.js` / `js/*` 后同步到
+- **APK 同步**：改 `psychopharm.html` / `data/drugs-data.js` / `js/*` 后同步到
   `psychopharm-android/app/src/main/assets/`
 - **改动后验证**：
   ```bash
