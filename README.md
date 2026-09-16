@@ -1,6 +1,22 @@
-# 药枢 NeuroPharm · 精神药理学习 App
+<div align="center">
 
-单文件 HTML 学习原型，覆盖 **62 味精神科药物**，含 SRS 间隔重复闪卡、药物相互作用自动推导（覆盖 1048 对）、295 题库、游戏化进度追踪，带邮箱账号注册/登录与多设备云端同步（后端为独立 Cloudflare Worker + D1）。
+# 药枢 · NeuroPharm
+
+**精神药理学习 App · 药库 · SRS · 相互作用规则 · 题库 · PWA**
+
+<p>
+  <img alt="Drugs" src="https://img.shields.io/badge/drugs-62-6C63FF">
+  <img alt="Questions" src="https://img.shields.io/badge/questions-295-2F80ED">
+  <img alt="SRS" src="https://img.shields.io/badge/learning-SRS-27AE60">
+  <img alt="PWA" src="https://img.shields.io/badge/app-PWA%20%2B%20Android-F2994A">
+</p>
+
+</div>
+
+单文件 HTML 学习原型，覆盖精神科药物复习、间隔重复闪卡、相互作用规则推导、自测、游戏化进度与多设备同步。
+
+> [!WARNING]
+> 本项目是**学习工具**，不是处方、用药决策或临床相互作用检查器。药物适应证、剂量、禁忌与相互作用应以最新官方说明书、权威药学资料和合格专业人员判断为准。
 
 ## 在线版（GitHub Pages）
 > 主页（网页版 App）：`https://CochraneK.github.io/neuropharm/`
